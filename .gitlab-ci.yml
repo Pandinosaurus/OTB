@@ -126,14 +126,21 @@ fast-build:
     - branches
   stage: precheck
   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-native-itk5:22.04
+  variables:
+    GIT_CHECKOUT: 'true'
+    GIT_SUBMODULE_FORCE_HTTPS: 'true'
+    GIT_SUBMODULE_DEPTH: 3
+    GIT_STRATEGY: clone
+    GIT_LFS_SKIP_SMUDGE: 1
   before_script:
-    - export GIT_LFS_SKIP_SMUDGE=1
-    - git checkout -f -q $CI_COMMIT_SHA
+    - git submodule update --init
     # pull data needed by the two convolution test
     - |
-      git lfs pull --include Data/Baseline/OTB/Images/bfTvConvolutionImageFilter.tif
-      git lfs pull --include Data/Input/QB_Suburb.png
-      git lfs pull --include Data/Input/QB_PAN_ROI_1000_100.tif
+      cd Data
+      git lfs pull --include Baseline/OTB/Images/bfTvConvolutionImageFilter.tif
+      git lfs pull --include Input/QB_Suburb.png
+      git lfs pull --include Input/QB_PAN_ROI_1000_100.tif
+      cd ..
   script:
     - ctest -V -S CI/main_ci.cmake -DIMAGE_NAME:string=ubuntu-22.04-fast
     - ctest -VV -S CI/FFTW_tests.cmake -DIMAGE_NAME:string=ubuntu-22.04-fast
