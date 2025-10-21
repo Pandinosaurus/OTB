@@ -252,27 +252,9 @@ redhat-build:
     - job: redhat-prepare
       artifacts: true
 
-## Windows
-.windows-prepare:
-  extends: .common-prepare
-  before_script:
-# This override the previous before_script
-    - git checkout -f -q $CI_COMMIT_SHA
-
-.windows-build:
-  extends: .common-build
-  before_script:
-    - git lfs fetch origin $CI_COMMIT_SHA
-    - git checkout -f -q $CI_COMMIT_SHA
-  # Obviously Windows does not use same executable name as linux...
-  after_script:
-    # need to setup path to be able to use python
-    - .\CI\setup_python.ps1 x64
-    - python -u CI/cdash_handler.py
-
 # - Win10
 windows-10-prepare:
-  extends: .windows-prepare
+  extends: .common-prepare
   tags:
     - windows10
   script:
@@ -282,7 +264,7 @@ windows-10-prepare:
     - buildcache.exe -s
 
 windows-10-build:
-  extends: .windows-build
+  extends: .common-build
   tags:
     - windows10
   script:
@@ -296,6 +278,10 @@ windows-10-build:
   needs:
     - job: windows-10-prepare
       artifacts: true
+  after_script:
+    # need to setup path to be able to use python
+    - .\CI\setup_python.ps1 x64
+    - python -u CI/cdash_handler.py
 
 #------------------------- QA related jobs -------------------------------------
 ubuntu-qa-code-coverage:
