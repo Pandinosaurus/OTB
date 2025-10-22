@@ -52,7 +52,7 @@ namespace otb
  *
  * ImageFileWriter supports extended filenames, which allow controlling
  * some properties of the output file. See
- * http://wiki.orfeo-toolbox.org/index.php/ExtendedFileName for more
+ * https://www.orfeo-toolbox.org/CookBook/ExtendedFilenames.html for more
  * information.
  *
  * \sa ImageFileReader
