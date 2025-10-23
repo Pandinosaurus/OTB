@@ -1,8 +1,10 @@
 # ![OTB](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/raw/master/Utilities/Doxygen/logoVectoriel.png) Orfeo Toolbox
 
+[![Latest release](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/badges/release.svg)](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/releases)
 [![pipeline status](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/badges/develop/pipeline.svg)](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/commits/develop)
 [![coverage status](https://sonar.orfeo-toolbox.org/api/project_badges/measure?project=orfeotoolbox-otb&metric=coverage)](https://sonar.orfeo-toolbox.org/dashboard?id=orfeotoolbox-otb)
 [![Docker pulls](https://img.shields.io/badge/dynamic/json?formatter=metric&color=blue&label=Docker%20pull&query=%24.pull_count&url=https://hub.docker.com/v2/repositories/orfeotoolbox/otb)](https://hub.docker.com/r/orfeotoolbox/otb)
+[![Cite OTB with DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3522154.svg)](https://doi.org/10.5281/zenodo.3522154)
 
 ## Open Source processing of remote sensing images
 
@@ -28,12 +30,13 @@ It is community driven, extensible and heavily documented. Orfeo ToolBox is not 
 * [Build status](http://cdash.orfeo-toolbox.org/index.php?project=OTB)
 * [Bug tracker](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/issues?label_name%5B%5D=bug)
 * [Task tracking](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/issues)
+* [Current sprint](https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/boards)
 
 ### Installation
 
 We provide ready-to-use packages for Windows, Docker and Linux. [Download them here](https://www.orfeo-toolbox.org/download/) on our website, and see instructions for your platform [here in the Cookbook](https://www.orfeo-toolbox.org/CookBook/Installation.html).
 
-If you're interested, you can also [compile from source](https://www.orfeo-toolbox.org/SoftwareGuide/SoftwareGuidech2.html#x16-190002).
+If you're interested, you can also [compile from source](https://www.orfeo-toolbox.org/CookBook/CompilingOTBFromSource.html).
 
 
 ### Join the community

@@ -526,7 +526,7 @@ Develop a pipeline with ITK 5 python filters
 With ITK 5, pip install itk is now available, it exposes all itk filters in python,
 this enables you to develop an application using itk filters, which is able to handle xarray or numpy tables
 
-To develop a pipeline with itk filters, you can follow the `documentation <https://docs.itk.org/en/latest/learn/python_quick_start.html>`__ 
+To develop a pipeline with itk filters, you can follow the `documentation <https://docs.itk.org/en/v5.4.0/learn/python_quick_start.html>`__
 
 
 Corner cases

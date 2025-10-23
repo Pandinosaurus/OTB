@@ -42,11 +42,11 @@ List of available modules
         + Repository:  https://github.com/Laadr/otbFFSforGMM
         + Author: Adrien Lagrange
         + License: Apache
-        + Description: This module implements a method to perform a fast forward feature selection using a Gaussian Mixture Model for the classification of high dimensional remote sensing images. The algorithm is describes in the following paper https://hal.archives-ouvertes.fr/hal-01382500.
+        + Description: This module implements a method to perform a fast forward feature selection using a Gaussian Mixture Model for the classification of high dimensional remote sensing images. The algorithm is describes in the following paper https://hal.science/hal-01382500.
 
   - **GRM** : Generic region merging segmentation
 
-        + Repository:  http://tully.ups-tlse.fr/lassallep/grm/tree/master
+        + Repository:  https://github.com/orfeotoolbox/GRM
         + Author: Pierre Lassalle
         + License: GPL v3
         + Description: This module provides the GRM OTB application to perform multi-scale region-merging segmentation on satellite images. Three local homogeneity criteria are available: the Baatz & Schäpe criterion, the Full Lambda Schedule criterion and the simple Euclidean Distance criterion. This module was contributed by Pierre Lassalle who also provides a tutorial to learn how to use the library.
@@ -60,7 +60,7 @@ List of available modules
 
   - **Temporal gap-filling** : perform temporal gap-filling in image time series
 
-        + Repository:  http://tully.ups-tlse.fr/jordi/temporalgapfilling.git 
+        + Repository:  https://gitlab.orfeo-toolbox.org/jinglada/temporalgapfilling
         + Author: Jordi Inglada
         + License: GNU Affero General Public License v3.0
         + Description: This module provides classes and one application to perform for temporal gap-filling in image time series (linear and spline interpolators are provided).
@@ -76,7 +76,7 @@ List of available modules
 
   - **OTBTensorflow (otbtf)** : generic, multi purpose deep learning framework, targeting remote sensing images processing
 
-        + Repository:  https://gitlab.irstea.fr/remi.cresson/otbtf 
+        + Repository:  https://forge.inrae.fr/orfeo-toolbox/otbtf
         + Author: Rémi Cresson 
         + License: Apache License 2.0
         + Description: This remote module of the Orfeo ToolBox provides a generic, multi purpose deep learning framework, targeting remote sensing images processing. It contains a set of new process objects that internally invoke Tensorflow, and a bunch of user-oriented applications to perform deep learning with real-world remote sensing images. Applications can be used to build OTB pipelines from Python or C++ APIs.
@@ -91,7 +91,7 @@ an external CMake project with an existing OTB installation.
 
 * **Building against a build tree**
 
-  In this case you have `compiled OTB from source <https://www.orfeo-toolbox.org/CookBook-develop/CompilingOTBFromSource.html>`__ 
+  In this case you have `compiled OTB from source <https://www.orfeo-toolbox.org/CookBook/CompilingOTBFromSource.html>`__
   , the cmake configuration will be done inside OTB build directory.
 
   Note that there are two ways of compiling:
