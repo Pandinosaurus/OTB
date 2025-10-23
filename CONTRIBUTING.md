@@ -190,7 +190,7 @@ All labels availables are on the [label page](https://gitlab.orfeo-toolbox.org/o
 | ~refactoring                                       | Issue related to improvements like refactoring, tests, maintenance, etc                                                                                |
 | ~documentation                                     | Documentation improvements|
 | ~ci                                                | Issue related to the continuous integration platform                                                                                                  |
-| ~api ~app ~legal ~monteverdi <br> ~packaging ~qgis | Optional context information                                                                                                                           |
+| ~api ~app ~legal <br> ~packaging ~qgis | Optional context information                                                                                                                           |
 
 ~Backlog ~"To Do" ~Doing ~Blocked ~"Ready for review" and ~Done are reserved for sprint usage.
   
