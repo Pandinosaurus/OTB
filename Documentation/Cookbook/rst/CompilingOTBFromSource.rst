@@ -371,15 +371,33 @@ To run the tests, first make sure to set the option
 python API, you will also need to install the python module `pytest`.
 
 For some of the tests, you also need the test data and the baselines (~1GB). These files are stored
-using `git-lfs` in the `Data` folder at the root of otb sources. To download them, you have to make
-sure `git-lfs` is installed before cloning otb (binaries for `git lfs` are available for different
+in a `git submodule <https://git-scm.com/book/en/v2/Git-Tools-Submodules>`_ and large data are available using `git-lfs` in the `Data` folder at the root of otb sources.
+To download them, you need `git-lfs` is installed (binaries for `git lfs` are available for different
 OS `here <https://github.com/git-lfs/git-lfs/releases>`_).
+After downloading git lfs, add the binary to $PATH and run `git lfs install`. You can then clone Data sources.
 
-After downloading, add the binary to $PATH and run `git lfs install`. You can then clone otb sources :
+Either you choose to use the Data git submodule present in OTB repo that you previously cloned, so you will need
+the following commands
 
 ::
+    # We assume that you already have cloned OTB with
+    # git clone https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb.git
+    # and you are in OTB source dir
+    git submodule init
+    git submodule update
+    # to ensure you have all Data stored with git lfs
+    git submodule foreach "git lfs pull"
 
-    git clone https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb.git
+Or you can choose to install test data in another directory using the Data git repo.
+If you do that, ensure that the OTB cmake configuration variable ``OTB_DATA_ROOT`` point
+to that repository:
+
+::
+    # Here you are not in OTB source folder
+    git clone git@gitlab.orfeo-toolbox.org:orfeotoolbox/data.git Data
+    cd Data
+    git lfs pull
+    # Then configure OTB with OTB_DATA_ROOT cmake option that point to that folder
 
 Once OTB is built with the tests, you just have to go to the binary
 directory where you built OTB and run ``ctest -N`` to have a list of all
