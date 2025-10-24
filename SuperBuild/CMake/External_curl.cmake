@@ -41,6 +41,10 @@ elseif(WIN32)
     -DHAVE_INET_PTON:STRING=0)
 endif()
 
+# Use the DCURL_LIBCURL_VERSIONED_SYMBOLS to get version of symbol
+# in the shared library.
+# Cmake is linked against specific version of these symbol thus need
+# this information.
 ExternalProject_Add(CURL
   PREFIX CURL
   URL "https://github.com/curl/curl/releases/download/curl-8_10_1/curl-8.10.1.tar.gz"
@@ -75,6 +79,7 @@ ExternalProject_Add(CURL
   -DCURL_DISABLE_TELNET:BOOL=ON
   -DCURL_DISABLE_TFTP:BOOL=ON
   -DCURL_DISABLE_VERBOSE_STRINGS:BOOL=OFF
+  -DCURL_LIBCURL_VERSIONED_SYMBOLS:BOOL=ON
   -DCURL_HIDDEN_SYMBOLS:BOOL=OFF
   -DCURL_STATICLIB:BOOL=OFF
   -DDISABLED_THREADSAFE:BOOL=OFF
