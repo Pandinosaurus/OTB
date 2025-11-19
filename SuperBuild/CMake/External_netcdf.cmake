@@ -40,7 +40,7 @@ endif()
 ExternalProject_Add(NETCDF
   PREFIX NETCDF
   URL "https://github.com/Unidata/netcdf-c/archive/refs/tags/v${NETCDF_VERSION}.tar.gz"
-  URL_MD5 f48ee01534365006934f0c63d4055ea0
+  URL_MD5 bc9eb96e1983bf90fb3a99cc358c5ac3
   SOURCE_DIR ${NETCDF_SB_SRC}
   BINARY_DIR ${NETCDF_SB_BUILD_DIR}
   INSTALL_DIR ${SB_INSTALL_PREFIX}
