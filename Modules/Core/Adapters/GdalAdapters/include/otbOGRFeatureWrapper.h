@@ -184,7 +184,7 @@ public:
    * \invariant <tt>m_Feature != 0</tt>
    * \sa \c OGRFeature::GetDefnRef()
    */
-  OGRFeatureDefn& GetDefn() const;
+  const OGRFeatureDefn& GetDefn() const;
 
   /**\name Fields
    * Fields access.
@@ -233,13 +233,13 @@ public:
    * \throw None
    * \sa \c OGRFeature::GetFieldDefnRef()
    */
-  FieldDefn GetFieldDefn(int index) const;
+  const FieldDefn GetFieldDefn(int index) const;
   /** Accessor to the definition of a field gven its name.
    * \invariant <tt>m_Feature != 0</tt>
    * \throw itk::ExceptionObject if no field named \c name exists.
    * \sa \c OGRFeature::GetFieldDefnRef()
    */
-  FieldDefn GetFieldDefn(std::string const& name) const;
+  const FieldDefn GetFieldDefn(std::string const& name) const;
   /** Searches the index of a field given a name.
    * \invariant <tt>m_Feature != 0</tt>
    * \throw itk::ExceptionObject if no field named \c name exists.
@@ -342,7 +342,7 @@ private:
   int UncheckedGetFieldIndex(std::string const& name) const;
   long UncheckedGetFID() const;
   void UncheckedSetFID(long fid);
-  OGRFeatureDefn& UncheckedGetDefn() const;
+  const OGRFeatureDefn& UncheckedGetDefn() const;
   void UncheckedSetGeometryDirectly(UniqueGeometryPtr geometry);
   UniqueGeometryPtr  UncheckedStealGeometry();
   OGRGeometry const* UncheckedGetGeometry() const;
