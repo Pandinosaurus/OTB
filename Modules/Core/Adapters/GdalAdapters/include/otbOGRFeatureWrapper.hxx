@@ -79,13 +79,13 @@ inline otb::ogr::Field const otb::ogr::Feature::operator[](std::string const& na
   return const_cast<Feature*>(this)->operator[](name);
 }
 
-inline const otb::ogr::FieldDefn otb::ogr::Feature::GetFieldDefn(int index) const
+inline otb::ogr::FieldDefn otb::ogr::Feature::GetFieldDefn(int index) const
 {
   assert(index < GetSize() && "out of range field-index."); // also calls CheckInvariants();
   return UncheckedGetFieldDefn(index);
 }
 
-inline const otb::ogr::FieldDefn otb::ogr::Feature::GetFieldDefn(std::string const& name) const
+inline otb::ogr::FieldDefn otb::ogr::Feature::GetFieldDefn(std::string const& name) const
 {
   CheckInvariants();
   return UncheckedGetFieldDefn(name);

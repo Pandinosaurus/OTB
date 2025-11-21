@@ -24,6 +24,7 @@
 #include "ogrsf_frmts.h"
 #include "otbOGR.h"
 #include "otbStopwatch.h"
+#include <ogr_feature.h>
 
 namespace otb
 {
@@ -820,7 +821,7 @@ unsigned int OGRIOHelper::ProcessNodeWrite(VectorDataConstPointerType vdata, Dat
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
       //      ogrFeature->SetField("Name", dataNode->GetNodeId());
-      ogrFeature->GetDefnRef()->SetGeomType(wkbMultiPoint);
+      const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef())->SetGeomType(wkbMultiPoint);
       ogrFeature->SetGeometry(ogrMultiPoint);
 
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)
@@ -841,7 +842,7 @@ unsigned int OGRIOHelper::ProcessNodeWrite(VectorDataConstPointerType vdata, Dat
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
       //      ogrFeature->SetField("Name", dataNode->GetNodeId());
-      ogrFeature->GetDefnRef()->SetGeomType(wkbMultiLineString);
+      const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef())->SetGeomType(wkbMultiLineString);
       ogrFeature->SetGeometry(ogrMultiLineString);
 
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)
@@ -860,14 +861,16 @@ unsigned int OGRIOHelper::ProcessNodeWrite(VectorDataConstPointerType vdata, Dat
       ProcessNodeWrite(vdata,*it, m_DataSource, ogrMultiPolygon, ogrCurrentLayer, oSRS);
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
+
+      OGRFeatureDefn* tmp_ogr_feat(const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef()));
       //      ogrFeature->SetField("Name", dataNode->GetNodeId());
       #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
-        ogrFeature->GetDefnRef()->Unseal(true);
+        tmp_ogr_feat->Unseal(true);
       #endif
-      ogrFeature->GetDefnRef()->SetGeomType(wkbMultiPolygon);
+      tmp_ogr_feat->SetGeomType(wkbMultiPolygon);
       ogrFeature->SetGeometry(ogrMultiPolygon);
       #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
-        ogrFeature->GetDefnRef()->Seal(true);
+        tmp_ogr_feat->Seal(true);
       #endif
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)
       {
@@ -887,7 +890,7 @@ unsigned int OGRIOHelper::ProcessNodeWrite(VectorDataConstPointerType vdata, Dat
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
       //      ogrFeature->SetField("Name", dataNode->GetNodeId());
-      ogrFeature->GetDefnRef()->SetGeomType(wkbGeometryCollection);
+      const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef())->SetGeomType(wkbGeometryCollection);
       ogrFeature->SetGeometry(ogrCollectionGeometry);
 
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)
@@ -1150,7 +1153,7 @@ std::vector<OGRLayer*> OGRIOHelper::ConvertDataTreeNodeToOGRLayers(VectorDataCon
       OGRFeature*    ogrFeature;
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
-      ogrFeature->GetDefnRef()->SetGeomType(wkbMultiPoint);
+      const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef())->SetGeomType(wkbMultiPoint);
       ogrFeature->SetGeometry(ogrMultiPoint);
 
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)
@@ -1168,7 +1171,7 @@ std::vector<OGRLayer*> OGRIOHelper::ConvertDataTreeNodeToOGRLayers(VectorDataCon
       OGRFeature* ogrFeature;
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
-      ogrFeature->GetDefnRef()->SetGeomType(wkbMultiLineString);
+      const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef())->SetGeomType(wkbMultiLineString);
       ogrFeature->SetGeometry(ogrMultiLineString);
 
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)
@@ -1185,7 +1188,7 @@ std::vector<OGRLayer*> OGRIOHelper::ConvertDataTreeNodeToOGRLayers(VectorDataCon
       OGRFeature*      ogrFeature;
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
-      ogrFeature->GetDefnRef()->SetGeomType(wkbMultiPolygon);
+      const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef())->SetGeomType(wkbMultiPolygon);
       ogrFeature->SetGeometry(ogrMultiPolygon);
 
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)
@@ -1202,7 +1205,7 @@ std::vector<OGRLayer*> OGRIOHelper::ConvertDataTreeNodeToOGRLayers(VectorDataCon
       OGRFeature* ogrFeature;
 
       ogrFeature = OGRFeature::CreateFeature(ogrCurrentLayer->GetLayerDefn());
-      ogrFeature->GetDefnRef()->SetGeomType(wkbGeometryCollection);
+      const_cast<OGRFeatureDefn*>(ogrFeature->GetDefnRef())->SetGeomType(wkbGeometryCollection);
       ogrFeature->SetGeometry(ogrCollectionGeometry);
 
       if (ogrCurrentLayer->CreateFeature(ogrFeature) != OGRERR_NONE)

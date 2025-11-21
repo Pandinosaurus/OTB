@@ -233,13 +233,13 @@ public:
    * \throw None
    * \sa \c OGRFeature::GetFieldDefnRef()
    */
-  const FieldDefn GetFieldDefn(int index) const;
+  FieldDefn GetFieldDefn(int index) const;
   /** Accessor to the definition of a field gven its name.
    * \invariant <tt>m_Feature != 0</tt>
    * \throw itk::ExceptionObject if no field named \c name exists.
    * \sa \c OGRFeature::GetFieldDefnRef()
    */
-  const FieldDefn GetFieldDefn(std::string const& name) const;
+  FieldDefn GetFieldDefn(std::string const& name) const;
   /** Searches the index of a field given a name.
    * \invariant <tt>m_Feature != 0</tt>
    * \throw itk::ExceptionObject if no field named \c name exists.
