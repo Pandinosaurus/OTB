@@ -34,7 +34,7 @@ if(MSVC)
   ExternalProject_Add(SWIG
     PREFIX SWIG
     URL "https://downloads.sourceforge.net/project/swig/swigwin/swigwin-4.4.0/swigwin-4.4.0.zip"
-    URL_MD5 bcff9f32bf3bb7030a3866164f774e84
+    URL_MD5 16bdcc5f39a172879e93f57cea91dfef
     INSTALL_DIR ${SB_INSTALL_PREFIX}
     DOWNLOAD_DIR ${DOWNLOAD_LOCATION}
     CONFIGURE_COMMAND ""
