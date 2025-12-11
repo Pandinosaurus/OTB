@@ -29,12 +29,14 @@ else()
   message(WARNING "  No suitable python interpreter was found !")
 endif()
 
+set(__SWIG_VERSION "4.4.0")
+
 if(MSVC)
   # Use pre-built swig executable (no linking is required, no install done)
   ExternalProject_Add(SWIG
     PREFIX SWIG
-    URL "https://downloads.sourceforge.net/project/swig/swigwin/swigwin-4.3.1/swigwin-4.3.1.zip"
-    URL_MD5 e462fd93a5a21f9a60a3120ce8f7f49c
+    URL "https://downloads.sourceforge.net/project/swig/swigwin/swigwin-${__SWIG_VERSION}/swigwin-${__SWIG_VERSION}.zip"
+    URL_MD5 16bdcc5f39a172879e93f57cea91dfef
     INSTALL_DIR ${SB_INSTALL_PREFIX}
     DOWNLOAD_DIR ${DOWNLOAD_LOCATION}
     CONFIGURE_COMMAND ""
@@ -45,15 +47,15 @@ if(MSVC)
 
 else()
   # declare dependencies
-  ADDTO_DEPENDENCIES_IF_NOT_SYSTEM(SWIG PCRE BOOST)
+  ADDTO_DEPENDENCIES_IF_NOT_SYSTEM(SWIG PCRE2 BOOST)
 
-  ADD_SUPERBUILD_CONFIGURE_VAR(SWIG PCRE_ROOT --with-pcre-prefix)
+  ADD_SUPERBUILD_CONFIGURE_VAR(SWIG PCRE2_ROOT --with-pcre2-prefix)
   ADD_SUPERBUILD_CONFIGURE_VAR(SWIG BOOST_ROOT --with-boost)
 
   ExternalProject_Add(SWIG
     PREFIX SWIG
-    URL "https://downloads.sourceforge.net/project/swig/swig/swig-4.3.1/swig-4.3.1.tar.gz"
-    URL_MD5 4929864e1b040a51370160d17669d6f1
+    URL "https://downloads.sourceforge.net/project/swig/swig/swig-${__SWIG_VERSION}/swig-${__SWIG_VERSION}.tar.gz"
+    URL_MD5 62d77e7d90057d5410f7a28ff57d854f
     BINARY_DIR ${SWIG_SB_BUILD_DIR}
     INSTALL_DIR ${SB_INSTALL_PREFIX}
     DOWNLOAD_DIR ${DOWNLOAD_LOCATION}

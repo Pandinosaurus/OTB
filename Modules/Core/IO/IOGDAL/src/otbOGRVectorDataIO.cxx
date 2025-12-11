@@ -101,10 +101,8 @@ void OGRVectorDataIO::Read(itk::DataObject* datag)
   // Retrieving root node
   DataNodePointerType root = data->GetRoot();
 
-  OGRSpatialReference* oSRS = nullptr;
+  const OGRSpatialReference* oSRS(m_DataSource->GetLayer(0)->GetSpatialRef());
   // We take the assumption that the spatial reference is common to all layers
-  oSRS = m_DataSource->GetLayer(0)->GetSpatialRef();
-
   if (oSRS != nullptr)
   {
     char* projectionRefChar;

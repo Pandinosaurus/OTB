@@ -145,8 +145,10 @@ endif()
 #variables are later used in packaging
 set(SB_ITK_VERSION_MAJOR "5")
 set(SB_ITK_VERSION_MINOR "3")
+set(SB_ITK_VERSION_PATCH "0")
 
 set(_SB_ITK_DIR ${SB_INSTALL_PREFIX}/lib/cmake/ITK-${SB_ITK_VERSION_MAJOR}.${SB_ITK_VERSION_MINOR})
+set(__ITK_DL_NAME "itk-${SB_ITK_VERSION_MAJOR}.${SB_ITK_VERSION_MINOR}.${SB_ITK_VERSION_PATCH}")
 
 ExternalProject_Add(ITK
   PREFIX ITK
@@ -156,6 +158,9 @@ ExternalProject_Add(ITK
   BINARY_DIR ${ITK_SB_BUILD_DIR}
   INSTALL_DIR ${SB_INSTALL_PREFIX}
   DOWNLOAD_DIR ${DOWNLOAD_LOCATION}
+  # change itk download name as the file notation vx.x.x is used everywhere
+  # and can be in conflict with other package
+  DOWNLOAD_NAME "${__ITK_DL_NAME}.tar.gz"
   CMAKE_CACHE_ARGS
   ${SB_CMAKE_CACHE_ARGS}
   -DITK_BUILD_DEFAULT_MODULES:BOOL=OFF

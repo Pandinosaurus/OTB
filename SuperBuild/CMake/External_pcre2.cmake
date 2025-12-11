@@ -18,31 +18,33 @@
 # limitations under the License.
 #
 
-INCLUDE_ONCE_MACRO(PCRE)
-SETUP_SUPERBUILD(PCRE)
+INCLUDE_ONCE_MACRO(PCRE2)
+SETUP_SUPERBUILD(PCRE2)
 if(MSVC)
   # TODO ?
 else()
-  ExternalProject_Add(PCRE
-    PREFIX PCRE
-    URL "https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz"
-    URL_MD5 01b80f8177ab91da63e7e5c5d5dfcb83
-    BINARY_DIR ${PCRE_SB_BUILD_DIR}
+  ExternalProject_Add(PCRE2
+    PREFIX PCRE2
+    URL "https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-10.47.tar.gz"
+    URL_MD5 b55ec5acca85ffddc7d81c23f22bf176
+    BINARY_DIR ${PCRE2_SB_BUILD_DIR}
     INSTALL_DIR ${SB_INSTALL_PREFIX}
     DOWNLOAD_DIR ${DOWNLOAD_LOCATION}
-    CONFIGURE_COMMAND
-    ${PCRE_SB_BUILD_DIR}/configure
-    --prefix=${SB_INSTALL_PREFIX}
-    BUILD_COMMAND $(MAKE)
-    INSTALL_COMMAND $(MAKE) install
-    DEPENDS ${PCRE_DEPENDENCIES}
+    CMAKE_CACHE_ARGS 
+    ${SB_CMAKE_CACHE_ARGS}
+    CMAKE_COMMAND ${SB_CMAKE_COMMAND}
+    LOG_DOWNLOAD 1
+    LOG_CONFIGURE 1
+    LOG_BUILD 1
+    LOG_INSTALL 1
+    DEPENDS ${PCRE2_DEPENDENCIES}
     )
 
-  ExternalProject_Add_Step(PCRE copy_source
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${PCRE_SB_SRC} ${PCRE_SB_BUILD_DIR}
-    DEPENDEES patch update
-    DEPENDERS configure
-    )
+  # ExternalProject_Add_Step(PCRE2 copy_source
+  #   COMMAND ${CMAKE_COMMAND} -E copy_directory
+  #   ${PCRE2_SB_SRC} ${PCRE2_SB_BUILD_DIR}
+  #   DEPENDEES patch update
+  #   DEPENDERS configure
+  #   )
 
 endif()

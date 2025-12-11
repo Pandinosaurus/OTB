@@ -62,10 +62,12 @@ PATH=$(cat_path "$OTB_INSTALL_DIR/bin" "$PATH")
 
 # export PYTHONPATH to import otbApplication.py
 PYTHONPATH=$(cat_path "$OTB_INSTALL_DIR/lib/otb/python" "$PYTHONPATH")
-if [ "$OS" = "RedHatEnterprise" ] || [ "$OS" = "Fedora" ] || [ "$OS" = "RockyLinux" ]; then
-  PYTHONPATH=$(cat_path "$OTB_INSTALL_DIR/lib/python3.12/site-packages" "$PYTHONPATH")
-else
-  PYTHONPATH=$(cat_path "$OTB_INSTALL_DIR/lib/python3.10/site-packages" "$PYTHONPATH")
+# add path to internal gdal and python apps
+xdk_lib_python=$(find "$OTB_INSTALL_DIR/lib" -mindepth 2 -maxdepth 2 -type d -name "sites-packages")
+
+# if we found something
+if [ -n "$xdk_lib_python" ]; then
+  PYTHONPATH=$(cat_path "$xdk_lib_python" "$PYTHONPATH")
 fi
 
 # set numeric locale to C

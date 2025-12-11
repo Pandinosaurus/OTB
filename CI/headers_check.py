@@ -108,6 +108,7 @@ excludedfiles = set([
     './.clang-format',
     './.editorconfig',
     './.gitattributes',
+    './.gitmodules',
     './.gitignore',
     './.mailmap',
     './sonar-project.properties',

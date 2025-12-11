@@ -68,7 +68,7 @@ public:
     return "VectorDataKeywordlist";
   }
 
-  void AddField(OGRFieldDefn* fieldDefn, OGRField* field);
+  void AddField(const OGRFieldDefn* fieldDefn, OGRField* field);
 
   /**
     * \param key The name of the field.
@@ -185,7 +185,7 @@ protected:
 
 private:
   std::string PrintField(FieldType field) const;
-  FieldType CopyOgrField(FieldType field);
+  FieldType CreateOgrField(const OGRFieldDefn* fieldDefn, const OGRField* field);
   FieldListType m_FieldList;
 };
 OTBVectorDataBase_EXPORT extern std::ostream& operator<<(std::ostream& os, const VectorDataKeywordlist& kwl);
