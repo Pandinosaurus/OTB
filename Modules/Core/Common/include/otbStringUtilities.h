@@ -30,7 +30,6 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <cctype>
-#include <cstdarg>
 #include <cmath>
 #include <string>
 #include "OTBCommonExport.h"
@@ -54,8 +53,9 @@ namespace otb
  *
  * @invariant there is no guarantee `data()[size()] == '\0'`. It may happen
  * though depending on the constructor used.
+ * @todo deprecate once OTB drop C++14 compatibility
  */
-struct string_view
+struct OTBCommon_EXPORT string_view
 {
   using value_type      = char const;
   using reference       = char const&;
@@ -92,23 +92,11 @@ private:
 
     friend difference_type operator-(char_iterator lhs, char_iterator rhs) { return lhs.m_ptr - rhs.m_ptr; }
 
-    friend bool operator==(char_iterator lhs, char_iterator rhs)
-    {
-      return lhs.m_ptr == rhs.m_ptr;
-    }
-    friend bool operator!=(char_iterator lhs, char_iterator rhs)
-    {
-      return lhs.m_ptr != rhs.m_ptr;
-    }
-    friend bool operator<(char_iterator lhs, char_iterator rhs)
-    {
-      return lhs.m_ptr < rhs.m_ptr;
-    }
+    friend bool operator==(char_iterator lhs, char_iterator rhs) { return lhs.m_ptr == rhs.m_ptr; }
+    friend bool operator!=(char_iterator lhs, char_iterator rhs) { return lhs.m_ptr != rhs.m_ptr; }
+    friend bool operator<(char_iterator lhs, char_iterator rhs) { return lhs.m_ptr < rhs.m_ptr; }
   private:
-    friend bool operator<=(char_iterator lhs, char_iterator rhs)
-    {
-      return lhs.m_ptr <= rhs.m_ptr;
-    }
+    friend bool operator<=(char_iterator lhs, char_iterator rhs) { return lhs.m_ptr <= rhs.m_ptr; }
   private:
     const_pointer m_ptr;
   };
@@ -172,6 +160,8 @@ public:
   /** Tells whether a view is within another view.
    * This functions doesn't test whether the characters from a view are found
    * in the same relative positions in another view.
+   * @note There is no equivalent function in C++17 `std::string_view`.
+   * C++23 has a `std::string_view::contains()` function however.
    */
   bool belongs_to(char const* first, char const* last) const
   {
@@ -356,7 +346,7 @@ bool contains(string_view const& haystack, string_view const& needle)
  * @see `split_on()`
  */
 template <typename Splitter>
-struct part_iterator
+struct OTBCommon_EXPORT part_iterator
 {
   using reference         = string_view &;
   using const_reference   = string_view const&;
@@ -437,7 +427,7 @@ namespace details
  * @see `split_on()`
  */
 template <typename Splitter>
-struct part_range
+struct OTBCommon_EXPORT part_range
 {
   part_range(string_view const& global_string, Splitter s)
   : m_first(global_string, s)
@@ -455,7 +445,7 @@ private:
  * Not meant to be used directly
  * @see `split_on()`
  */
-struct splitter_on_delim
+struct OTBCommon_EXPORT splitter_on_delim
 {
   splitter_on_delim(char delim) : m_delimiter(delim) {}
   string_view operator()(string_view const& within) const {
@@ -636,7 +626,7 @@ template <typename Int> inline Int to_integer(string_view const& v, Int const de
   {
     switch (*it)
     {
-      case '-': is_negative = true; /*[[fallthrough]]*/
+      case '-': is_negative = true; OTB_FALLTHROUGH;
       case '+': ++it;
     }
     for ( ; it != end ; ++it)
@@ -845,22 +835,6 @@ inline T const& to(T const& v, string_view const& /*context*/) { return v; }
 template <typename T>
 inline T const& to_with_default(T const& v, T const& /* default*/) { return v; }
 
-// template <> inline double to<double>(ossimplugins::string_view const& v)
-// { return details::to_float<double>(v); }
-//@}
-
-//~ OTBCommon_EXPORT int s_printf(char *str, std::size_t size, const char *format, ...);
-//~ OTBCommon_EXPORT int vs_printf(char *str, std::size_t size, const char *format, std::va_list ap);
-//~
-//~ template <std::size_t size>
-//~ inline
-//~ int s_printf(char (&str)[size], const char *format, ...) {
-    //~ std::va_list ap;
-    //~ va_start(ap, format);
-    //~ const int res = vs_printf(str, size, format, ap);
-    //~ va_end(ap);
-    //~ return res;
-//~ }
 
 /** Strip left side of a string
  * @brief returns a string_view with the leading characters removed
