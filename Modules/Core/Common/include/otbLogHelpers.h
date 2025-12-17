@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2025 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -21,13 +21,14 @@
 #ifndef otbLogHelpers_h
 #define otbLogHelpers_h
 
-#include "itkImageRegion.h"
 #include <ostream>
 
 namespace otb
 {
 
 /** Helper class to log region in a more human readable way:
+ * \tparam RegionType Applies to any type of regions, even unrelated
+ * ones like `itk::ImageRegion` and `itk::ImageIORegion`.
  * e.g.
  * \code
  x ∈ [0..42[, y ∈ [12..24[, size=42x12 @(0, 12)
@@ -36,9 +37,9 @@ namespace otb
  * \copyright CNES
  * \ingroup OTBCommon
  */
+template <typename RegionType>
 struct NeatRegionLogger
 {
-  using RegionType = itk::ImageRegion<2u>;
   NeatRegionLogger(RegionType const& region) : m_region(region) {}
 
   friend std::ostream & operator<<(std::ostream & os, NeatRegionLogger const& r)
