@@ -29,3 +29,4 @@ Modules/SAR
 Modules/Segmentation
 Modules/Hyperspectral
 Modules/StereoProcessing
+compile_commands.json
