@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2025 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,6 +27,7 @@
 #include "OTBMetadataExport.h"
 #include "otbSpot5Metadata.h"
 #include "otbMacro.h"
+#include "otbStringUtilities.h"
 
 #include <boost/any.hpp>
 #include <vector>
@@ -56,7 +57,7 @@ public:
 
   using Keywordlist = std::unordered_map<std::string, std::string>;
 
-  /** Stack of geometry parameters, sorted by decreasing priority
+  /** Stack of geometry parameters, sorted by decreasing priority.
    *  Cases with corresponding enum values:
    *    - projected
    *        * MDGeom::ProjectionWKT   -> WKT (string)
@@ -363,6 +364,75 @@ OTBMetadata_EXPORT void WriteImageMetadataToGeomFile(const ImageMetadata & imd, 
 bool HasSameRPCModel(const ImageMetadataBase& a, const ImageMetadataBase& b);
 bool HasSameSARModel(const ImageMetadataBase& a, const ImageMetadataBase& b);
 bool HasSameSensorModel(const ImageMetadataBase& a, const ImageMetadataBase& b);
+
+/**
+ * Helper function to fetch data from keyword lists.
+ * \tparam T  Type of the element to find
+ * \param[in] kwl            Keyword list where to search for
+ * \param[in] key            Name of the element to search and decode
+ * \param[in] context        Context to help build error message
+ * \param[in] default_value  Value returned when there is no element associated to `key`
+ *
+ * \return `default_value` if the `key` isn't found in the keywordlist.
+ * \throw itk::ExceptionObject with the `context` as message if the metadata found at the `key`
+ *                             cannot be converted to a `T`.
+ * \return the metadata found associated to the `key` decoded as a `T` type.
+ *
+ * \see value_or_throw
+ * \ingroup OTBMetadata
+ */
+template <typename T>
+inline
+T value_or_unless(
+    otb::ImageMetadata const& kwl,
+    std::string const& key,
+    otb::string_view context,
+    T default_value)
+{
+  if (kwl.Has(key))
+  {
+    auto const& value = kwl[key];
+    return to<T>(value, context);
+  }
+  else
+  {
+    return default_value;
+  }
+}
+
+/**
+ * Helper function to fetch data from keyword lists.
+ * \tparam T  Type of the element to find
+ * \param[in] kwl            Keyword list where to search for
+ * \param[in] key            Name of the element to search and decode
+ * \param[in] context        Context to help build error message
+ *
+ * \throw itk::ExceptionObject with the `context` as message if there is no metadata associated to
+ *                             the `key`.
+ * \throw itk::ExceptionObject with the `context` as message if the metadata found at the `key`
+ *                             cannot be converted to a `T`.
+ * \return the metadata found associated to the `key` decoded as a `T` type.
+ *
+ * \see value_or_unless
+ * \ingroup OTBMetadata
+ */
+template <typename T>
+inline
+T value_or_throw(
+    otb::ImageMetadata const& kwl,
+    std::string const& key,
+    otb::string_view context)
+{
+  if (kwl.Has(key))
+  {
+    auto const& value = kwl[key];
+    return to<T>(value, "converting metadata '"+key+"' "+context);
+  }
+  else
+  {
+    throw std::runtime_error("Cannot fetch metadata '"+key+"' " +context);
+  }
+}
 
 } // end namespace otb
 
