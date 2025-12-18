@@ -34,6 +34,7 @@ otbStandardFilterWatcherNew.cxx
 otbStandardOneLineFilterWatcherTest.cxx
 otbStandardWriterWatcher.cxx
 otbStopwatchTest.cxx
+otbTestMetaProg.cxx # this test has no main(), it just need to be compiled somewhere
 )
 
 add_executable(otbCommonTestDriver ${OTBCommonTests})
