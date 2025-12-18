@@ -33,6 +33,10 @@
 #include "itkThreadSupport.h"
 #include "otbCoreConfigure.h"
 #include "otbLogger.h"
+#include "otbNoDiscardMacro.h"
+#include "otbMetaProgrammingLibrary.h"
+
+#include <utility> // std::forward
 
 /**
  * \namespace otb
@@ -43,6 +47,7 @@
 namespace otb
 {
 } // end namespace otb - this is here for documentation purposes
+
 /* ITK 5.0 uses a different threading model compared to ITK 4.x.
  * This has a significant impact on OTB as we make heavy use of itk filters.
  * DynamicThreadedGenerateData() is the newer variant without threadId,
@@ -126,7 +131,10 @@ namespace otb
       itkGenericExceptionMacro(<< message);              \
   }
 
-/** Set built-in type.  Creates member Set"name"() (e.g., SetVisibility()); */
+/** Set built-in type.
+ * Creates member `Set"name"()` (e.g., `SetVisibility()`);
+ * \see `otbSetMacro` and `otb_set_macro`
+ */
 #define otbSetObjectMemberMacro(object, name, type)        \
   virtual void Set##name(const type _arg)                  \
   {                                                        \
@@ -135,7 +143,10 @@ namespace otb
     this->Modified();                                      \
   }
 
-/** Get built-in type.  Creates member Get"name"() (e.g., GetVisibility()); */
+/** Get built-in type.
+ * Creates member `Get"name"()` (e.g., `GetVisibility()`);
+ * \see `otbGetMacro` and `otb_get_macro`
+ */
 #define otbGetObjectMemberMacro(object, name, type)                               \
   virtual type Get##name()                                                        \
   {                                                                               \
@@ -143,9 +154,12 @@ namespace otb
     return this->m_##object->Get##name();                                         \
   }
 
-/** Get built-in type.  Creates member Get"name"() (e.g., GetVisibility());
- * This is the "const" form of the itkGetMacro.  It should be used unless
- * the member can be changed through the "Get" access routine. */
+/** Get built-in type.
+ * Creates member `Get"name"()` (e.g., `GetVisibility()`);
+ * This is the `const` form of the `itkGetMacro`.  It should be used unless
+ * the member can be changed through the "Get" access routine.
+ * \see `otbGetMacro` and `otb_get_macro`
+ */
 #define otbGetObjectMemberConstMacro(object, name, type)                          \
   virtual type Get##name() const                                                  \
   {                                                                               \
@@ -153,16 +167,80 @@ namespace otb
     return this->m_##object->Get##name();                                         \
   }
 
-/** Get built-in type.  Creates member Get"name"() (e.g., GetVisibility());
- * This is the "const" form of the itkGetMacro.  It should be used unless
+/** Get built-in type.
+ * Creates member `Get"name"()` (e.g., `GetVisibility()`);
+ * This is the `const` form of the `itkGetMacro`.  It should be used unless
  * the member can be changed through the "Get" access routine.
- * This versions returns a const reference to the variable. */
+ * This versions returns a const reference to the variable.
+ * \see `otbGetMacro` and `otb_get_macro`
+ */
 #define otbGetObjectMemberConstReferenceMacro(object, name, type)                 \
   virtual const type& Get##name() const                                           \
   {                                                                               \
     itkDebugMacro("returning " << #name " of " << this->m_##object->Get##name()); \
     return this->m_##object->Get##name();                                         \
   }
+
+/**
+ * Defines the `UpperCamelCase` setter named `Set{name}`.
+ * The setter will assign its parameter to member variable `m_{name}`.
+ * \note The value is perfectly forwarded (through an _universal/perfect reference_).
+ * \note Unlike the other macros, no call to `Modified()` is issued.
+ * \note It isn't `virtual` either.
+ */
+#define otbSetMacro(name)                                  \
+  template <typename T>                                    \
+  void Set##name(T&& arg)                                  \
+  {                                                        \
+    otbLogMacro(Debug, << "setting " #name " to " << arg); \
+    this->m_##name = std::forward<T>(arg);                 \
+  }
+
+/**
+ * Defines the `snake_case` setter named `set_{name}`.
+ * The setter will assign its parameter to member variable `m_{name}`.
+ * \note The value is perfectly forwarded (through an _universal/perfect reference_).
+ * \note Unlike the other macros, no call to `Modified()` is issued.
+ * \note It isn't `virtual` either.
+ */
+#define otb_set_macro(name)                \
+  template <typename T>                    \
+  void set_##name(T&& arg)                 \
+  {                                        \
+    this->m_##name = std::forward<T>(arg); \
+  }
+
+/**
+ * Defines the `UpperCamelCase` getter named `Get{name}`.
+ * The getter will return the member variable `m_{name}`.
+ * \note The value is returned by-value if variable type is _trivially copiable_ and smaller than
+ * 128bits. It's returned by-const-reference otherwise.
+ * \warning Given the parameter type is auto-deduced, the getter needs to be declared after the
+ * attribute is declared.
+ */
+#define otbGetMacro(name)                          \
+  OTB_NODISCARD auto Get##name() const noexcept    \
+  -> otb::best_way_to_return_t<decltype(m_##name)> \
+  {                                                \
+    return this->m_##name;                         \
+  }
+
+/**
+ * Defines the `snake_case` getter named `get_{name}`.
+ * The getter will return the member variable `m_{name}`.
+ * \note The value is returned by-value if variable type is _trivially copiable_ and smaller than
+ * 128bits. It's returned by-const-reference otherwise.
+ * \warning Given the parameter type is auto-deduced, the getter needs to be declared after the
+ * attribute is declared.
+ */
+#define otb_get_macro(name)                         \
+  OTB_NODISCARD auto get_##name() const noexcept    \
+  -> otb::best_way_to_return_t<decltype(m_##name)>  \
+  {                                                 \
+    return this->m_##name;                          \
+  }
+
+
 
 /** Testing macro. This macro doesn't throw a exception if the called command
  * generate a itk::ExceptionObject object. For all others use cases, the macro
