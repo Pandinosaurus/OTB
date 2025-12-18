@@ -10,6 +10,7 @@ tags
 *.template
 archives*
 .vscode*
+.cache
 CMakeLists.txt.user
 .directory*
 build_packages*
