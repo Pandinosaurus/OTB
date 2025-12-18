@@ -80,7 +80,7 @@ namespace otb
  * 2018-06-04 15:30:09 (DEBUG): /usr/src/ports/itk/Modules/Core/Common/src/itkPoolMultiThreader.cxx:202:
  * itk::ERROR: PoolMultiThreader(0xabad1dea): Exception occurred during SingleMethodExecute
  * /home/rashad/local/include/ITK-5.0/itkImageSource.hxx:276:
- * itk::ERROR: ShiftScaleImageFilter(0xabad1deaff): Subclass should override this method!!! 
+ * itk::ERROR: ShiftScaleImageFilter(0xabad1deaff): Subclass should override this method!!!
  * If old behavior is desired invoke this->DynamicMultiThreadingOff(); before Update() is called. The best place is in class constructor.
  */
 #define OTB_DISABLE_DYNAMIC_MT this->DynamicMultiThreadingOff();
@@ -187,13 +187,29 @@ namespace otb
     std::cout << " Checking valid command " << #command " ok." << std::endl;                \
   }
 
+/** Helper macro to raise specified exception type.
+ * \tparam T the exception type shall have a constructor that also takes `__FILE__`, `__LINE__`
+ *           and `ITK_LOCATION` information.
+ * \see `otbRaise`
+ */
 #define otbGenericExceptionMacro(T, x)                     \
   {                                                        \
     std::ostringstream message;                            \
     message << "otb::ERROR: " x;                           \
     T e_(__FILE__, __LINE__, message.str(), ITK_LOCATION); \
     throw e_;                                              \
-  }
+ }
+
+/** Helper macro to raise `std::runtime_error`.
+ * Sometimes we don't need to report file and line from where exceptions are thrown.
+ * \see `otbGenericExceptionMacro`
+ */
+#define otbRaise(stream)                   \
+    {                                      \
+      std::ostringstream oss;              \
+      oss << stream;                       \
+      throw std::runtime_error(oss.str()); \
+    }
 
 #define otbTestingCheckNotValidCommand(command)                                             \
   {                                                                                         \
