@@ -635,10 +635,53 @@ public:
    */
   unsigned int GetNumberOfElementsInParameterInputImageList(std::string const& parameter);
 
-
-  /* Get an image value
+  /**
+   * Extract the actual pixel type in an input image.
    *
-   * Can be called for types :
+   * Some applications process inputs that may be of any type (float32, float64, int8…).
+   * This particular getter extracts the exact pixel representation from the selected input image.
+   *
+   * This permits to open that input with the right precision instead of always enforcing memory
+   * over-consumption, or of always degrading precision conversions.
+   *
+   * Usage example:
+   *
+   * ```c++
+   * // In DoInit():
+   *   AddParameter<ParameterType_InputImage>(
+   *     "indemproj",
+   *     "Input vector of DEM upsampled by a even factor, projected onto SAR geometry",
+   *     "Input vector of projected DEM (C, L, Z, Y, Xcart, Ycart, Zcart)."
+   *   );
+   *
+   * // The actual processing:
+   * template <typename DEMProjPixelRealType>
+   * auto instanciate_filter()
+   * {
+   *   using DEMProjImageType    = otb::VectorImage<DEMProjPixelRealType>;
+   *   typename DEMProjImageType::Pointer DEMProjPtr = this->GetParameterImage<DEMProjImageType>("indemproj");
+   *   ...
+   * }
+   *
+   * // In DoExecute():
+   *   auto const sardem_precision = this->GetPixelType("indemproj");
+   *   switch (sardem_precision) {
+   *     case ImageIOBase::IOComponentType::DOUBLE: {
+   *       auto *output = instanciate_filter<double>();
+   *       SetParameterOutputImage("out", output);
+   *       break;
+   *     }
+   *         ...
+   * ```
+   *
+   * \param[in] key that identifies the input image
+   * \pre The `key` shall have been bound to an `ParameterType_InputImage`
+   */
+  ImageIOBase::IOComponentType GetPixelType(std::string const& key) const;
+
+  /** Get an image value.
+   *
+   * Can be called for types:
    * \li ParameterType_InputImage
    */
   FloatVectorImageType* GetParameterImage(std::string const& parameter);

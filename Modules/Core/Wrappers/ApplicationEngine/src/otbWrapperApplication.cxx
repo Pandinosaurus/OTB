@@ -1418,6 +1418,18 @@ unsigned int Application::GetNumberOfElementsInParameterInputImageList(std::stri
   return param->Size();
 }
 
+ImageIOBase::IOComponentType Application::GetPixelType(std::string const& key) const
+{
+  // TODO: clean extended filename options
+  std::string const filename = GetParameterString(key);
+  ImageIOBase::Pointer image_base = ImageIOFactory::CreateImageIO(filename.c_str(), ImageIOFactory::ReadMode);
+  if (! image_base) {
+    itkExceptionMacro("Cannot open input(type: '" << key << "')" << filename);
+  }
+  image_base->ReadImageInformation();
+  return image_base -> GetComponentType();
+}
+
 FloatVectorImageType* Application::GetParameterImage(std::string const& parameter)
 {
   return this->GetParameterImage<FloatVectorImageType>(parameter);
