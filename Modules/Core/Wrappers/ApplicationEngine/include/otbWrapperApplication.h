@@ -873,7 +873,7 @@ protected:
   Application();
 
   /** Destructor */
-  ~Application() override;
+  ~Application() override = default;
 
   /* Register a ProcessObject as a new progress source */
   void AddProcess(itk::ProcessObject* object, std::string description);

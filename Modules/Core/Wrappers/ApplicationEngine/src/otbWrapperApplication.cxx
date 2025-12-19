@@ -359,10 +359,6 @@ Application::Application()
   m_Logger->SetName("Application.logger");
 }
 
-Application::~Application()
-{
-}
-
 otb::Logger* Application::GetLogger() const
 {
   return m_Logger;
@@ -883,14 +879,14 @@ void Application::WriteOutput()
       }
     }
   }
-  
+
   otb::MultiImageFileWriter::Pointer multiWriter;
   if (m_MultiWriting)
     {
     multiWriter = otb::MultiImageFileWriter::New();
     multiWriter->SetAutomaticStrippedStreaming(ram);
     }
-  
+
   for (auto const & key : paramList)
   {
     if (GetParameterType(key) == ParameterType_OutputImage && IsParameterEnabled(key) && HasValue(key))
@@ -912,7 +908,7 @@ void Application::WriteOutput()
 
         outputParam->InitializeWriters(multiWriter);
         std::ostringstream progressId;
-        
+
         if (!outputParam->IsMultiWritingEnabled())
         {
           progressId << "Writing " << outputParam->GetFileName() << "...";
@@ -935,7 +931,7 @@ void Application::WriteOutput()
       }
     }
   }
-  
+
   if (multiWriter && multiWriter->GetNumberOfInputs() > 0)
   {
     std::ostringstream progressId;
@@ -943,7 +939,7 @@ void Application::WriteOutput()
     AddProcess(multiWriter, progressId.str());
     multiWriter->Update();
   }
-  
+
   // Set the flag m_ExecuteDone since the pipeline has been successfully executed
   // This enables to access output parameters after WriteOutput()
   m_ExecuteDone = true;
