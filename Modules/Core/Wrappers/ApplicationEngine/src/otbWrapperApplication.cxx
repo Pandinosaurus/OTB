@@ -1316,6 +1316,16 @@ int Application::GetParameterInt(std::string const& key) const
   return GetParameterByKey(key)->ToInt();
 }
 
+bool Application::IsParameterTrue(std::string const& parameter, bool def) const
+{
+    bool const is_set = IsParameterEnabled(parameter) && HasValue(parameter);
+    bool       res    = (is_set && GetParameterInt(parameter)) || (!is_set && def);
+    // otbLogMacro(Info, << "Enabled  : " << key << " --> " << IsParameterEnabled(key));
+    // otbLogMacro(Info, << "HasValue : " << key << " --> " << HasValue(key));
+    // otbLogMacro(Info, << key << " --> " << res);
+    return res;
+}
+
 float Application::GetParameterFloat(std::string const& key) const
 {
   return GetParameterByKey(key)->ToFloat();

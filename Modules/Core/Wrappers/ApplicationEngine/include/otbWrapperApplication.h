@@ -469,6 +469,14 @@ public:
    */
   int GetParameterInt(std::string const& parameter) const;
 
+  /** Returns the value of an optional boolean parameter.
+   * If the parameter isn't set (Enabled and with value), the default value is returned.
+   *
+   * Can be called for types:
+   * \li ParameterType_Bool
+   */
+  bool IsParameterTrue(std::string const& parameter, bool def) const;
+
   /** Get a floating parameter value.
    *
    * Can be called for types:
@@ -1131,6 +1139,111 @@ extern template OTBApplicationEngine_EXPORT_TEMPLATE void Application::SetParame
 
 } // namespace Wrapper
 } // namespace otb
+
+
+namespace otb
+{
+namespace Wrapper
+{
+
+/**
+ * _Unary Type Traits_ that returns `ParameterType` value from a type.
+ *
+ * The trait defines:
+ * - `value`: the associated `ParameterType` associated to `T`
+ * - `get()`: typed getter to the value passed to the application
+ * - `set_default()`: type setter for the parameter default value
+ *
+ * \todo This is a simplified version aimed at supporting all variations
+ * related to "nodata" parameters.
+ * \note As this depends on `Application` definition, this trait is defined at the end of the file.
+ */
+template <typename T> struct parameter_type {};
+
+template <> struct parameter_type<int>
+{
+  static constexpr ParameterType value = ParameterType_Int;
+
+  static auto get(Application const& app, std::string const& key)
+  {
+    return app.GetParameterInt(key);
+  }
+  static void set_default(Application& app, std::string const& key, int value)
+  {
+    app.SetDefaultParameterInt(key, value);
+  }
+};
+
+template <> struct parameter_type<float>
+{
+  static constexpr ParameterType value = ParameterType_Float;
+
+  static auto get(Application const& app, std::string const& key)
+  {
+    return app.GetParameterFloat(key);
+  }
+  static void set_default(Application& app, std::string const& key, float value)
+  {
+    app.SetDefaultParameterFloat(key, value);
+  }
+};
+
+template <> struct parameter_type<double>
+{
+  static constexpr ParameterType value = ParameterType_Double;
+
+  static auto get(Application const& app, std::string const& key)
+  {
+    return app.GetParameterDouble(key);
+  }
+  static void set_default(Application& app, std::string const& key, double value)
+  {
+    app.SetDefaultParameterDouble(key, value);
+  }
+};
+
+template <> struct parameter_type<std::string>
+{
+  static constexpr ParameterType value = ParameterType_String;
+
+  static auto get(Application const& app, std::string const& key)
+  {
+    return app.GetParameterString(key);
+  }
+#if 0
+  static void set_default(Application & app, std::string const& key, std::string value)
+  {
+    app.SetDefaultParameterString(key, value);
+  }
+#endif
+};
+
+template <> struct parameter_type<bool>
+{
+  static constexpr ParameterType value = ParameterType_Bool;
+
+  static auto get(Application const& app, std::string const& key)
+  {
+    return app.GetParameterInt(key);
+  }
+  static bool is_true(Application const& app, std::string const& key, bool def)
+  {
+    return app.IsParameterTrue(key, def);
+  };
+  static void set_default(Application& app, std::string const& key, bool value)
+  {
+    app.SetDefaultParameterInt(key, value?1:0);
+  }
+};
+
+/** Helper variable template that returns `ParameterType` value from a type. */
+template <typename T>
+constexpr ParameterType parameter_type_v = parameter_type<T>::value;
+
+} // namespace Wrapper
+} // namespace otb
+
+
 
 
 #endif // otbWrapperApplication_h_
