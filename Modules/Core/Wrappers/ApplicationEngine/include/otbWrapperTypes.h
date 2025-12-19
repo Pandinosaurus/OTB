@@ -22,7 +22,7 @@
 #define otbWrapperTypes_h
 
 #include <complex>
-#include <array>
+// #include <array>
 #include "itkRGBPixel.h"
 #include "itkRGBAPixel.h"
 #include "otbImage.h"
@@ -34,7 +34,7 @@ namespace otb
 namespace Wrapper
 {
 
-typedef enum {
+enum ParameterType {
   ParameterType_Int,
   ParameterType_Float,
   ParameterType_Double,
@@ -61,7 +61,7 @@ typedef enum {
   ParameterType_Field,
   ParameterType_Band,
   ParameterType_MAX__
-} ParameterType;
+};
 
 namespace
 {
@@ -99,9 +99,9 @@ static_assert(std::extent<decltype(parameterTypesStrings)>::value == ParameterTy
 std::string ParameterTypeToString(ParameterType type);
 ParameterType ParameterStringToType(const std::string& str);
 
-typedef enum { UserLevel_Basic, UserLevel_Advanced } UserLevel;
+enum UserLevel { UserLevel_Basic, UserLevel_Advanced };
 
-typedef enum {
+enum ImagePixelType {
   // Not int8 because not handle by Gdal
   ImagePixelType_uint8,
   ImagePixelType_int16,
@@ -114,70 +114,70 @@ typedef enum {
   ImagePixelType_cint32,
   ImagePixelType_cfloat,
   ImagePixelType_cdouble,
-} ImagePixelType;
+};
 
-typedef enum {
+enum ComplexImagePixelType {
   ComplexImagePixelType_int16,
   ComplexImagePixelType_int32,
   ComplexImagePixelType_float,
   ComplexImagePixelType_double,
-} ComplexImagePixelType;
+};
 
-typedef enum { Role_Input = 0, Role_Output } Role;
+enum Role { Role_Input = 0, Role_Output };
 
 // enum used for the map projection choices
-typedef enum {
+enum ElevationType {
   Elevation_DEM,
   Elevation_Average
   // Elevation_Tiff,
-} ElevationType;
+};
 
 
-typedef otb::Image<unsigned char>  UInt8ImageType;
-typedef otb::Image<short>          Int16ImageType;
-typedef otb::Image<unsigned short> UInt16ImageType;
-typedef otb::Image<int>            Int32ImageType;
-typedef otb::Image<unsigned int>   UInt32ImageType;
-typedef otb::Image<float>          FloatImageType;
-typedef otb::Image<double>         DoubleImageType;
+using UInt8ImageType                    = otb::Image<unsigned char>;
+using Int16ImageType                    = otb::Image<short>;
+using UInt16ImageType                   = otb::Image<unsigned short>;
+using Int32ImageType                    = otb::Image<int>;
+using UInt32ImageType                   = otb::Image<unsigned int>;
+using FloatImageType                    = otb::Image<float>;
+using DoubleImageType                   = otb::Image<double>;
 
-typedef otb::VectorImage<unsigned char>  UInt8VectorImageType;
-typedef otb::VectorImage<short>          Int16VectorImageType;
-typedef otb::VectorImage<unsigned short> UInt16VectorImageType;
-typedef otb::VectorImage<int>            Int32VectorImageType;
-typedef otb::VectorImage<unsigned int>   UInt32VectorImageType;
-typedef otb::VectorImage<float>          FloatVectorImageType;
-typedef otb::VectorImage<double>         DoubleVectorImageType;
+using UInt8VectorImageType              = otb::VectorImage<unsigned char>;
+using Int16VectorImageType              = otb::VectorImage<short>;
+using UInt16VectorImageType             = otb::VectorImage<unsigned short>;
+using Int32VectorImageType              = otb::VectorImage<int>;
+using UInt32VectorImageType             = otb::VectorImage<unsigned int>;
+using FloatVectorImageType              = otb::VectorImage<float>;
+using DoubleVectorImageType             = otb::VectorImage<double>;
 
-typedef otb::Image<itk::RGBPixel<unsigned char>>  UInt8RGBImageType;
-typedef otb::Image<itk::RGBAPixel<unsigned char>> UInt8RGBAImageType;
+using UInt8RGBImageType                 = otb::Image<itk::RGBPixel<unsigned char>>;
+using UInt8RGBAImageType                = otb::Image<itk::RGBAPixel<unsigned char>>;
 
-typedef std::complex<short>  Int16ComplexPixelType;
-typedef std::complex<int>    Int32ComplexPixelType;
-typedef std::complex<float>  FloatComplexPixelType;
-typedef std::complex<double> DoubleComplexPixelType;
+using Int16ComplexPixelType             = std::complex<short>;
+using Int32ComplexPixelType             = std::complex<int>;
+using FloatComplexPixelType             = std::complex<float>;
+using DoubleComplexPixelType            = std::complex<double>;
 
 // Complex Image Type
-typedef otb::Image<Int16ComplexPixelType, 2>  ComplexInt16ImageType;
-typedef otb::Image<Int32ComplexPixelType, 2>  ComplexInt32ImageType;
-typedef otb::Image<FloatComplexPixelType, 2>  ComplexFloatImageType;
-typedef otb::Image<DoubleComplexPixelType, 2> ComplexDoubleImageType;
+using ComplexInt16ImageType             = otb::Image<Int16ComplexPixelType, 2>;
+using ComplexInt32ImageType             = otb::Image<Int32ComplexPixelType, 2>;
+using ComplexFloatImageType             = otb::Image<FloatComplexPixelType, 2>;
+using ComplexDoubleImageType            = otb::Image<DoubleComplexPixelType, 2>;
 
-typedef otb::VectorImage<Int16ComplexPixelType, 2>  ComplexInt16VectorImageType;
-typedef otb::VectorImage<Int32ComplexPixelType, 2>  ComplexInt32VectorImageType;
-typedef otb::VectorImage<FloatComplexPixelType, 2>  ComplexFloatVectorImageType;
-typedef otb::VectorImage<DoubleComplexPixelType, 2> ComplexDoubleVectorImageType;
+using ComplexInt16VectorImageType       = otb::VectorImage<Int16ComplexPixelType, 2>;
+using ComplexInt32VectorImageType       = otb::VectorImage<Int32ComplexPixelType, 2>;
+using ComplexFloatVectorImageType       = otb::VectorImage<FloatComplexPixelType, 2>;
+using ComplexDoubleVectorImageType      = otb::VectorImage<DoubleComplexPixelType, 2>;
 
 
-typedef double VectorDataCoordinatePrecisionType;
-typedef double VectorDataValuePrecisionType;
-typedef otb::VectorData<VectorDataCoordinatePrecisionType, 2, VectorDataValuePrecisionType> VectorDataType;
-typedef otb::ObjectList<VectorDataType> VectorDataListType;
+using VectorDataCoordinatePrecisionType = double;
+using VectorDataValuePrecisionType      = double;
+using VectorDataType                    = otb::VectorData<VectorDataCoordinatePrecisionType, 2, VectorDataValuePrecisionType>;
+using VectorDataListType                = otb::ObjectList<VectorDataType>;
 
-typedef otb::ObjectList<FloatVectorImageType> FloatVectorImageListType;
-typedef otb::ObjectList<FloatImageType>       FloatImageListType;
+using FloatVectorImageListType          = otb::ObjectList<FloatVectorImageType>;
+using FloatImageListType                = otb::ObjectList<FloatImageType>;
 
-typedef itk::ImageBase<2> ImageBaseType;
+using ImageBaseType                     = itk::ImageBase<2>;
 
 
 } // end namespace Wrapper
