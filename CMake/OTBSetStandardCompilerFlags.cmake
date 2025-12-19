@@ -87,12 +87,6 @@ function(check_compiler_warning_flags c_warning_flags_var cxx_warning_flags_var)
   set(${c_warning_flags_var} "" PARENT_SCOPE)
   set(${cxx_warning_flags_var} "" PARENT_SCOPE)
 
-  # Check this list on C compiler only
-  set(c_flags
-    -Wno-uninitialized
-    -Wno-unused-parameter
-  )
-
   ## On windows, the most verbose compiler options
   ## is reporting 1000's of wanings in windows
   ## header files, for now, limit the number of
@@ -127,30 +121,36 @@ function(check_compiler_warning_flags c_warning_flags_var cxx_warning_flags_var)
     else()
       set(VerboseWarningsFlag -Wall )
     endif ()
+
+    # Check this list on C compiler only
+    set(c_flags
+      -Wno-uninitialized
+      -Wno-unused-parameter
+    )
+
+    # Check this list on both C and C++ compilers
+    set(c_and_cxx_flags
+      ${VerboseWarningsFlag}
+      -Wcast-align
+      -Wdisabled-optimization
+      -Wextra
+      -Wformat=2
+      -Winvalid-pch
+      -Wno-format-nonliteral
+      -Wpointer-arith
+      -Wunused
+      -Wwrite-strings
+      -Wno-strict-overflow
+    )
+
+    # Check this list on C++ compiler only
+    set(cxx_flags
+      -Wno-deprecated
+      -Wno-invalid-offsetof
+      -Woverloaded-virtual
+      -Wstrict-null-sentinel
+    )
   endif()
-
-  # Check this list on both C and C++ compilers
-  set(c_and_cxx_flags
-    ${VerboseWarningsFlag}
-    -Wcast-align
-    -Wdisabled-optimization
-    -Wextra
-    -Wformat=2
-    -Winvalid-pch
-    -Wno-format-nonliteral
-    -Wpointer-arith
-    -Wunused
-    -Wwrite-strings
-    -Wno-strict-overflow
-  )
-
-  # Check this list on C++ compiler only
-  set(cxx_flags
-    -Wno-deprecated
-    -Wno-invalid-offsetof
-    -Woverloaded-virtual
-    -Wstrict-null-sentinel
-  )
 ##-Wno-c++0x-static-nonintegral-init
     ## Clang compiler likes to warn about this feature that is technically only in
     ## c++0x, but works on many compilers, and if it fails, then alternate methods are used
