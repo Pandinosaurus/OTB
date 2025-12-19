@@ -881,10 +881,26 @@ protected:
   /** Add a new choice value to an existing choice parameter */
   void AddChoice(std::string const& paramKey, std::string const& paramName);
 
-  /** Add a new parameter to the parameter group
-   * the parent key of paramKey can be the path to a parameter group
-   * or the path to a choice value */
+  /** Add a new parameter to the parameter group.
+   * The parent key of paramKey can be the path to a parameter group or the path to a choice value.
+   */
   void AddParameter(ParameterType type, std::string const& paramKey, std::string const& paramName);
+
+
+  /** Helper function that adds a parameter and it description.
+   * \todo Directly build the parameter without depending the other overload of `AddParameter`
+   * that relies on a `switch` to dispatch to the right parameter type which is quite likelly known
+   * at compile time…
+   * \todo Change `Parameter` interface to std::move keys, names and descriptions
+   * \todo Have `AddParameter` returns a reference to the newly built `Parameter` instance in order
+   * to chain other changes directly (we have the information => don't loose it).
+   */
+  template <ParameterType type>
+  void AddParameter(
+      std::string const& paramKey,
+      std::string const& paramName,
+      std::string const& paramDescription = ""
+  );
 
   /** Add a parameterRAM method with no parameter*/
   void AddRAMParameter(std::string const& paramKey = "ram");
