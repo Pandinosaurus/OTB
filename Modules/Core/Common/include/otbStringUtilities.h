@@ -66,7 +66,7 @@ struct OTBCommon_EXPORT string_view
 
 private:
   /** Strict view iterator.*/
-  struct char_iterator
+  struct OTBCommon_EXPORT char_iterator
   {
     using value_type        = char const;
     using reference         = char const&;
