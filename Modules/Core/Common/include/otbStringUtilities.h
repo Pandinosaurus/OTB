@@ -55,7 +55,7 @@ namespace otb
  * though depending on the constructor used.
  * @todo deprecate once OTB drop C++14 compatibility
  */
-struct OTBCommon_EXPORT string_view
+struct string_view
 {
   using value_type      = char const;
   using reference       = char const&;
@@ -66,7 +66,7 @@ struct OTBCommon_EXPORT string_view
 
 private:
   /** Strict view iterator.*/
-  struct OTBCommon_EXPORT char_iterator
+  struct char_iterator
   {
     using value_type        = char const;
     using reference         = char const&;
