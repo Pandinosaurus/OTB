@@ -32,7 +32,6 @@
 #include <cctype>
 #include <cmath>
 #include <string>
-#include "OTBCommonExport.h"
 #include "otbMacro.h"
 
 namespace otb

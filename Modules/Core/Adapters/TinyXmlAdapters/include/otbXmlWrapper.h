@@ -21,7 +21,6 @@
 #ifndef otbXmlWrapper_h
 #define otbXmlWrapper_h
 
-#include "OTBTinyXmlAdaptersExport.h"
 #include "otbMacro.h"
 #include "otbStringUtilities.h"
 #include "otb_tinyxml.h" // Need to include this one to avoid link errors!
@@ -42,7 +41,7 @@ namespace details
  *
  * Implicitly copyable and movable.
  */
-struct OTBTinyXmlAdapters_EXPORT error_context
+struct error_context
 {
   /**
    * Simplified constructor.
@@ -142,7 +141,7 @@ private:
  * \tparam TNode  any child class of `TiXmlBase`
  */
 template <typename TNode>
-class OTBTinyXmlAdapters_EXPORT NodeImpl
+class NodeImpl
 {
   static_assert(std::is_base_of<TiXmlBase, TNode>::value, "Expect a TinyXml Base node");
 
@@ -483,7 +482,7 @@ private:
  *
  * Copyable
  */
-struct OTBTinyXmlAdapters_EXPORT WrapDocument
+struct WrapDocument
 {
   /// Wraps an empty document.
   WrapDocument() = default;
@@ -533,7 +532,7 @@ using Element  = details::NodeImpl<TiXmlElement>;
  * The inheritance order is important as the second parent depends on the
  * actual `TiXmlDocument` instance held in the first parent.
  */
-struct OTBTinyXmlAdapters_EXPORT Document
+struct Document
 : private details::WrapDocument // 1st to be able to introduce dependency for construction
 , public  details::NodeImpl<TiXmlDocument>
 {
