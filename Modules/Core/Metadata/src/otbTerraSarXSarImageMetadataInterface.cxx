@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2025 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -247,7 +247,7 @@ double TerraSarXSarImageMetadataInterface::GetNoiseReferencePoint(const unsigned
     oss << "level1Product.noise.imageNoise_" << noiseRecord << ".noiseEstimate.referencePoint";
     if(mds.HasValue(oss.str()))
       return mds.GetAs<double>(std::numeric_limits<double>::min(), oss.str());
-    oss.str();
+    oss.str("");
     oss << "noise[" << (noiseRecord+1) << "]imageNoise.noiseEstimate.referencePoint";
     return mds.GetAs<double>(std::numeric_limits<double>::min(), oss.str());
   }
@@ -514,7 +514,7 @@ void ReadGeorefGCP(const otb::MetaData::TimePoint & azimuthTimeStart, const std:
     const std::string ellipsoidID = sphereNode->FirstChildElement("ellipsoidID")->GetText();
     const auto minor_axis = std::stod(sphereNode->FirstChildElement("semiMajorAxis")->GetText());
     const auto major_axis = std::stod(sphereNode->FirstChildElement("semiMinorAxis")->GetText());
-    
+
     if(ellipsoidID.empty() || minor_axis == 0 || major_axis == 0)
     {
       otbGenericExceptionMacro(MissingMetadataException, << "Cannot read GCP's spatial reference");
@@ -558,7 +558,7 @@ void ReadGeorefGCP(const otb::MetaData::TimePoint & azimuthTimeStart, const std:
       auto deltaAz = MetaData::Duration::Seconds(std::stod(gcpElem->FirstChildElement("t")->GetText()));
 
       time.azimuthTime = azimuthTimeStart + deltaAz;
-      time.slantRangeTime = param.nearRangeTime + std::stod(gcpElem->FirstChildElement("tau")->GetText()); 
+      time.slantRangeTime = param.nearRangeTime + std::stod(gcpElem->FirstChildElement("tau")->GetText());
 
       param.gcpTimes[id] = time;
     }
@@ -589,7 +589,7 @@ void ReadSARSensorModel(const XMLMetadataSupplier & xmlMS,
     // Base path to the data, that depends on the iteration number
     std::string path_root = "level1Product.platform.orbit.stateVec_" + oss.str();
     Orbit orbit;
-    
+
     orbit.time = MetaData::ReadFormattedDate(xmlMS.GetAs<std::string>(path_root + ".timeUTC"), dateFormat);
 
     orbit.position[0] = xmlMS.GetAs<double>(path_root + ".posX");
@@ -686,8 +686,8 @@ void ReadSARSensorModel(const XMLMetadataSupplier & xmlMS,
     otbGenericExceptionMacro(MissingMetadataException, << "Can't find the doppler centroid in the product metadata.");
   }
 
-  for(auto dopplerEstimateElem = centroidElem->FirstChildElement("dopplerEstimate"); 
-      dopplerEstimateElem; 
+  for(auto dopplerEstimateElem = centroidElem->FirstChildElement("dopplerEstimate");
+      dopplerEstimateElem;
       dopplerEstimateElem = dopplerEstimateElem->NextSiblingElement("dopplerEstimate"))
   {
     DopplerCentroid centroid;
@@ -707,8 +707,8 @@ void ReadSARSensorModel(const XMLMetadataSupplier & xmlMS,
 
     centroid.dopCoef.resize(polynomialDegree + 1);
 
-    for(auto coefficientElem = combinedDopplerElem->FirstChildElement("coefficient"); 
-      coefficientElem; 
+    for(auto coefficientElem = combinedDopplerElem->FirstChildElement("coefficient");
+      coefficientElem;
       coefficientElem = coefficientElem->NextSiblingElement("coefficient"))
     {
       unsigned int exponent = 0;
@@ -724,8 +724,8 @@ void ReadSARSensorModel(const XMLMetadataSupplier & xmlMS,
   }
 
   // Read Azimuth FM rate
-  for(auto dopplerRateElem = processingElem->FirstChildElement("geometry")->FirstChildElement("dopplerRate"); 
-      dopplerRateElem; 
+  for(auto dopplerRateElem = processingElem->FirstChildElement("geometry")->FirstChildElement("dopplerRate");
+      dopplerRateElem;
       dopplerRateElem = dopplerRateElem->NextSiblingElement("dopplerRate"))
   {
     AzimuthFmRate rate;
@@ -745,8 +745,8 @@ void ReadSARSensorModel(const XMLMetadataSupplier & xmlMS,
 
     rate.azimuthFmRatePolynomial.resize(polynomialDegree + 1);
 
-    for(auto coefficientElem = dopplerRatePolynomialElem->FirstChildElement("coefficient"); 
-      coefficientElem; 
+    for(auto coefficientElem = dopplerRatePolynomialElem->FirstChildElement("coefficient");
+      coefficientElem;
       coefficientElem = coefficientElem->NextSiblingElement("coefficient"))
     {
       unsigned int exponent = 0;
@@ -856,7 +856,7 @@ void TerraSarXSarImageMetadataInterface::ParseGdal(ImageMetadata &imd)
   // Fetch the GCP (only for SSC products)
   if (productVariant == "SSC")
   {
-    ReadGeorefGCP(MetaData::ReadFormattedDate(MainXMLFileMetadataSupplier.GetAs<std::string>("level1Product.productInfo.sceneInfo.start.timeUTC")), 
+    ReadGeorefGCP(MetaData::ReadFormattedDate(MainXMLFileMetadataSupplier.GetAs<std::string>("level1Product.productInfo.sceneInfo.start.timeUTC")),
                   MainDirectory + "/ANNOTATION/GEOREF.xml",
                   imd,
                   sarParam);
