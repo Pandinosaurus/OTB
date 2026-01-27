@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -135,12 +135,10 @@ typename Rectangle<TValue>::RegionType Rectangle<TValue>::GetBoundingRegion() co
 
   VertexListConstIteratorType itCorners = cornersVertex->Begin();
 
-  long int x = 0, y = 0;
-
   if (cornersVertex->Size() > 0)
   {
-    x        = static_cast<long int>(itCorners.Value()[0]);
-    y        = static_cast<long int>(itCorners.Value()[1]);
+    auto x   = static_cast<long int>(itCorners.Value()[0]);
+    auto y   = static_cast<long int>(itCorners.Value()[1]);
     index[0] = x;
     index[1] = y;
 

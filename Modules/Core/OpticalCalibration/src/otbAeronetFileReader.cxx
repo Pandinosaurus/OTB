@@ -20,6 +20,7 @@
 
 
 #include "otbAeronetFileReader.h"
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -170,7 +171,7 @@ void AeronetFileReader::GetStatistics(const VectorDouble& vec, double& mean, dou
   double sumOfSquares(0.);
   mean   = 0.;
   stddev = 0.;
-  if (vec.size() <= 0)
+  if (vec.empty())
     return;
   for (unsigned int i = 0; i < vec.size(); ++i)
   {
@@ -214,7 +215,6 @@ void AeronetFileReader::GenerateData()
     msg << m_FileName << "." << std::endl;
     e.SetDescription(msg.str());
     throw e;
-    return;
   }
 
   // Read information lines (5 lines)
@@ -244,7 +244,6 @@ void AeronetFileReader::GenerateData()
     msg << m_FileName << " is not conform." << std::endl;
     e.SetDescription(msg.str());
     throw e;
-    return;
   }
 
   // Compute input date
@@ -256,7 +255,6 @@ void AeronetFileReader::GenerateData()
   while (!fin.eof())
   {
     std::getline(fin, line);
-    std::string  word("");
     VectorString listStr;
 
     listStr = ParseLine(line);
@@ -296,7 +294,7 @@ void AeronetFileReader::GenerateData()
     ParseValidLine(dinputDate, current_line2, epsilon, water, angst, tau_day, solarZenithAngle);
   }
 
-  if (tau_day.size() <= 0)
+  if (tau_day.empty())
   {
     itkExceptionMacro(<< "The aeronet file (" << m_FileName << ") doesn't contain valid data for the time (hh:mm:ss) " << m_Hour << ":" << m_Minute
                       << ":00 with a tolerance of " << m_Epsilon << ". Select an other file or increase the epsilon value.");
@@ -324,6 +322,7 @@ void AeronetFileReader::GenerateData()
   GetStatistics(solarZenithAngle, solarZenithAngle_mean, solarZenithAngle_stddev);
 
   AeronetData* aeronetData = this->GetOutput();
+  assert(aeronetData);
   aeronetData->SetAerosolOpticalThickness(tau_mean);
   aeronetData->SetStdDev(stddev);
   aeronetData->SetAngstromCoefficient(angst_mean);

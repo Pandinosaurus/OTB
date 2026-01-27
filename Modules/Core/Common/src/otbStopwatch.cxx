@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -72,7 +72,7 @@ Stopwatch::DurationType Stopwatch::GetElapsedMilliseconds() const
   return result;
 }
 
-void Stopwatch::GetElapsedHumanReadableTime(std::ostream& oss) const
+void Stopwatch::GetElapsedHumanReadableTime(std::ostream& os) const
 {
   auto         result  = this->GetElapsedMilliseconds();
   DurationType seconds = result / 1000;
@@ -80,12 +80,11 @@ void Stopwatch::GetElapsedHumanReadableTime(std::ostream& oss) const
   seconds -= hours * 3600;
   DurationType minutes = seconds / 60;
   seconds -= minutes * 60;
-  std::ostringstream os;
   if (hours > 0)
-    oss << hours << "h " << std::setfill('0') << std::setw(2);
+    os << hours << "h " << std::setfill('0') << std::setw(2);
   if (minutes > 0 || hours > 0)
-    oss << minutes << "m " << std::setfill('0') << std::setw(2);
-  oss << seconds << "s";
+    os << minutes << "m " << std::setfill('0') << std::setw(2);
+  os << seconds << "s";
 }
 
 std::string Stopwatch::GetElapsedHumanReadableTime() const
