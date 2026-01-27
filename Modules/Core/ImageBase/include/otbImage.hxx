@@ -24,6 +24,7 @@
 
 #include "otbImage.h"
 #include "itkMetaDataObject.h"
+#include <cassert>
 
 namespace otb
 {
@@ -85,7 +86,7 @@ void Image<TPixel, VImageDimension>::CopyInformation(const itk::DataObject* data
   if (imc != nullptr)
   {
     const auto & imd = imc->GetImageMetadata();
-    
+
     if (imd.Bands.size() > 0 && imd.Bands.size() != this->GetNumberOfComponentsPerPixel())
     {
       SetImageMetadata(ImageMetadata(imd.GeometryKeys, imd.NumericKeys, imd.StringKeys, imd.LUT1DKeys,
@@ -101,8 +102,9 @@ void Image<TPixel, VImageDimension>::CopyInformation(const itk::DataObject* data
 template <class TPixel, unsigned int                VImageDimension>
 typename Image<TPixel, VImageDimension>::VectorType Image<TPixel, VImageDimension>::GetGeoTransform(void) const
 {
+  assert(VImageDimension == 2 && "This function needs fixing if called from ROIdataConversion");
   Image<TPixel, VImageDimension>::VectorType geoTransform(6);
-  
+
   auto origin = this->GetOrigin();
   auto spacing = this->GetSpacing();
   auto direction = this->GetDirection();
@@ -114,12 +116,12 @@ typename Image<TPixel, VImageDimension>::VectorType Image<TPixel, VImageDimensio
   geoTransform[5] = spacing[1] * direction[1][1];
   geoTransform[2] = 0.;
   geoTransform[4] = 0.;
-  return (geoTransform);
+  return geoTransform;
 }
 
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetUpperLeftCorner(void) const
 {
   PointType physicalPoint;
@@ -130,7 +132,7 @@ Image<TPixel, VImageDimension>::GetUpperLeftCorner(void) const
 }
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetUpperRightCorner(void) const
 {
   PointType physicalPoint;
@@ -142,7 +144,7 @@ Image<TPixel, VImageDimension>::GetUpperRightCorner(void) const
 }
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetLowerLeftCorner(void) const
 {
   PointType physicalPoint;
@@ -154,7 +156,7 @@ Image<TPixel, VImageDimension>::GetLowerLeftCorner(void) const
 }
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetLowerRightCorner(void) const
 {
   PointType physicalPoint;

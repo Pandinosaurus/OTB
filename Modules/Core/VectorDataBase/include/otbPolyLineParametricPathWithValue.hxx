@@ -35,7 +35,7 @@ PolyLineParametricPathWithValue<TValue, VDimension>::PolyLineParametricPathWithV
   : m_Key("Value"), m_Length(-1.0), m_LengthIsValid(false), m_BoundingRegion(), m_BoundingRegionIsValid(false)
 {
   itk::MetaDataDictionary& dict = this->GetMetaDataDictionary();
-  ValueType                v;
+  ValueType                v{};
   itk::EncapsulateMetaData<ValueType>(dict, m_Key, itk::NumericTraits<ValueType>::ZeroValue(v));
 }
 

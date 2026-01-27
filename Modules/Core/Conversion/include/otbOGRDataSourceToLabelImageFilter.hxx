@@ -134,7 +134,7 @@ void OGRDataSourceToLabelImageFilter<TOutputImage>::GenerateOutputInformation()
   outputPtr->SetSignedSpacing(m_OutputSpacing);
   outputPtr->SetOrigin(m_OutputOrigin);
   outputPtr->SetProjectionRef(this->GetOutputProjectionRef());
- 
+
   // Generate the OGRLayers from the input OGRDataSource
   for (unsigned int idx = 0; idx < this->GetNumberOfInputs(); ++idx)
   {
@@ -149,10 +149,8 @@ void OGRDataSourceToLabelImageFilter<TOutputImage>::GenerateOutputInformation()
 
   // Set the NoData value using the background
   const unsigned int& nbBands = outputPtr->GetNumberOfComponentsPerPixel();
-  std::vector<bool>   noDataValueAvailable;
-  noDataValueAvailable.resize(nbBands, true);
-  std::vector<double> noDataValue;
-  noDataValue.resize(nbBands, static_cast<double>(m_BackgroundValue));
+  std::vector<bool>   noDataValueAvailable(nbBands, true);
+  std::vector<double> noDataValue(nbBands, static_cast<double>(m_BackgroundValue));
 
   WriteNoDataFlags(noDataValueAvailable, noDataValue, outputPtr->GetImageMetadata());
 }

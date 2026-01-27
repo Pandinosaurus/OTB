@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2025 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -296,7 +296,7 @@ namespace otb
     {                                                                                       \
       command;                                                                              \
     }                                                                                       \
-    catch (std::bad_alloc const& err)                                                       \
+    catch (std::bad_alloc const&)                                                       \
     {                                                                                       \
       throw;                                                                                \
     }                                                                                       \
@@ -305,7 +305,7 @@ namespace otb
       std::cout << "Checking not valid Command " << #command " ok." << std::endl;           \
       result = 0;                                                                           \
     }                                                                                       \
-    catch (const std::exception& stde)                                                      \
+    catch (const std::exception&)                                                      \
     {                                                                                       \
       throw;                                                                                \
     }                                                                                       \

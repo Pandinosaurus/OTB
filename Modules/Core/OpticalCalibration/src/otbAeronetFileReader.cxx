@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -333,7 +333,7 @@ void AeronetFileReader::GenerateData()
   msg << "(hh/mm/yyyy hh:mm:ss) " << m_Day << "/" << m_Month << "/" << m_Year << " " << m_Hour << ":" << m_Minute << ":00";
   std::string str(msg.str());
   aeronetData->SetDataDate(str);
-  aeronetData->SetNumberOfDateUsed(tau_day.size());
+  aeronetData->SetNumberOfDateUsed(static_cast<unsigned int>(tau_day.size()));
   aeronetData->SetEpsilonDate(m_Epsilon);
   // Cloud estimation
   if (stddev > 0.05)

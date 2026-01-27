@@ -66,60 +66,53 @@ std::unique_ptr<MetadataSupplierInterfaceType> GetIMI(const char* TheFileName)
 
 int otbSarCalibrationLookupDataTest(int argc, char* argv[])
 {
-  if (argc < 3)
+  try
   {
-    std::cerr << "Usage: otbSarCalibationLookupDataTest /path/to/input/file /path/to/output/file  !" << std::endl;
-    return EXIT_FAILURE;
-  }
-  ImageReaderType::Pointer reader = ImageReaderType::New();
-  const char*   inFileName = argv[1];
-  reader->SetFileName(inFileName);
-  reader->UpdateOutputInformation();
-  auto imd = reader->GetOutput()->GetImageMetadata();
+    if (argc < 3)
+    {
+      throw std::runtime_error("Usage: otbSarCalibationLookupDataTest /path/to/input/file /path/to/output/file  !" );
+    }
+    ImageReaderType::Pointer reader = ImageReaderType::New();
+    const char*   inFileName = argv[1];
+    reader->SetFileName(inFileName);
+    reader->UpdateOutputInformation();
+    auto imd = reader->GetOutput()->GetImageMetadata();
 
-  const char*   outFileName = argv[2];
-  std::ofstream outfile;
-  outfile.open(outFileName);
+    const char*   outFileName = argv[2];
+    std::ofstream outfile;
+    outfile.open(outFileName);
 
-  auto supplier = GetIMI(inFileName);
-  ImageMetadataInterfaceType::Pointer imageMetadataInterface = ImageMetadataInterfaceFactoryType::CreateIMI(imd, *supplier);
+    auto supplier = GetIMI(inFileName);
+    ImageMetadataInterfaceType::Pointer imageMetadataInterface = ImageMetadataInterfaceFactoryType::CreateIMI(imd, *supplier);
 
-  if (!imageMetadataInterface.IsNotNull())
-  {
-    std::cerr << "cannot create a otb::SarImageMetadataInterface for input image." << std::endl;
-    return EXIT_FAILURE;
-  }
+    if (!imageMetadataInterface.IsNotNull())
+      throw std::runtime_error("cannot create a otb::SarImageMetadataInterface for input image." );
 
-  outfile << imd[otb::MDStr::SensorID] << std::endl;
+    outfile << imd[otb::MDStr::SensorID] << std::endl;
 
 
-  /** Fetch the SARCalib */
-  std::unique_ptr<otb::SARCalib> sarCalibPtr;
-  if (imd.Has(otb::MDGeom::SARCalib))
-  {
-    sarCalibPtr = std::make_unique<otb::SARCalib>(boost::any_cast<otb::SARCalib>(imd[otb::MDGeom::SARCalib]));
-  }
-  else
-  {
-    std::cerr <<  "Unable to fetch the SARCalib metadata from the input product.";
-  }
-  
-  bool hasLut = sarCalibPtr->calibrationLookupData.find(otb::SarCalibrationLookupData::SIGMA)
-                != sarCalibPtr->calibrationLookupData.end();
-  outfile << hasLut << std::endl;
+    /** Fetch the SARCalib */
+    if (! imd.Has(otb::MDGeom::SARCalib))
+      throw std::runtime_error("Unable to fetch the SARCalib metadata from the input product.");
 
-  if (hasLut)
-  {
+    auto sarCalibPtr = std::make_unique<otb::SARCalib>(boost::any_cast<otb::SARCalib>(imd[otb::MDGeom::SARCalib]));
+
+    bool hasLut = sarCalibPtr->calibrationLookupData.find(otb::SarCalibrationLookupData::SIGMA)
+      != sarCalibPtr->calibrationLookupData.end();
+    outfile << hasLut << "\n";
+
+    if (!hasLut)
+      throw std::runtime_error("No Sigma lut found in the metadata");
+
     auto lut = sarCalibPtr->calibrationLookupData[otb::SarCalibrationLookupData::SIGMA];
     auto lutVal = static_cast<RealType>(lut->GetValue(10,19));
     outfile << lutVal << std::endl;
+
+    return EXIT_SUCCESS;
   }
-  else
+  catch (std::exception const& e)
   {
-    std::cerr << "No Sigma lut found in the metadata" << std::endl;
+    std::cerr << e.what() << "\n";
     return EXIT_FAILURE;
   }
-
-  outfile.close();
-  return EXIT_SUCCESS;
 }

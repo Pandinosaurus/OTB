@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2025 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -33,13 +33,7 @@ template <typename T, unsigned L> class FixedArray;
 template <typename T, unsigned L> class Point;
 } // itk namespace
 
-namespace std
-{
-template <typename T, std::size_t L> struct array;
-} // std namespace
-
-
-template <typename T, unsigned L> struct vnl_vector_fixed;
+template <typename T, unsigned L> class vnl_vector_fixed;
 
 namespace otb
 {

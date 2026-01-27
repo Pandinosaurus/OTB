@@ -96,7 +96,7 @@ int otbGenericRSTransformWithSRID(int itkNotUsed(argc), char* argv[])
 
   ofs << "Testing wgs84 to wgs84: " << geoPoint << " -> " << wgs2wgs->TransformPoint(geoPoint) << std::endl;
 
-  PointType utmPoint, lambertPoint, tmtPoint;
+  PointType utmPoint, lambertPoint;
 
   utmPoint     = wgs2utm->TransformPoint(geoPoint);
   lambertPoint = wgs2lambert->TransformPoint(geoPoint);

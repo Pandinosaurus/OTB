@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -89,10 +89,6 @@ void ImageToOSMVectorDataGenerator<TImage>::EstimateImageExtent()
   transform->SetOutputProjectionRef(otb::SpatialReference::FromWGS84().ToWkt());
   transform->InstantiateTransform();
 
-  // Compute the 4 corners in the cartographic coordinate system
-  std::vector<IndexType> vindex;
-  std::vector<PointType> voutput;
-
   IndexType index1, index2, index3, index4;
   SizeType  size;
 
@@ -110,17 +106,21 @@ void ImageToOSMVectorDataGenerator<TImage>::EstimateImageExtent()
   index3[1] += size[1] - 1;
   index4[1] += size[1] - 1;
 
-  vindex.push_back(index1);
-  vindex.push_back(index2);
-  vindex.push_back(index3);
-  vindex.push_back(index4);
+  // Compute the 4 corners in the cartographic coordinate system
+  std::array<IndexType, 4> vindex{
+    index1,
+    index2,
+    index3,
+    index4
+  };
 
+  std::array<PointType, 4> voutput;
   for (unsigned int i = 0; i < vindex.size(); ++i)
   {
     PointType physicalPoint;
     input->TransformIndexToPhysicalPoint(vindex[i], physicalPoint);
     otbMsgDevMacro(<< " physical point " << physicalPoint << " --> Transform " << transform->TransformPoint(physicalPoint));
-    voutput.push_back(transform->TransformPoint(physicalPoint));
+    voutput[i] = transform->TransformPoint(physicalPoint);
   }
 
   // Compute the boundaries

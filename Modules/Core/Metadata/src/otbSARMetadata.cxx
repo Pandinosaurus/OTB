@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -159,7 +159,7 @@ void StringToIntArray(const std::string & input, otb::Span<int> output)
     }
   }
 }
-} // anonymous namespace 
+} // anonymous namespace
 
 namespace otb
 {
@@ -541,9 +541,10 @@ void SARCalib::ToKeywordlist(MetaData::Keywordlist & kwl, const std::string & pr
     oss << std::setprecision(STRING_PRECISION);
     for(unsigned int i = 0 ; i < input->GetNumberOfPoints() ; ++i)
     {
-      input->GetPoint(i, &point);
-      input->GetPointData(i, &pointValue);
-      oss << point << " " << pointValue << ";";
+      if (input->GetPoint(i, &point) && input->GetPointData(i, &pointValue))
+      {
+        oss << point << " " << pointValue << ";";
+      }
     }
     return oss.str();
   };

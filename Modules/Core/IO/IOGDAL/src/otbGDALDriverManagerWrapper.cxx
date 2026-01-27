@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,9 +19,7 @@
  */
 
 #include "otbGDALDriverManagerWrapper.h"
-#include <vector>
-#include "otb_boost_string_header.h"
-#include "otbSystem.h"
+#include <cinttypes>
 
 namespace otb
 {
@@ -49,7 +47,7 @@ GDALDriverManagerWrapper::GDALDriverManagerWrapper()
 
 GDALDriverManagerWrapper::~GDALDriverManagerWrapper()
 {
-  // calling GDALDestroyDriverManager() (or GDALDestroy) from the destructor of a 
+  // calling GDALDestroyDriverManager() (or GDALDestroy) from the destructor of a
   // static C++ object is unsafe.
   // GDALDestroyDriverManager();
 }
@@ -88,7 +86,7 @@ GDALDatasetWrapper::Pointer GDALDriverManagerWrapper::OpenFromMemory(
 
       snprintf(data_ptr, sizeof(data_ptr), "DATAPOINTER=%s", band_start_in_mem);
       snprintf(pixel_offset, sizeof(pixel_offset), "PIXELOFFSET=%d", byte_per_pixel * nb_bands);
-      snprintf(line_offset, sizeof(line_offset), "LINEOFFSET=%lu",
+      snprintf(line_offset, sizeof(line_offset), "LINEOFFSET=%" PRIu64,
                 byte_per_pixel * nb_bands * width);
       char *band_opt[4] = {data_ptr, pixel_offset, line_offset, nullptr};
       dataset->AddBand(pix_type, band_opt);

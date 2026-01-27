@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -349,8 +349,6 @@ void SarSensorModel::LineSampleToWorld(
   assert(m_GCP.GCPs.size());
 
   const auto& gcp = findClosestGCP(imPt, m_GCP);
-
-  Point3DType ecefPoint;
 
   auto heightFunction = [](const double lon, const double lat)
                         {return DEMHandler::GetInstance().GetHeightAboveEllipsoid(lon, lat);};
@@ -714,7 +712,6 @@ SarSensorModel::Point3DType SarSensorModel::projToSurface(
   double currentHeightResidual = groundGcp[2] - heightFunction(groundGcp[0], groundGcp[1]);
 
   MatrixType B, BtB;
-  VectorType BtF;
   VectorType F;
   VectorType dR;
 
