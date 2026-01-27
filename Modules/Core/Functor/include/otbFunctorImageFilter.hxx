@@ -91,6 +91,7 @@ inline void assert_all_true() {}
 template <typename... bools>
 void assert_all_true(bool head, bools ... tail)
 {
+  (void) head;
   assert(head);
   assert_all_true(tail...);
 }
