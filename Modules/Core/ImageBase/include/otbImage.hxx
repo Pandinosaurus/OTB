@@ -102,7 +102,7 @@ void Image<TPixel, VImageDimension>::CopyInformation(const itk::DataObject* data
 template <class TPixel, unsigned int                VImageDimension>
 typename Image<TPixel, VImageDimension>::VectorType Image<TPixel, VImageDimension>::GetGeoTransform(void) const
 {
-  assert(VImageDimension == 2 && "This function needs fixing if called from ROIdataConversion");
+  assert(VImageDimension >= 2 && "This function needs fixing if called from ROIdataConversion");
   Image<TPixel, VImageDimension>::VectorType geoTransform(6);
 
   auto origin = this->GetOrigin();
