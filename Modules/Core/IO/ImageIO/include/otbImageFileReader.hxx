@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,8 +26,6 @@
 
 #include "otbSystem.h"
 #include <itksys/SystemTools.hxx>
-#include <fstream>
-#include <string>
 
 #include "itkImageIOFactory.h"
 #include "itkPixelTraits.h"
@@ -44,23 +42,16 @@
 
 #include "otbMacro.h"
 
+#include <boost/type_traits/is_complex.hpp>
+
+#include <ostream>
+#include <string>
 
 namespace otb
 {
 
 static const char   DerivedSubdatasetPrefix[]     = "DERIVED_SUBDATASET:";
 static const size_t DerivedSubdatasetPrefixLength = sizeof(DerivedSubdatasetPrefix);
-
-template <class T>
-bool PixelIsComplex(const std::complex<T>& /*dummy*/)
-{
-  return true;
-}
-template <class T>
-bool PixelIsComplex(const T& /*dummy*/)
-{
-  return false;
-}
 
 template <class TOutputImage, class ConvertPixelTraits>
 ImageFileReader<TOutputImage, ConvertPixelTraits>::ImageFileReader()
@@ -266,12 +257,9 @@ void ImageFileReader<TOutputImage, ConvertPixelTraits>::GenerateOutputInformatio
 
   // Hint the IO whether the OTB image type takes complex pixels
   // this will determine the strategy to fill up a vector image
-  OutputImagePixelType dummy;
-  bool                 lVectorImage = false;
-  if (strcmp(output->GetNameOfClass(), "VectorImage") == 0)
-    lVectorImage = true;
+  bool lVectorImage = strcmp(output->GetNameOfClass(), "VectorImage") == 0;
 
-  this->m_ImageIO->SetOutputImagePixelType(PixelIsComplex(dummy), lVectorImage);
+  this->m_ImageIO->SetOutputImagePixelType(boost::is_complex<OutputImagePixelType>::value, lVectorImage);
 
   // Pass the dataset number (used for hdf files for example)
   if (m_FilenameHelper->SubDatasetIndexIsSet())
@@ -390,7 +378,7 @@ void ImageFileReader<TOutputImage, ConvertPixelTraits>::GenerateOutputInformatio
 
   // detect Image supporting new ImageMetadata
   ImageCommons* img_common = dynamic_cast<ImageCommons*>(this->GetOutput());
-  
+
   // Get ImageMetadata from ImageIO
   ImageMetadata imd = m_ImageIO->GetImageMetadata();
 
@@ -453,7 +441,7 @@ void ImageFileReader<TOutputImage, ConvertPixelTraits>::GenerateOutputInformatio
     output->SetMetaDataDictionary(dictLight);
     this->SetMetaDataDictionary(dictLight);
   }
-  
+
   IndexType start;
   start.Fill(0);
 
@@ -482,7 +470,7 @@ void ImageFileReader<TOutputImage, ConvertPixelTraits>::GenerateOutputInformatio
     m_IOComponents = m_BandList.size();
   }
 
-  // Delete band metadata if the Conversion policy changed the number of bands, in the case of 
+  // Delete band metadata if the Conversion policy changed the number of bands, in the case of
   // grayscale to RGB for example. Because we cannot know how the metadata should be mapped.
   // TODO: define proper behavior in this case.
   using ConvertIOPixelTraits = otb::DefaultConvertPixelTraits<typename TOutputImage::IOPixelType>;
