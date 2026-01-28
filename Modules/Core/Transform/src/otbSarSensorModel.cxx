@@ -711,7 +711,7 @@ SarSensorModel::Point3DType SarSensorModel::projToSurface(
 
   double currentHeightResidual = groundGcp[2] - heightFunction(groundGcp[0], groundGcp[1]);
 
-  MatrixType B, BtB;
+  MatrixType B;
   VectorType F;
   VectorType dR;
 
