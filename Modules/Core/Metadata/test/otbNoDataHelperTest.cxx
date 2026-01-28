@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,6 +51,8 @@ int otbNoDataHelperTest(int itkNotUsed(argc), char* itkNotUsed(argv)[])
   otbControlConditionTestMacro(!otb::IsNoData(v, b2, v2), " wrong output of IsNoData function");
   b2[1] = false;
   otbControlConditionTestMacro(otb::IsNoData(v, b2, v2), " wrong output of IsNoData function");
+
+  otbControlConditionTestMacro(otb::ExtractNoDataValue(imd) == 1.0, " wrong output of ExtractNoDataValue");
 
   return EXIT_SUCCESS;
 }

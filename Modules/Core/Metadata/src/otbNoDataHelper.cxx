@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
- *
+ 6
  * This file is part of Orfeo Toolbox
  *
  *     https://www.orfeo-toolbox.org/
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,8 @@
 #include "itkMetaDataDictionary.h"
 #include "itkMetaDataObject.h"
 #include "otbMetaDataKey.h"
+
+#include <algorithm>
 
 namespace otb
 {
@@ -49,7 +51,7 @@ bool ReadNoDataFlags(const ImageMetadata & imd, std::vector<bool>& flags, std::v
       values.push_back(0.);
     }
   }
-  
+
   if (ret)
   {
     return true;
@@ -95,6 +97,24 @@ void WriteNoDataFlags(const std::vector<bool>& flags, const std::vector<double>&
       itBands->Add(MDNum::NoData, *itValues);
     }
   }
+}
+
+double ExtractNoDataValue(ImageMetadata const& meta)
+{
+  std::vector<bool>   has_nodatas;
+  std::vector<double> nodatas;
+  if (!ReadNoDataFlags(meta, has_nodatas, nodatas))
+  {
+    otbLogMacro(Warning, << "Image has no 'nodata' metadata");
+    return std::nan("Image has no 'nodata' metadata");
+  }
+  auto const it_first_nodata = std::find(
+      has_nodatas.begin(), has_nodatas.end(),
+      true);
+  assert(it_first_nodata != has_nodatas.end());
+  auto const idx_first_nodata = std::distance(has_nodatas.begin(), it_first_nodata);
+
+  return nodatas[idx_first_nodata];
 }
 
 } // End namespace otb
