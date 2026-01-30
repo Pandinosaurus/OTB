@@ -23,6 +23,7 @@
 
 #include "OTBApplicationEngineExport.h"
 #include "otbWrapperApplication.h"
+#include <sstream>
 
 namespace otb
 {
@@ -49,7 +50,7 @@ namespace Wrapper
  * \ingroup OTBApplicationEngine
  */
 template <typename TNoData, typename TApplication = Application>
-class OTBApplicationEngine_EXPORT ApplicationWithNoData : public TApplication
+class OTBApplicationEngine_EXPORT_TEMPLATE ApplicationWithNoData : public TApplication
 {
 protected:
   ApplicationWithNoData(
@@ -67,7 +68,7 @@ protected:
     this->AddParameter<parameter_type_v<TNoData>>(
         m_nodata_key,
         "NoData value",
-        "Ouput cells with no data are filled with this value (optional " + std::to_string(m_nodata_default_value)+" by default)"
+        "Ouput cells with no data are filled with this value (optional " + std::to_string(m_nodata_default_value) + " by default)"
     );
     parameter_type<TNoData>::set_default(
         *this,
