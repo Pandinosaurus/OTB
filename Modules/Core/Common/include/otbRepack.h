@@ -241,6 +241,33 @@ constexpr unsigned cumulated_size(Input const& head_input, Inputs const& ...inpu
   return size_one_input(head_input) + cumulated_size(inputs...);
 }
 
+#if 0
+/*===============================[ Detect size type ]========================*/
+template <typename T>
+struct is_size_t_indexed : std::false_type {};
+
+template <template <typename, std::size_t> class T, typename U, std::size_t N>
+struct is_size_t_indexed<T<U, N>> : std::true_type {};
+
+template <typename T>
+struct is_unsigned_indexed : std::false_type {};
+
+template <template <typename, unsigned> class T, typename U, unsigned N>
+struct is_unsigned_indexed<T<U, N>> : std::true_type {};
+#endif
+
+#if 0
+template <typename T>
+struct is_indexed : std::false_type {};
+
+template <typename Int, template <typename, Int> class T, typename U, Int N>
+struct is_indexed<T<U, N>> : std::true_type {};
+
+static_assert(is_indexed<std::array<int, 42>>::value);
+static_assert(is_indexed<vnl_vector_fixed<int, 42>>::value);
+#endif
+
+
 /*===============================[ Common underlying type ]==================*/
 // Remove extents from all types, and apply std::common_type
 template <typename T, typename = void>
@@ -295,7 +322,7 @@ template <typename... Types>
 using common_underlying_t = typename common_underlying_type<Types...>::type;
 
 /*===============================[ Extract Array Kind ]======================*/
-// Helper trait for ITK arrays
+// Helper trait for ITK arrays (unsigned!)
 template <template <typename, unsigned> class T>
 struct array_generator_4_from_itk_array
 {
@@ -304,7 +331,7 @@ struct array_generator_4_from_itk_array
   using gen_type = T<RR,NN>;
 };
 
-// Helper trait for std arrays
+// Helper trait for std arrays (size_t!)
 template <template <typename, std::size_t> class T>
 struct array_generator_4_from_std_array
 {
@@ -356,6 +383,13 @@ template <typename R1, typename R2>
 struct merge_common_array
 : array_generator_4_from_default<bool> {};
 
+#if __cplusplus < 201703L
+#if defined(__clang_major__) && __clang_major__ >= 19
+// In C++ 14, we require clang < v19
+// Either downgrade clang version to at most clang 18, or compile in C++17 at least
+#  error otbRepack cannot compile with clang++ 19+ in C++14
+#endif
+
 template <template <typename, std::size_t> class T>
 struct merge_common_array<T<int, 1>, T<int,1>>
 : array_generator_4_from_std_array<T> {};
@@ -379,6 +413,31 @@ struct merge_common_array<T<int, 1>, void>
 template <template <typename, unsigned> class T>
 struct merge_common_array<void, T<int, 1>>
 : array_generator_4_from_itk_array<T> {};
+
+#else
+
+// C++ 17 code!
+template <typename Int, template <typename, Int> class T>
+struct array_generator_4_from_static_array
+{
+  using type = T<int,1>;
+  template <typename RR, std::size_t NN, typename Fallback>
+  using gen_type = T<RR,NN>;
+};
+
+template <typename Int, template <typename, Int> class T, Int N, Int M>
+struct merge_common_array<T<int, N>, T<int,M>>
+: array_generator_4_from_static_array<Int, T> {};
+
+template <typename Int, template <typename, Int> class T, Int N>
+struct merge_common_array<T<int, N>, void>
+: array_generator_4_from_static_array<Int, T> {};
+
+template <typename Int, template <typename, Int> class T, Int N>
+struct merge_common_array<void, T<int, N>>
+: array_generator_4_from_static_array<Int, T> {};
+
+#endif
 
 template <>
 struct merge_common_array<void, void>
