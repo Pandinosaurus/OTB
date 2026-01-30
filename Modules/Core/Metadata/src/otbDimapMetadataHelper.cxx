@@ -671,7 +671,7 @@ void DimapMetadataHelper::createDefaultLUTs()
     {
       vectLut[x] = x * double(m_Data.RangeMax[i]- m_Data.RangeMin[i]) / 255.0 + m_Data.RangeMin[i];
     }
-    m_Data.LUTs.emplace(m_Data.BandIDs[i], move(vectLut));
+    m_Data.LUTs.emplace(m_Data.BandIDs[i], std::move(vectLut));
   }
 }
 

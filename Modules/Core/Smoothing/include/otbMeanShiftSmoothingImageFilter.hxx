@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -597,7 +597,7 @@ void MeanShiftSmoothingImageFilter<TInputImage, TOutputImage, TKernel, TOutputIt
     pointList.resize(m_MaxIterationNumber);
   // Number of times an already processed candidate pixel is encountered, resulting in no
   // further computation (Used for statistics only)
-  unsigned int numBreaks = 0;
+  // unsigned int numBreaks = 0;
   // index of the current pixel updated during the mean shift loop
   InputIndexType modeCandidate;
 
@@ -608,7 +608,7 @@ void MeanShiftSmoothingImageFilter<TInputImage, TOutputImage, TKernel, TOutputIt
     typename ModeTableImageType::InternalPixelType const& currentPixelMode = modeTableIt.Get();
     if (m_ModeSearch && currentPixelMode == 1)
     {
-      numBreaks++;
+      // numBreaks++;
       continue;
     }
 
@@ -679,7 +679,7 @@ void MeanShiftSmoothingImageFilter<TInputImage, TOutputImage, TKernel, TOutputIt
               // Update the mode table because pixel will be assigned just now
               modeTableIt.Set(2); // m_ModeTable->SetPixel(currentIndex, 2);
               // bypass further calculation
-              numBreaks++;
+              // numBreaks++;
               break;
             }
           }

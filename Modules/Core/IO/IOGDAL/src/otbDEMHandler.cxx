@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -514,7 +514,7 @@ void DEMHandler::OpenDEMFile(std::string path)
       return ; // no push_back, no notification
     }
   }
-  m_DEMDirectories.push_back(move(path));
+  m_DEMDirectories.push_back(std::move(path));
   lock.unlock();
   Notify();
 }
@@ -569,7 +569,7 @@ void DEMHandler::OpenDEMDirectory(std::string DEMDirectory)
   else
   {
     otbLogMacro(Info, << nb_new_DEM_opened << " DEM found in "<< DEMDirectory)
-    m_DEMDirectories.push_back(move(DEMDirectory)); // => parameter voluntary taken by value
+    m_DEMDirectories.push_back(std::move(DEMDirectory)); // => parameter voluntary taken by value
 
     // Clean before anything else: Free the previous in-memory dataset (if any)
     if (m_DatasetList.size() != nb_new_DEM_opened)
@@ -697,7 +697,7 @@ bool DEMHandler::OpenGeoidFile(std::string geoidFile)
 
   if (nb_success != 0)
   {
-    m_GeoidFilename = move(geoidFile); // => parameter voluntary taken by value
+    m_GeoidFilename = std::move(geoidFile); // => parameter voluntary taken by value
     if (! m_DatasetList.empty())
     { // In that case, we could expect TLS.m_DEMDS to be non-null
       const std::lock_guard<std::mutex> lock(demMutex);

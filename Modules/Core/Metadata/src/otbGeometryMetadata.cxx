@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,10 +19,9 @@
  */
 
 #include "otbGeometryMetadata.h"
-
-#include <iostream>
 #include "otbMacro.h"
 
+#include <sstream>
 
 namespace
 {
@@ -75,7 +74,13 @@ namespace otb
 {
 
 GCP::GCP(std::string id, std::string info, double col, double row, double px, double py, double pz)
-  : m_Id(move(id)), m_Info(move(info)), m_GCPCol(col), m_GCPRow(row), m_GCPX(px), m_GCPY(py), m_GCPZ(pz)
+: m_Id(std::move(id))
+, m_Info(std::move(info))
+, m_GCPCol(col)
+, m_GCPRow(row)
+, m_GCPX(px)
+, m_GCPY(py)
+, m_GCPZ(pz)
 {
 }
 

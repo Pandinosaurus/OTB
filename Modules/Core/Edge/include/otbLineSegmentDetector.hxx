@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -834,7 +834,8 @@ double LineSegmentDetector<TInputImage, TPrecision>::ComputeRegionOrientation(In
   double Iyy    = 0.0;
   double Ixy    = 0.0;
   double theta  = 0.;
-  double weight = 0., sum = 0.;
+  double weight = 0.;
+  // double sum    = 0.;
 
   /** Neighboring again*/
   typedef itk::ConstNeighborhoodIterator<OutputImageType> NeighborhoodIteratorType;
@@ -854,7 +855,7 @@ double LineSegmentDetector<TInputImage, TPrecision>::ComputeRegionOrientation(In
     Ixx += Ixx2 * Ixx2 * weight;
     Iyy += Iyy2 * Iyy2 * weight;
     Ixy -= Ixx2 * Iyy2 * weight;
-    sum += weight;
+    // sum += weight;
     ++it;
   }
 
