@@ -66,13 +66,14 @@ void SummingFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(const
   for (outputIt.GoToBegin(); !outputIt.IsAtEnd(); ++outputIt)
   {
     pix.Fill(0.0);
-    for (unsigned int band = 0; band < nbInputBands; band++)
+    for (unsigned int i = 0; i < nbInputImages; i++)
     {
-      for (unsigned int i = 0; i < nbInputImages; i++)
+
+      for (unsigned int band = 0; band < nbInputBands; band++)
       {
         pix[band] += inputIt[i].Get()[band];
-        ++inputIt[i];
       }
+      ++inputIt[i];
     }
     outputIt.Set(pix);
   }
