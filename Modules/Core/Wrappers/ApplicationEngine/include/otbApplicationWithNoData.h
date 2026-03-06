@@ -104,7 +104,9 @@ protected:
       if (nodata_start != std::string::npos && nodata_start > extension_start)
       {
         // Let's trust the end-user. Even if the value doesn't match
-        otbLogMacro(Warning, <<"Trusting the nodata value required in extended filename. User specified " << nodata << " value won't be propagated in image metadata");
+        otbLogMacro(Warning,
+                    << "Trusting the nodata value required in extended filename. "
+                    << "User specified parameter -" << m_nodata_key << "=" << nodata << " won't be propagated to image metadata");
         return;
       }
     }
