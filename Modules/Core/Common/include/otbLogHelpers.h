@@ -38,11 +38,11 @@ namespace otb
  * \ingroup OTBCommon
  */
 template <typename RegionType>
-struct NeatRegionLogger
+struct NeatRegionLogger_CTADLess
 {
-  NeatRegionLogger(RegionType const& region) : m_region(region) {}
+  NeatRegionLogger_CTADLess(RegionType const& region) : m_region(region) {}
 
-  friend std::ostream & operator<<(std::ostream & os, NeatRegionLogger const& r)
+  friend std::ostream & operator<<(std::ostream & os, NeatRegionLogger_CTADLess const& r)
   {
     auto const& size = r.m_region.GetSize();
     auto const& idx  = r.m_region.GetIndex();
@@ -59,6 +59,10 @@ struct NeatRegionLogger
   }
   RegionType const& m_region;
 };
+
+template <typename RegionType>
+auto NeatRegionLogger(RegionType const& region)
+{ return NeatRegionLogger_CTADLess<RegionType>(region); }
 } // otb namespace
 
 #endif  // otbLogHelpers_h
