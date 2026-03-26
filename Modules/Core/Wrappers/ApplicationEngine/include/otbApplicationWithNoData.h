@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2025 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -65,7 +65,7 @@ protected:
    */
   void DoInit_NoData()
   {
-    this->AddParameter<parameter_type_v<TNoData>>(
+    this->template AddParameter<parameter_type_v<TNoData>>(
         m_nodata_key,
         "NoData value",
         "Ouput cells with no data are filled with this value (optional " + std::to_string(m_nodata_default_value) + " by default)"
