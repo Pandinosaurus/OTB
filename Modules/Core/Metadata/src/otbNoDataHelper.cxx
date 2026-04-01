@@ -132,6 +132,7 @@ ImageMetadataBase & BandInformation::add_new(std::string name, double nodata)
   ImageMetadataBase bmd;
   if (!name.empty())
   {
+    bmd.SetDescription(name);
     bmd.Add(MDStr::BandName, std::move(name));
   }
   bmd.Add(MDNum::NoData, nodata);  // seems required only on the first band...

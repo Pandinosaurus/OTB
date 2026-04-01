@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2025 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -26,7 +26,6 @@
 #include "otbMetaDataKey.h"
 #include "OTBMetadataExport.h"
 #include "otbSpot5Metadata.h"
-#include "otbMacro.h"
 #include "otbStringUtilities.h"
 
 #include <boost/any.hpp>
@@ -261,6 +260,14 @@ public:
   /** Return the number of elements in the ImageMetadataBase */
   int GetSize() const;
 
+  /** Return (gdal) metadata description */
+  void SetDescription(std::string description);
+
+  /** Set (gdal) metadata description */
+  std::string const& GetDescription() const noexcept;
+
+private:
+  std::string m_description;
 };
 
 
