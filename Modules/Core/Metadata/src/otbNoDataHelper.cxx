@@ -19,6 +19,7 @@
  */
 
 #include "otbNoDataHelper.h"
+#include "otbImageMetadata.h"
 
 #include "itkMetaDataDictionary.h"
 #include "itkMetaDataObject.h"
@@ -115,6 +116,27 @@ double ExtractNoDataValue(ImageMetadata const& meta)
   auto const idx_first_nodata = std::distance(has_nodatas.begin(), it_first_nodata);
 
   return nodatas[idx_first_nodata];
+}
+
+BandInformation::BandInformation(ImageMetadata& meta, Bands previous_bands)
+: m_meta(meta)
+{
+  if (previous_bands == BandInformation::clear)
+  {
+    m_meta.Bands.clear();
+  }
+}
+
+ImageMetadataBase & BandInformation::add_new(std::string name, double nodata)
+{
+  ImageMetadataBase bmd;
+  if (!name.empty())
+  {
+    bmd.Add(MDStr::BandName, std::move(name));
+  }
+  bmd.Add(MDNum::NoData, nodata);  // seems required only on the first band...
+  m_meta.Bands.push_back(std::move(bmd));
+  return m_meta.Bands.back();
 }
 
 } // End namespace otb

@@ -25,7 +25,6 @@
 #include "vnl/vnl_math.h"
 #include <itkVariableLengthVector.h>
 #include "OTBMetadataExport.h"
-#include "otbImageMetadata.h"
 #include "vcl_legacy_aliases.h"
 
 namespace itk
@@ -35,6 +34,9 @@ class MetaDataDictionary;
 
 namespace otb
 {
+class ImageMetadataBase;
+class ImageMetadata;
+
 /**
  * Reads no data flag from the ImageMetadata to flags and values vectors.
  * \returns true upon success.
@@ -201,14 +203,7 @@ public:
    *                            removed or wheither we will append extra bands
    *                            to ones already declared.
    */
-  BandInformation(ImageMetadata& meta, Bands previous_bands)
-  : m_meta(meta)
-  {
-    if (previous_bands == BandInformation::clear)
-    {
-      m_meta.Bands.clear();
-    }
-  }
+  BandInformation(ImageMetadata& meta, Bands previous_bands);
 
   /**
    * Add information about a new band.
@@ -218,17 +213,7 @@ public:
    * \return a reference to the band metadata object currently added.
    * \warning adding another band can invalidate the returned reference
    */
-  auto& add_new(std::string name, double nodata)
-  {
-    ImageMetadataBase bmd;
-    if (!name.empty())
-    {
-      bmd.Add(MDStr::BandName, std::move(name));
-    }
-    bmd.Add(MDNum::NoData, nodata); // seems required only on the first band...
-    m_meta.Bands.push_back(std::move(bmd));
-    return m_meta.Bands.back();
-  }
+  ImageMetadataBase& add_new(std::string name, double nodata);
 
 private:
 

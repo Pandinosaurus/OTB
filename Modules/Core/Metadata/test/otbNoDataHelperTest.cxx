@@ -20,6 +20,7 @@
 
 
 #include "otbNoDataHelper.h"
+#include "otbImageMetadata.h"
 #include "itkMetaDataDictionary.h"
 #include "otbMacro.h"
 
