@@ -42,7 +42,7 @@ otb::details::ProjectionReferenceDecorator<TImageProducer, TActual>
   // This may not be the most efficient, but there is no hook dedicated to fill the metadata...
   OutputImagePointer output  = this->GetOutput();
   assert(output);
-  ImageMetadataBase  meta    = output->GetImageMetadata();
+  ImageMetadata      meta    = output->GetImageMetadata();
   meta.Add(MDGeom::ProjectionWKT, projection_ref);
   output->SetImageMetadata(std::move(meta));
 
@@ -56,17 +56,15 @@ otb::details::ProjectionReferenceDecorator<TImageProducer, TActual>
   if (!outputSrs.IsSame(wgs84Srs))
   {
     otbLogMacro(Info, << "Output projection is " << projection_ref << " => need to convert to WGS84");
-    auto const nbThreads = this->GetNumberOfThreads();
+    auto const nbThreads = this->GetNumberOfWorkUnits();
     m_tlsCTs.reserve(nbThreads);
     for (auto i = 0u; i != nbThreads; ++i)
     {
-#if 1
       m_tlsCTs.emplace_back(OGRCreateCoordinateTransformation(&outputSrs, wgs84Srs));
-#else
-      // Eventually when we can have a vector<CoordinateTransformation>
-      m_tlsCTs.emplace_back(&outputSrs, wgs84Srs);
-#endif
+      // m_tlsCTs.emplace_back(&outputSrs, wgs84Srs); // requires a missing constructor in SpatialReference
     }
+    // In that case we really do need to disable dynamic threading -- with current implementation
+    this->DynamicMultiThreadingOff();
   }
   else
   {

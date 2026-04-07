@@ -58,7 +58,8 @@ void GeneratePhysicalPointCoordinatesForLine(
     // assert(idx < line_size);
 
     // Transform index to Lat/Lon Point
-    itk::Point<double, 2> demLonLatPoint = image.TransformIndexToPhysicalPoint(itInLine.GetIndex());
+    itk::Point<double, 2> demLonLatPoint;
+    image.TransformIndexToPhysicalPoint(itInLine.GetIndex(), demLonLatPoint);
     lonlats(0, idx) = demLonLatPoint[0];
     lonlats(1, idx) = demLonLatPoint[1];
   }

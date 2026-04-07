@@ -168,7 +168,8 @@ protected:
   }
 
   // TODO: The day otb::CoordinateTransformation exposes batch tranformation,
-  // we could have directly a vector<CoordinateTransformation>
+  // and SpatialReference constructor accepts pointers, we could have directly a
+  // vector<CoordinateTransformation>
   // => For the moment, use the right unique_ptr type.
   std::vector<CoordinateTransformation::CoordinateTransformationPtr> m_tlsCTs;
 };
