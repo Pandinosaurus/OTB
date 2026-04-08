@@ -23,6 +23,8 @@ SETUP_SUPERBUILD(PCRE2)
 if(MSVC)
   # TODO ?
 else()
+  # overwrite CMAKE_INSTALL_LIBDIR since when compiling with RHEL, it will be
+  # installed in lib64 if left unchanged
   ExternalProject_Add(PCRE2
     PREFIX PCRE2
     URL "https://github.com/PCRE2Project/pcre2/archive/refs/tags/pcre2-10.47.tar.gz"
@@ -32,6 +34,7 @@ else()
     DOWNLOAD_DIR ${DOWNLOAD_LOCATION}
     CMAKE_CACHE_ARGS 
     ${SB_CMAKE_CACHE_ARGS}
+    -DCMAKE_INSTALL_LIBDIR:PATH=lib
     CMAKE_COMMAND ${SB_CMAKE_COMMAND}
     LOG_DOWNLOAD 1
     LOG_CONFIGURE 1
