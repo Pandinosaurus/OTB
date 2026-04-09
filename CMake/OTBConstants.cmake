@@ -97,11 +97,11 @@ endfunction()
 macro(get_package_const)
   # these are cache variables, so they could be overwritten with -D,
   set(CPACK_PACKAGE_NAME "OTB"
-      CACHE STRING "The OTB full package"
+      CACHE STRING "The OTB full package" FORCE
   )
   # which is useful in case of packing only selected components instead of the whole thing
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "OTB Package"
-      CACHE STRING "This package contains the entire OTB project by modules OR in one full package"
+      CACHE STRING "This package contains the entire OTB project by modules OR in one full package" FORCE
   )
   set(CPACK_PACKAGE_VENDOR "CS Group")
 
