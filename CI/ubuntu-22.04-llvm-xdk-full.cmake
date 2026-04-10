@@ -34,7 +34,7 @@ set(site_option
     "OTB_BUILD_Miscellaneous:BOOL=OFF"
     "OTB_BUILD_Remote:BOOL=OFF"
     "OTB_BUILD_SAR:BOOL=OFF"
-    "OTB_BUILD_Segmentation:BOOL=ON "
+    "OTB_BUILD_Segmentation:BOOL=OFF"
     "OTB_BUILD_StereoProcessing:BOOL=OFF"
     "OTB_USE_LIBSVM:BOOL=OFF"
     "OTB_USE_MUPARSER:BOOL=OFF"
