@@ -22,6 +22,26 @@
 
 set(site_option
     "CMAKE_CXX_FLAGS:STRING=/DTHROW_QCRITICAL=0 /DWIN32 /D_WINDOWS /W3 /GR /EHsc /D_ENABLE_EXTENDED_ALIGNED_STORAGE"
+)
+
+if (OTB_FULL_BUILD)
+  list(APPEND site_option
+    "OTB_BUILD_FeaturesExtraction:BOOL=ON"
+    "OTB_BUILD_Hyperspectral:BOOL=ON"
+    "OTB_BUILD_Learning:BOOL=ON"
+    "OTB_BUILD_Miscellaneous:BOOL=ON"
+    "OTB_BUILD_Remote:BOOL=ON"
+    "OTB_BUILD_SAR:BOOL=ON"
+    "OTB_BUILD_Segmentation:BOOL=ON"
+    "OTB_BUILD_StereoProcessing:BOOL=ON"
+    "OTB_USE_LIBSVM:BOOL=ON"
+    "OTB_USE_MUPARSER:BOOL=ON"
+    "OTB_USE_MUPARSERX:BOOL=ON"
+    "OTB_USE_OPENCV:BOOL=ON"
+    "OTB_USE_OPENMP:BOOL=ON"
+    "OTB_USE_SHARK:BOOL=ON")
+else()
+  list(APPEND site_option
     "OTB_BUILD_FeaturesExtraction:BOOL=OFF"
     "OTB_BUILD_Hyperspectral:BOOL=OFF"
     "OTB_BUILD_Learning:BOOL=OFF"
@@ -35,8 +55,8 @@ set(site_option
     "OTB_USE_MUPARSERX:BOOL=OFF"
     "OTB_USE_OPENCV:BOOL=OFF"
     "OTB_USE_OPENMP:BOOL=OFF"
-    "OTB_USE_SHARK:BOOL=OFF"
-)
+    "OTB_USE_SHARK:BOOL=OFF")
+endif()
 
 # As windows have a dumb dynamic linkage system, we need to use
 # the XDK_INSTALL_PATH option to ensure dlls are copied from xdk to otb bin

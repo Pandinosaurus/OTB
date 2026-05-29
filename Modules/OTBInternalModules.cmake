@@ -53,13 +53,13 @@ list(APPEND otb_internal_groups_repos
 )
 
 list(APPEND otb_internal_groups_git_tag
-    "cleanup_P0" # FeaturesExtraction
-    "cleanup_P0" # Learning
-    "cleanup_P0" # SAR
-    "cleanup_P0" # Segmentation
-    "cleanup_P0" # Hyperspectral
-    "cleanup_P0" # StereoProcessing
-    "cleanup_P0" # Miscellaneous
+    "main" # FeaturesExtraction
+    "main" # Learning
+    "main" # SAR
+    "main" # Segmentation
+    "main" # Hyperspectral
+    "main" # StereoProcessing
+    "main" # Miscellaneous
     )
 
 list(APPEND otb_internal_groups_get_submodules
