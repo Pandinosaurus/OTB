@@ -65,21 +65,24 @@ else()
     "OTB_USE_SHARK:BOOL=OFF")
 endif()
 
-if(NOT ${ci_do_cookbook} EQUAL -1)
-  list(APPEND site_option "BUILD_COOKBOOK:BOOL=ON")
-endif()
+# generates doc only when doing full build
+if (OTB_FULL_BUILD)
+  if(NOT ${ci_do_cookbook} EQUAL -1)
+    list(APPEND site_option "BUILD_COOKBOOK:BOOL=ON")
+  endif()
 
-if(NOT ${ci_do_doxygen} EQUAL -1)
-  list(APPEND site_option
-       "BUILD_DOCUMENTATION:BOOL=ON"
-       "OTB_DOXYGEN_ITK_TAGFILE:FILEPATH=${CTEST_BINARY_DIRECTORY}/InsightDoxygenDocTag-5.3.0"
-       "OTB_DOXYGEN_ITK_DOXYGEN_URL:STRING=\"https://itk.org/Doxygen53/html\"")
-  set (ENABLE_DOXYGEN ON)
-  # The ITK doxygen tag file needs to be patched before being used for OTB
-  # See otb-devutils/Scripts/tagfile_fix.py
-  message(STATUS "Get resources for Doxygen build ...")
-  execute_process(COMMAND wget https://www.orfeo-toolbox.org/packages/archives/Doxygen/InsightDoxygenDocTag-5.3.0.gz
-                  WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY})
-  execute_process(COMMAND gzip -d InsightDoxygenDocTag-5.3.0.gz
-                  WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY})
+  if(NOT ${ci_do_doxygen} EQUAL -1)
+    list(APPEND site_option
+        "BUILD_DOCUMENTATION:BOOL=ON"
+        "OTB_DOXYGEN_ITK_TAGFILE:FILEPATH=${CTEST_BINARY_DIRECTORY}/InsightDoxygenDocTag-5.3.0"
+        "OTB_DOXYGEN_ITK_DOXYGEN_URL:STRING=\"https://itk.org/Doxygen53/html\"")
+    set (ENABLE_DOXYGEN ON)
+    # The ITK doxygen tag file needs to be patched before being used for OTB
+    # See otb-devutils/Scripts/tagfile_fix.py
+    message(STATUS "Get resources for Doxygen build ...")
+    execute_process(COMMAND wget https://www.orfeo-toolbox.org/packages/archives/Doxygen/InsightDoxygenDocTag-5.3.0.gz
+                    WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY})
+    execute_process(COMMAND gzip -d InsightDoxygenDocTag-5.3.0.gz
+                    WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY})
+  endif()
 endif()

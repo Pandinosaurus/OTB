@@ -103,6 +103,34 @@ stages:
       junit:
         - build/ctest_report.xml
 
+# same as common build but without git lfs and pushing artifacts
+# complete build are not tested
+.common-complete-build:
+  extends: .common
+  variables:
+    CI_SKIP_TESTING: "ON"
+  only:
+    - develop
+    - /^release-[0-9]+\.[0-9]+$/
+  stage: build
+  artifacts:
+    when: always
+    expire_in: 24 hrs
+    paths:
+      - build/*/*.log #CMake log
+      - log/*.txt # Others
+      - CookBook-*-html.tar.gz
+      - CookBook-*.pdf
+      - OTB-Doxygen-*.tar.bz2
+      - OTB-*.tar.gz
+      - OTB-*.zip
+      - build/compile_commands.json
+      - build/ctest_report.xml
+      - build/cppcheck_report.xml
+      - build/coverage_report.xml
+      - build/Testing/Temporary/*.txt #DEBUG
+      - Docker/Dockerfile_CI
+
 .common-prepare:
   extends: .common
   only:
@@ -189,9 +217,6 @@ ubuntu-22-build:
   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
   script:
     - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full
-    - mv build/CookBook-*-html.tar.gz . || true
-    - mv build/Documentation/Cookbook/latex/CookBook-*.pdf . || true
-    - mv build/Documentation/Doxygen/OTB-Doxygen-*.tar.bz2 . || true
     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=ON
     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=OFF
     - mv build_packages/OTB-*.tar.gz . || true
@@ -200,14 +225,14 @@ ubuntu-22-build:
       artifacts: true
 
 ubuntu-22-complete-build:
-  extends: .common-build
+  extends: .common-complete-build
   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
   script:
-    - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full
+    - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DOTB_FULL_BUILD:BOOL=ON -Dci_skip_install:BOOL=ON
     - mv build/CookBook-*-html.tar.gz . || true
     - mv build/Documentation/Cookbook/latex/CookBook-*.pdf . || true
     - mv build/Documentation/Doxygen/OTB-Doxygen-*.tar.bz2 . || true
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=OFF -DOTB_FULL_BUILD:BOOL=ON
+    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=OFF -Dci_skip_install:BOOL=ON
     - mv build_packages/OTB-*.tar.gz . || true
   needs:
     - job: ubuntu-22-prepare
@@ -267,20 +292,11 @@ redhat-build:
       artifacts: true
 
 redhat-complete-build:
-  extends: .common-build
+  extends: .common-complete-build
   image: $BUILD_IMAGE_REGISTRY/otb-redhat-superbuild-base-py312:8
   script:
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=OFF -DOTB_FULL_BUILD:BOOL=ON
-    # change package names to RedHat
-    - |
-      # use "find" to select only packages that matters
-      rh_packages=$(find build_packages -type f -name "OTB*Linux*.tar.gz")
-      for pkg in $rh_packages
-      do
-        new_name=$(sed "s/-Linux/-Linux_RedHat/g" <<< "$pkg")
-        mv $pkg $new_name
-      done
-    - mv build_packages/OTB-*.tar.gz . || true
+    - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=redhat-8-gcc -DOTB_FULL_BUILD:BOOL=ON -Dci_skip_install:BOOL=ON
+    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=OFF -Dci_skip_install:BOOL=ON
   needs:
     - job: redhat-prepare
       artifacts: true
@@ -295,6 +311,10 @@ windows-10-prepare:
     - buildcache.exe -s
     - ctest -C Release -VV -S CI/prepare_superbuild.cmake -DOTB_FULL_BUILD:BOOL=ON -DPython_ROOT_DIR:STRING="C:/tools/Python310-x64" -DIMAGE_NAME:string=windows-10-x64-vc14.29
     - buildcache.exe -s
+  after_script:
+    # need to setup path to be able to use python
+    - .\CI\setup_python.ps1 x64
+    - python -u CI/cdash_handler.py
 
 windows-10-build:
   extends: .common-build
@@ -317,17 +337,16 @@ windows-10-build:
     - python -u CI/cdash_handler.py
 
 windows-10-complete-build:
-  extends: .common-build
+  extends: .common-complete-build
   tags:
     - windows10
   script:
     - .\CI\dev_env.ps1 x64 otb 10
     - buildcache.exe -s
-    - ctest -V -S CI/main_superbuild.cmake -DPython_ROOT_DIR:STRING="C:/tools/Python310-x64" -DIMAGE_NAME:string=windows-10-x64.cmake -DOTB_FULL_BUILD:BOOL=ON
+    - ctest -V -S CI/main_superbuild.cmake -DPython_ROOT_DIR:STRING="C:/tools/Python310-x64" -DIMAGE_NAME:string=windows-10-x64.cmake -DOTB_FULL_BUILD:BOOL=ON -Dci_skip_install:BOOL=ON
     - buildcache.exe -s
     - .\CI\copy_boost_dlls.ps1
-    - ctest -V -S CI/superbuild_packaging.cmake -DPACKAGE_BY_MODULE:BOOL=OFF -DIMAGE_NAME:string=windows-10-x64-vc14.29 -DOTB_FULL_BUILD:BOOL=ON
-    - move "build_packages\OTB-*.zip" . || dir build_packages
+    - ctest -V -S CI/superbuild_packaging.cmake -DPACKAGE_BY_MODULE:BOOL=OFF -DIMAGE_NAME:string=windows-10-x64-vc14.29 -Dci_skip_install:BOOL=ON
   needs:
     - job: windows-10-prepare
       artifacts: true
@@ -394,7 +413,6 @@ ubuntu-sonar-report:
   stage: report
   only:
     refs:
-      - merge_requests
       - develop
       - /^release-[0-9]+\.[0-9]+$/
     variables:
@@ -434,6 +452,12 @@ deploy:
     - job: windows-10-build
       artifacts: true
     - job: redhat-build
+      artifacts: true
+    - job: ubuntu-22-complete-build
+      artifacts: true
+    - job: windows-10-complete-build
+      artifacts: true
+    - job: redhat-complete-build
       artifacts: true
   # remove the after_script from .common
   after_script: ""
@@ -485,7 +509,7 @@ release-docker:
     refs:
       - /^release-[0-9]+\.[0-9]+$/
   needs:
-      - job: ubuntu-22-build
+      - job: ubuntu-22-complete-build
         artifacts: true
   script:
       # to authenticate in docker hub, kaniko needs a config file located at
