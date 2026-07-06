@@ -20,6 +20,10 @@
 
 set(DOCUMENTATION "This module imports Curl to the build system")
 
+
+# set(OTBCurl_LIBRARIES ${CURL_LIBRARY_RELEASE})
+
+
 otb_module(OTBCurl
   DEPENDS
     
@@ -27,6 +31,8 @@ otb_module(OTBCurl
     
   DESCRIPTION
     "${DOCUMENTATION}"
+  COMPONENT
+    Core
   )
 
 otb_module_activation_option("Enable curl based functionalities" ON)

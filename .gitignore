@@ -13,6 +13,18 @@ archives*
 CMakeLists.txt.user
 .directory*
 build_packages*
+# Folder created by CI pipeline. Sometimes to reproduce a bug, we play CI
+# pipeline. Thus we don't want these folders to be commited
 build
 install
+xdk
 log
+superbuild-artifact
+#P0Modules to ignore now
+Modules/Miscellaneous
+Modules/FeaturesExtraction
+Modules/Learning
+Modules/SAR
+Modules/Segmentation
+Modules/Hyperspectral
+Modules/StereoProcessing

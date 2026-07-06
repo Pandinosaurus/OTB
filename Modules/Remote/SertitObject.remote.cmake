@@ -22,7 +22,8 @@
 
 #SERTIT - University of Strasbourg http://sertit.u-strasbg.fr
 #Known issue with MSVC - https://github.com/sertit/SertitObject/issues/2
-otb_fetch_module(SertitObject
+set(__mod_name SertitObject)
+otb_fetch_module(${__mod_name}
   "This module provides 2 applications dedicated to object-oriented image analysis.
 
    Aggregate application:
@@ -45,8 +46,10 @@ attributes are for each band of the input image : mean, standard-deviation,
 median, variance, kurtosis, skewness. The result could be use to perform further
 object-oriented image analysis.
 "
+  "${OTB_SOURCE_DIR}/Modules/Remote/${__mod_name}"
   GIT_REPOSITORY https://github.com/gpo-geo/SertitObject
   GIT_TAG b13961b775724c8de4fa45bc5c5bec14b6d2afef
+  GIT_SUBMODULES ON
 )
 
 # use a temporary fork because pull request #8 not merged yet

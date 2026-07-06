@@ -86,6 +86,7 @@ include(PreventInBuildInstalls)
 include(OTBModuleMacros)
 include(OTBModuleRemote)
 include(OTBModuleTest)
+include(OTBOptions)
 
 repository_status(${PROJECT_SOURCE_DIR} OTB_GIT_STATUS_MESSAGE)
 
@@ -122,14 +123,14 @@ get_package_name(${OTB_SOURCE_DIR} ${PROJECT_NAME} OTB_VERSION_STRING2)
 
 include(OTBConstants)
 
+set(OTB_DIR "${OTB_BINARY_DIR}")
+
 #-----------------------------------------------------------------------------
 string(TIMESTAMP OTB_BUILD_TIMESTAMP)
 
 # init all OTB_INSTALL const var
 get_install_const()
-if(NOT OTB_INSTALL_PYTHON_DIR)
-  set(OTB_INSTALL_PYTHON_DIR "${OTB_INSTALL_LIBRARY_DIR}/otb/python")
-endif()
+get_modules_const()
 
 #convert path to native for reconfiguring otbcli.ps1.in
 file(TO_NATIVE_PATH "${OTB_INSTALL_APP_DIR}" OTB_INSTALL_APP_DIR_NATIVE)
@@ -282,10 +283,7 @@ set(OTB_EXAMPLE_DATA_ROOT "${OTB_SOURCE_DIR}/Examples/Data")
 #----------------------------------------------------------------------
 # Make sure remote modules are downloaded before sorting out the module
 # dependencies.
-add_subdirectory(Modules/Remote)
-
-# Enable modules according to user inputs and the module dependency DAG.
-include(OTBModuleEnablement)
+add_subdirectory(Modules)
 
 #----------------------------------------------------------------------
 # Generate OTBConfig.cmake for the build tree.
@@ -295,7 +293,7 @@ set(OTB_CONFIG_CMAKE_DIR "${OTB_SOURCE_DIR}/CMake")
 set(OTB_USE_FILE "${OTB_CONFIG_CMAKE_DIR}/UseOTB.cmake")
 
 if(OTB_WRAP_PYTHON)
-set(OTB_CONFIG_CODE "${OTB_CONFIG_CODE}
+  set(OTB_CONFIG_CODE "${OTB_CONFIG_CODE}
 set(OTB_PYTHONPATH \"${OTB_BINARY_DIR}/${OTB_INSTALL_PYTHON_DIR}\")")
 endif()
 
@@ -352,14 +350,15 @@ install(FILES ${OTB_BINARY_DIR}/CMakeFiles/OTBConfig.cmake
               CMake/GenerateExportHeaderCustom.cmake
               CMake/exportheader.cmake.in
               CMake/NamespaceHandler.cmake
-              # both CMake files used for P0 modules
+              # files used for P0 modules
               CMake/OTBModuleInfo.cmake.in
+              CMake/otbConfigure.h.in
               CMake/GenericGroupConfig.cmake.in
         DESTINATION ${OTB_INSTALL_PACKAGE_DIR}
         COMPONENT Core)
 
-set(__PYTHON_VERSION_MAJOR "3")
-set(__PYTHON_VERSION_MINOR "10")
+set(_PYTHON_VERSION_MAJOR "3")
+set(_PYTHON_VERSION_MINOR "10")
 
 if (UNIX)
   # output of python3 --version is "Python XX.XX.XX", notice the space that
@@ -367,16 +366,16 @@ if (UNIX)
   execute_process(
     COMMAND python3 --version
     RESULT_VARIABLE CMD_RES
-    OUTPUT_VARIABLE __PYTHON_VERSION_DURING_BUILD
+    OUTPUT_VARIABLE _PYTHON_VERSION_DURING_BUILD
   )
   # Get the first two digit and concatenate them
-  string(REGEX MATCH " ([0-9]+)\.([0-9]+)" TMP_VAR "${__PYTHON_VERSION_DURING_BUILD}")
+  string(REGEX MATCH " ([0-9]+)\.([0-9]+)" TMP_VAR "${_PYTHON_VERSION_DURING_BUILD}")
 
   if (${CMAKE_MATCH_COUNT} EQUAL 2)
     # CMAKE_MATCH_0 is the entire match
     # See https://cmake.org/cmake/help/latest/variable/CMAKE_MATCH_n.html
-    set(__PYTHON_VERSION_MAJOR "${CMAKE_MATCH_1}")
-    set(__PYTHON_VERSION_MINOR "${CMAKE_MATCH_2}")
+    set(_PYTHON_VERSION_MAJOR "${CMAKE_MATCH_1}")
+    set(_PYTHON_VERSION_MINOR "${CMAKE_MATCH_2}")
   endif()
 endif()
 
@@ -390,7 +389,7 @@ if(XDK_INSTALL_PATH)
             COMPONENT Dependencies)
     # Redhat8 case : the bindings are installed by default in lib64/python3.12
     if( EXISTS ${XDK_INSTALL_PATH}/lib64)
-      install(DIRECTORY "${XDK_INSTALL_PATH}/lib64/python${__PYTHON_VERSION_MAJOR}.${__PYTHON_VERSION_MINOR}"
+      install(DIRECTORY "${XDK_INSTALL_PATH}/lib64/python${_PYTHON_VERSION_MAJOR}.${_PYTHON_VERSION_MINOR}"
               DESTINATION ./lib
               USE_SOURCE_PERMISSIONS
               COMPONENT Dependencies)
@@ -459,7 +458,7 @@ if(UNIX)
     COMPONENT Core
     )
 
-  # the file need __PYTHON_VERSION_MAJOR and __PYTHON_VERSION_MINOR vars
+  # the file need _PYTHON_VERSION_MAJOR and _PYTHON_VERSION_MINOR vars
   configure_file(${OTB_SOURCE_DIR}/Packaging/Files/post_install.sh.in
                  ${CMAKE_BINARY_DIR}/post_install.sh @ONLY)
   install( PROGRAMS
@@ -496,10 +495,6 @@ install(FILES ${CMAKE_BINARY_DIR}/README DESTINATION . COMPONENT Core)
 if(BUILD_TESTING)
   add_subdirectory(Utilities/InstallTest)
 endif()
-#-----------------------------------------------------------------------------
-# The subdirectories added below this line should use only the public
-# interface with find_package(ITK). Set ITK_DIR to use this ITK build.
-set(OTB_DIR "${OTB_BINARY_DIR}")
 
 if(BUILD_EXAMPLES)
   add_subdirectory(Examples)
@@ -562,8 +557,16 @@ if(OTB_DATA_GIT_STATUS_MESSAGE)
   message( ${OTB_DATA_GIT_STATUS_MESSAGE})
 endif()
 
-set(option_list ${OTB_MODULE_ACTIVATION_OPTION_LIST})
-list(SORT option_list)
+# get the list of all activable modules in activated groups
+set(_all_activable_modules "")
+get_property(_groups_enabled GLOBAL PROPERTY OTB_GROUPS_ENABLED)
+
+foreach(_group ${_groups_enabled})
+  get_property(_group_activable_modules GLOBAL PROPERTY ${_group}_MODULE_ACTIVATION_OPTION_LIST)
+  list(APPEND _all_activable_modules ${_group_activable_modules})
+endforeach()
+
+list(SORT _all_activable_modules)
 
 foreach(otb_option
     CMAKE_SOURCE_DIR
@@ -577,7 +580,7 @@ foreach(otb_option
     CMAKE_BUILD_TYPE
     CMAKE_C_FLAGS
     CMAKE_CXX_FLAGS
-    ${option_list}
+    ${_all_activable_modules}
     OTB_WRAP_PYTHON
     OTB_WRAP_QGIS
     OTB_DATA_ROOT
@@ -661,21 +664,9 @@ message("\nCMake ${CMAKE_VERSION} successfully configured ${PROJECT_NAME} using 
 
 message("======================= End of OTB cmake summary =======================")
 
-# create all needed config files here
-get_property(GROUPS_ENABLED GLOBAL PROPERTY OTB_GROUPS_ENABLED)
-foreach(otb-group IN LISTS GROUPS_ENABLED)
-  get_property(GROUP_DEPS GLOBAL PROPERTY ${otb-group}_MOD_DEPS)
-  set(__ENABLED_MODULES ${OTB_${otb-group}_MODULES_ENABLED})
-  configure_file(CMake/GenericGroupConfig.cmake.in CMakeFiles/${otb-group}Config.cmake @ONLY)
-  install(FILES ${OTB_BINARY_DIR}/CMakeFiles/${otb-group}Config.cmake
-          DESTINATION ${OTB_INSTALL_PACKAGE_DIR}
-          COMPONENT ${otb-group})
-  unset(__ENABLED_MODULES)
-endforeach() # otb-group IN GROUPS_ENABLED
-
 
 #don't need this one anymore. so unset it.
 unset(option_list)
 
-#----------------------------------------------------------------------------
-include(Packaging_OTB)
+
+

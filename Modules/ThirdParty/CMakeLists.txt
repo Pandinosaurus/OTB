@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+# Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
 #
 # This file is part of Orfeo Toolbox
 #
@@ -18,11 +18,25 @@
 # limitations under the License.
 #
 
-project(OTBGDAL)
+# Add the subdirectory depending of cmake activation options
+if (OTB_USE_6S)
+  add_subdirectory(6S)
+endif()
+if (OTB_USE_GSL)
+  add_subdirectory(GSL)
+endif()
+if (OTB_USE_LIBKML)
+  add_subdirectory(libkml)
+endif()
+if (OTB_USE_SIFTFAST)
+  add_subdirectory(SiftFast)
+endif()
 
-include(otb-module-init.cmake)
-
-set(OTBGDAL_SYSTEM_INCLUDE_DIRS ${GDAL_INCLUDE_DIRS})
-set(OTBGDAL_LIBRARIES "${GDAL_LIBRARIES}")
-
-otb_module_impl()
+add_subdirectory(ITK)
+add_subdirectory(Boost)
+add_subdirectory(Curl)
+add_subdirectory(Date)
+add_subdirectory(GDAL)
+add_subdirectory(GeoTIFF)
+add_subdirectory(TIFF)
+add_subdirectory(TinyXML)

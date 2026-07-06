@@ -27,6 +27,8 @@ otb_module(OTBSiftFast
     
   DESCRIPTION
     "${DOCUMENTATION}"
+  COMPONENT
+    Core
   )
 
 otb_module_activation_option("Enable SiftFast dependent modules" ON)

@@ -42,8 +42,14 @@ if(NOT EXISTS ${OTB_CMAKE_DIR}/OTBModuleMacros.cmake)
 endif()
 
 if(OTB_BUILD_MODULE_AS_STANDALONE)
-  message(STATUS "You are building this module as a standalone CMake project. "
+  # Display the standalone message once avoid spaming cmake display
+  get_property(STANDALONE_MSG_DEPS GLOBAL PROPERTY STANDALONE_MSG_DEPS_PROPERTY)
+  if (NOT STANDALONE_MSG_DEPS)
+    message(STATUS "You are building this module as a standalone CMake project. "
           "Beware that dependencies to other remote modules will not be tracked.")
+    set_property(GLOBAL PROPERTY STANDALONE_MSG_DEPS_PROPERTY YES)
+  endif()
+
   include(OTBStandaloneModuleMacros)
   otb_module_impl()
 else()
@@ -62,6 +68,7 @@ else()
   # Retrieve all OTB_INSTALL_XXX consts
   include(OTBConstants)
   get_install_const()
+  get_modules_const()
 
   # Use OTB's flags.
   set(CMAKE_C_FLAGS "${OTB_REQUIRED_C_FLAGS} ${CMAKE_C_FLAGS}")
@@ -88,8 +95,8 @@ else()
   include(otb-module.cmake)
   set(${otb-module}-targets ${otb-module}Targets)
   set(${otb-module}-targets-install "\${OTB_INSTALL_PREFIX}/${OTB_INSTALL_PACKAGE_DIR}/${otb-module}Targets.cmake")
-  set(${otb-module}_TARGETS_FILE_INSTALL "${${otb-module}-targets-install}")
   set(${otb-module}-targets-build "${OTB_DIR}/${OTB_INSTALL_PACKAGE_DIR}/Modules/${otb-module}Targets.cmake")
+  set(${otb-module}_TARGETS_FILE_INSTALL "${${otb-module}-targets-install}")
   otb_module_impl()
 
   if (CMAKE_DEBUG)

@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-find_package ( GDAL REQUIRED )
+# the find_package ( GDAL REQUIRED ) is already done in OTBOptions.cmake
 mark_as_advanced(GDAL_INCLUDE_DIR)
 mark_as_advanced(GDAL_LIBRARY)
 mark_as_advanced(GDAL_CONFIG)
@@ -40,7 +40,7 @@ set(MIN_MINOR_VERSION 0)
 
 # Ensure that the temporary dir always exists before starting tests
 if(NOT EXISTS ${TEMP})
-  FILE(MAKE_DIRECTORY ${TEMP})
+  file(MAKE_DIRECTORY ${TEMP})
 endif()
 
 set(GDAL_CONFIG_CHECKING OFF CACHE BOOL "Tests to check gdal config." FORCE)
@@ -63,8 +63,7 @@ macro(gdal_try_run msg_type var source_file)
   ARGS ${ARGN}
   )
   if(NOT COMPILE_${var})
-    error_message("Compiling Test ${var} - Failed \n"
-                  "COMPILE_OUTPUT_${var}: '${COMPILE_OUTPUT_${var}}'")
+    error_message("Compiling Test ${var} - Failed\nCOMPILE_OUTPUT_${var}: '${COMPILE_OUTPUT_${var}}'")
   endif()
   if(RUN_${var})
     set(${var} FALSE)

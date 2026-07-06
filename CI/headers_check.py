@@ -106,6 +106,7 @@ excludeddirs = set([
 # licenses, binary archives, ...)
 excludedfiles = set([
     './.clang-format',
+    './.clangd',
     './.editorconfig',
     './.gitattributes',
     './.gitmodules',

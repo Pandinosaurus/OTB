@@ -18,11 +18,22 @@
 # limitations under the License.
 #
 
-project(OTBGDAL)
+if(BUILD_TESTING)
+  enable_testing()
+endif()
 
-include(otb-module-init.cmake)
+add_subdirectory(ThirdParty)
+add_subdirectory(Core)
+include("OTBInternalModules.cmake")
 
-set(OTBGDAL_SYSTEM_INCLUDE_DIRS ${GDAL_INCLUDE_DIRS})
-set(OTBGDAL_LIBRARIES "${GDAL_LIBRARIES}")
+if (OTB_BUILD_Remote OR OTBGroup_Remote)
+  # ensure option are ON if used later in code
+  option(OTB_BUILD_Remote "Request building Remote modules" TRUE)
+  option(OTBGroup_Remote "Request building Remote modules" TRUE)
+  add_subdirectory(Remote)
+endif()
 
-otb_module_impl()
+# NOTE TLA: this should be refactored and put in a separate function
+# Add the QGIS Wrapper at the last minute as it need all the OTB applications
+# to be declared
+add_subdirectory(Core/Wrappers/QGIS)

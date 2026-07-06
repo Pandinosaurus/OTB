@@ -18,36 +18,30 @@
  * limitations under the License.
  */
 
-
-#include "otbCoreConfigure.h" // for OTB_USE_CURL
-#include "otbCurlHelperInterface.h"
-
-#ifdef OTB_USE_CURL
-#include "otb_curl.h"
+#ifndef OTB_VERSION_MAJOR
+#define OTB_VERSION_MAJOR @OTB_VERSION_MAJOR@
 #endif
 
-namespace otb
-{
-
-bool CurlHelperInterface::IsCurlAvailable()
-{
-#ifdef OTB_USE_CURL
-  const bool curlAvailable = true;
-#else
-  const bool curlAvailable      = false;
+#ifndef OTB_VERSION_MINOR
+#define OTB_VERSION_MINOR @OTB_VERSION_MINOR@
 #endif
 
-  return curlAvailable;
-}
-
-bool CurlHelperInterface::IsCurlMultiAvailable()
-{
-#ifdef OTB_CURL_MULTI_AVAILABLE
-  const bool curlMultiAvailable = true;
-#else
-  const bool curlMultiAvailable = false;
+#ifndef OTB_VERSION_PATCH
+#define OTB_VERSION_PATCH @OTB_VERSION_PATCH@
 #endif
 
-  return curlMultiAvailable;
-}
-}
+#ifndef OTB_VERSION_STRING
+#define OTB_VERSION_STRING "@OTB_VERSION_STRING@"
+#endif
+
+#ifndef OTB_CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS
+#cmakedefine OTB_CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS
+#endif
+
+#ifndef OTB_USE_OPENMP
+#cmakedefine OTB_USE_OPENMP
+#endif
+
+#ifndef OTB_USE_SSE_FLAGS
+#cmakedefine OTB_USE_SSE_FLAGS
+#endif
