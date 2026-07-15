@@ -135,6 +135,11 @@ stages:
       - build/coverage_report.xml
       - build/Testing/Temporary/*.txt #DEBUG
       - Docker/Dockerfile_CI
+      # Save build artefacts
+      - build/Testing/*/Update.xml
+      - build/Testing/*/Configure.xml
+      - build/Testing/*/Build.xml
+      - build/Testing/*/Done.xml
 
 .common-prepare:
   extends: .common

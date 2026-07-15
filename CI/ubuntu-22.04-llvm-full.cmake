@@ -29,6 +29,7 @@ set(site_option
   "CMAKE_C_COMPILER_LAUNCHER:STRING=ccache"
   "CMAKE_CXX_COMPILER_LAUNCHER:STRING=ccache"
   "USE_SYSTEM_OPENSSL:BOOL=OFF"
+  "OTB_USE_OPENMP:BOOL=OFF"
 )
 
 if (OTB_FULL_BUILD)
@@ -45,28 +46,9 @@ if (OTB_FULL_BUILD)
     "OTB_USE_MUPARSER:BOOL=ON"
     "OTB_USE_MUPARSERX:BOOL=ON"
     "OTB_USE_OPENCV:BOOL=ON"
-    "OTB_USE_OPENMP:BOOL=ON"
     "OTB_USE_SHARK:BOOL=ON")
-else()
-  list(APPEND site_option
-    "OTB_BUILD_FeaturesExtraction:BOOL=OFF"
-    "OTB_BUILD_Hyperspectral:BOOL=OFF"
-    "OTB_BUILD_Learning:BOOL=OFF"
-    "OTB_BUILD_Miscellaneous:BOOL=OFF"
-    "OTB_BUILD_Remote:BOOL=OFF"
-    "OTB_BUILD_SAR:BOOL=OFF"
-    "OTB_BUILD_Segmentation:BOOL=OFF"
-    "OTB_BUILD_StereoProcessing:BOOL=OFF"
-    "OTB_USE_LIBSVM:BOOL=OFF"
-    "OTB_USE_MUPARSER:BOOL=OFF"
-    "OTB_USE_MUPARSERX:BOOL=OFF"
-    "OTB_USE_OPENCV:BOOL=OFF"
-    "OTB_USE_OPENMP:BOOL=OFF"
-    "OTB_USE_SHARK:BOOL=OFF")
-endif()
 
-# generates doc only when doing full build
-if (OTB_FULL_BUILD)
+  # generates doc only when doing full build
   if(NOT ${ci_do_cookbook} EQUAL -1)
     list(APPEND site_option "BUILD_COOKBOOK:BOOL=ON")
   endif()
@@ -85,4 +67,19 @@ if (OTB_FULL_BUILD)
     execute_process(COMMAND gzip -d InsightDoxygenDocTag-5.3.0.gz
                     WORKING_DIRECTORY ${CTEST_BINARY_DIRECTORY})
   endif()
+else()
+  list(APPEND site_option
+    "OTB_BUILD_FeaturesExtraction:BOOL=OFF"
+    "OTB_BUILD_Hyperspectral:BOOL=OFF"
+    "OTB_BUILD_Learning:BOOL=OFF"
+    "OTB_BUILD_Miscellaneous:BOOL=OFF"
+    "OTB_BUILD_Remote:BOOL=OFF"
+    "OTB_BUILD_SAR:BOOL=OFF"
+    "OTB_BUILD_Segmentation:BOOL=OFF"
+    "OTB_BUILD_StereoProcessing:BOOL=OFF"
+    "OTB_USE_LIBSVM:BOOL=OFF"
+    "OTB_USE_MUPARSER:BOOL=OFF"
+    "OTB_USE_MUPARSERX:BOOL=OFF"
+    "OTB_USE_OPENCV:BOOL=OFF"
+    "OTB_USE_SHARK:BOOL=OFF")
 endif()
