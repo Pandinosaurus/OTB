@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -87,10 +87,20 @@ auto SetInputRequestedRegions(std::tuple<T...>&& t, const itk::ImageRegion<2>& r
   return SetInputRequestedRegionsImpl<HasNeighborhood>(t, region, std::make_index_sequence<sizeof...(T)>{}, radius);
 }
 
+inline void assert_all_true() {}
+template <typename... bools>
+void assert_all_true(bool head, bools ... tail)
+{
+  (void) head;
+  assert(head);
+  assert_all_true(tail...);
+}
+
 // Will be easier to write in c++17 with std::apply and fold expressions
 template <class Tuple, size_t... Is>
 auto GetNumberOfComponentsPerInputImpl(Tuple& t, std::index_sequence<Is...>)
 {
+  assert_all_true(std::get<Is>(t)...);
   return std::array<size_t, sizeof...(Is)>{{std::get<Is>(t)->GetNumberOfComponentsPerPixel()...}};
 }
 
@@ -112,6 +122,7 @@ struct MakeIterator<std::false_type>
   template <class T>
   static auto Make(const T* img, const itk::ImageRegion<2>& region, const itk::Size<2>&)
   {
+    assert(img);
     itk::ImageRegionConstIterator<T> it(img, region);
     return it;
   }
@@ -123,6 +134,7 @@ struct MakeIterator<std::true_type>
   template <class T>
   static auto Make(const T* img, const itk::ImageRegion<2>& region, const itk::Size<2>& radius)
   {
+    assert(img);
     itk::ConstNeighborhoodIterator<T> it(radius, img, region);
     return it;
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,6 +33,10 @@
 #include "itkThreadSupport.h"
 #include "otbCoreConfigure.h"
 #include "otbLogger.h"
+#include "otbNoDiscardMacro.h"
+#include "otbMetaProgrammingLibrary.h"
+
+#include <utility> // std::forward
 
 /**
  * \namespace otb
@@ -43,6 +47,7 @@
 namespace otb
 {
 } // end namespace otb - this is here for documentation purposes
+
 /* ITK 5.0 uses a different threading model compared to ITK 4.x.
  * This has a significant impact on OTB as we make heavy use of itk filters.
  * DynamicThreadedGenerateData() is the newer variant without threadId,
@@ -80,7 +85,7 @@ namespace otb
  * 2018-06-04 15:30:09 (DEBUG): /usr/src/ports/itk/Modules/Core/Common/src/itkPoolMultiThreader.cxx:202:
  * itk::ERROR: PoolMultiThreader(0xabad1dea): Exception occurred during SingleMethodExecute
  * /home/rashad/local/include/ITK-5.0/itkImageSource.hxx:276:
- * itk::ERROR: ShiftScaleImageFilter(0xabad1deaff): Subclass should override this method!!! 
+ * itk::ERROR: ShiftScaleImageFilter(0xabad1deaff): Subclass should override this method!!!
  * If old behavior is desired invoke this->DynamicMultiThreadingOff(); before Update() is called. The best place is in class constructor.
  */
 #define OTB_DISABLE_DYNAMIC_MT this->DynamicMultiThreadingOff();
@@ -126,7 +131,10 @@ namespace otb
       itkGenericExceptionMacro(<< message);              \
   }
 
-/** Set built-in type.  Creates member Set"name"() (e.g., SetVisibility()); */
+/** Set built-in type.
+ * Creates member `Set"name"()` (e.g., `SetVisibility()`);
+ * \see `otbSetMacro` and `otb_set_macro`
+ */
 #define otbSetObjectMemberMacro(object, name, type)        \
   virtual void Set##name(const type _arg)                  \
   {                                                        \
@@ -135,7 +143,10 @@ namespace otb
     this->Modified();                                      \
   }
 
-/** Get built-in type.  Creates member Get"name"() (e.g., GetVisibility()); */
+/** Get built-in type.
+ * Creates member `Get"name"()` (e.g., `GetVisibility()`);
+ * \see `otbGetMacro` and `otb_get_macro`
+ */
 #define otbGetObjectMemberMacro(object, name, type)                               \
   virtual type Get##name()                                                        \
   {                                                                               \
@@ -143,9 +154,12 @@ namespace otb
     return this->m_##object->Get##name();                                         \
   }
 
-/** Get built-in type.  Creates member Get"name"() (e.g., GetVisibility());
- * This is the "const" form of the itkGetMacro.  It should be used unless
- * the member can be changed through the "Get" access routine. */
+/** Get built-in type.
+ * Creates member `Get"name"()` (e.g., `GetVisibility()`);
+ * This is the `const` form of the `itkGetMacro`.  It should be used unless
+ * the member can be changed through the "Get" access routine.
+ * \see `otbGetMacro` and `otb_get_macro`
+ */
 #define otbGetObjectMemberConstMacro(object, name, type)                          \
   virtual type Get##name() const                                                  \
   {                                                                               \
@@ -153,16 +167,80 @@ namespace otb
     return this->m_##object->Get##name();                                         \
   }
 
-/** Get built-in type.  Creates member Get"name"() (e.g., GetVisibility());
- * This is the "const" form of the itkGetMacro.  It should be used unless
+/** Get built-in type.
+ * Creates member `Get"name"()` (e.g., `GetVisibility()`);
+ * This is the `const` form of the `itkGetMacro`.  It should be used unless
  * the member can be changed through the "Get" access routine.
- * This versions returns a const reference to the variable. */
+ * This versions returns a const reference to the variable.
+ * \see `otbGetMacro` and `otb_get_macro`
+ */
 #define otbGetObjectMemberConstReferenceMacro(object, name, type)                 \
   virtual const type& Get##name() const                                           \
   {                                                                               \
     itkDebugMacro("returning " << #name " of " << this->m_##object->Get##name()); \
     return this->m_##object->Get##name();                                         \
   }
+
+/**
+ * Defines the `UpperCamelCase` setter named `Set{name}`.
+ * The setter will assign its parameter to member variable `m_{name}`.
+ * \note The value is perfectly forwarded (through an _universal/perfect reference_).
+ * \note Unlike the other macros, no call to `Modified()` is issued.
+ * \note It isn't `virtual` either.
+ */
+#define otbSetMacro(name)                                  \
+  template <typename T>                                    \
+  void Set##name(T&& arg)                                  \
+  {                                                        \
+    otbLogMacro(Debug, << "setting " #name " to " << arg); \
+    this->m_##name = std::forward<T>(arg);                 \
+  }
+
+/**
+ * Defines the `snake_case` setter named `set_{name}`.
+ * The setter will assign its parameter to member variable `m_{name}`.
+ * \note The value is perfectly forwarded (through an _universal/perfect reference_).
+ * \note Unlike the other macros, no call to `Modified()` is issued.
+ * \note It isn't `virtual` either.
+ */
+#define otb_set_macro(name)                \
+  template <typename T>                    \
+  void set_##name(T&& arg)                 \
+  {                                        \
+    this->m_##name = std::forward<T>(arg); \
+  }
+
+/**
+ * Defines the `UpperCamelCase` getter named `Get{name}`.
+ * The getter will return the member variable `m_{name}`.
+ * \note The value is returned by-value if variable type is _trivially copiable_ and smaller than
+ * 128bits. It's returned by-const-reference otherwise.
+ * \warning Given the parameter type is auto-deduced, the getter needs to be declared after the
+ * attribute is declared.
+ */
+#define otbGetMacro(name)                          \
+  OTB_NODISCARD auto Get##name() const noexcept    \
+  -> otb::best_way_to_return_t<decltype(m_##name)> \
+  {                                                \
+    return this->m_##name;                         \
+  }
+
+/**
+ * Defines the `snake_case` getter named `get_{name}`.
+ * The getter will return the member variable `m_{name}`.
+ * \note The value is returned by-value if variable type is _trivially copiable_ and smaller than
+ * 128bits. It's returned by-const-reference otherwise.
+ * \warning Given the parameter type is auto-deduced, the getter needs to be declared after the
+ * attribute is declared.
+ */
+#define otb_get_macro(name)                         \
+  OTB_NODISCARD auto get_##name() const noexcept    \
+  -> otb::best_way_to_return_t<decltype(m_##name)>  \
+  {                                                 \
+    return this->m_##name;                          \
+  }
+
+
 
 /** Testing macro. This macro doesn't throw a exception if the called command
  * generate a itk::ExceptionObject object. For all others use cases, the macro
@@ -187,13 +265,29 @@ namespace otb
     std::cout << " Checking valid command " << #command " ok." << std::endl;                \
   }
 
+/** Helper macro to raise specified exception type.
+ * \tparam T the exception type shall have a constructor that also takes `__FILE__`, `__LINE__`
+ *           and `ITK_LOCATION` information.
+ * \see `otbRaise`
+ */
 #define otbGenericExceptionMacro(T, x)                     \
   {                                                        \
     std::ostringstream message;                            \
     message << "otb::ERROR: " x;                           \
     T e_(__FILE__, __LINE__, message.str(), ITK_LOCATION); \
     throw e_;                                              \
-  }
+ }
+
+/** Helper macro to raise `std::runtime_error`.
+ * Sometimes we don't need to report file and line from where exceptions are thrown.
+ * \see `otbGenericExceptionMacro`
+ */
+#define otbRaise(stream)                   \
+    {                                      \
+      std::ostringstream oss;              \
+      oss << stream;                       \
+      throw std::runtime_error(oss.str()); \
+    }
 
 #define otbTestingCheckNotValidCommand(command)                                             \
   {                                                                                         \
@@ -202,18 +296,18 @@ namespace otb
     {                                                                                       \
       command;                                                                              \
     }                                                                                       \
-    catch (std::bad_alloc & err)                                                            \
+    catch (std::bad_alloc const&)                                                       \
     {                                                                                       \
-      throw err;                                                                            \
+      throw;                                                                                \
     }                                                                                       \
     catch (itk::ExceptionObject&)                                                           \
     {                                                                                       \
       std::cout << "Checking not valid Command " << #command " ok." << std::endl;           \
       result = 0;                                                                           \
     }                                                                                       \
-    catch (const std::exception& stde)                                                      \
+    catch (const std::exception&)                                                      \
     {                                                                                       \
-      throw stde;                                                                           \
+      throw;                                                                                \
     }                                                                                       \
     catch (...)                                                                             \
     {                                                                                       \

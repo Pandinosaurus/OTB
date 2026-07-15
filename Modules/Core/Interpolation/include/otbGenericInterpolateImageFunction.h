@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,10 +45,10 @@ class ITK_EXPORT GenericInterpolateImageFunction : public itk::InterpolateImageF
 {
 public:
   /** Standard class typedefs. */
-  typedef GenericInterpolateImageFunction Self;
-  typedef itk::InterpolateImageFunction<TInputImage, TCoordRep> Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
+  using Self         = GenericInterpolateImageFunction;
+  using Superclass   = itk::InterpolateImageFunction<TInputImage, TCoordRep>;
+  using Pointer      = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(GenericInterpolateImageFunction, itk::InterpolateImageFunction);
@@ -57,21 +57,21 @@ public:
   itkNewMacro(Self);
 
   /** Input and output images typedef definition. */
-  typedef typename Superclass::OutputType     OutputType;
-  typedef typename Superclass::InputImageType InputImageType;
+  using OutputType     = typename Superclass::OutputType;
+  using InputImageType = typename Superclass::InputImageType;
 
   /** Dimension underlying input image. */
   // itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Index and typedef support. */
-  typedef typename Superclass::IndexType    IndexType;
-  typedef typename InputImageType::SizeType SizeType;
-  typedef typename Superclass::RealType     RealType;
-  typedef TFunction                         FunctionType;
-  typedef itk::ConstNeighborhoodIterator<InputImageType, TBoundaryCondition> IteratorType;
+  using IndexType    = typename Superclass::IndexType;
+  using SizeType     = typename InputImageType::SizeType;
+  using RealType     = typename Superclass::RealType;
+  using FunctionType = TFunction;
+  using IteratorType = itk::ConstNeighborhoodIterator<InputImageType, TBoundaryCondition>;
 
   /** ContinuousIndex typedef support. */
-  typedef typename Superclass::ContinuousIndexType ContinuousIndexType;
+  using ContinuousIndexType = typename Superclass::ContinuousIndexType;
 
   /** Dimension underlying input image. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
@@ -88,7 +88,7 @@ public:
 
   /** Set/Get the window radius*/
   virtual void SetRadius(unsigned int rad);
-  virtual typename itk::InterpolateImageFunction<TInputImage, TCoordRep>::SizeType GetRadius() const
+  typename itk::InterpolateImageFunction<TInputImage, TCoordRep>::SizeType GetRadius() const override
   {
     auto rad = m_Function.GetRadius();
     typename itk::InterpolateImageFunction<TInputImage, TCoordRep>::SizeType size({rad,rad});
@@ -101,7 +101,7 @@ public:
   // virtual void SetWindowSize(unsigned int win){ m_WindowSize = win; };
 
   /** Get the functor list */
-  virtual FunctionType& GetFunction(void)
+  virtual FunctionType& GetFunction()
   {
     return m_Function;
   }
@@ -116,7 +116,6 @@ public:
 protected:
   GenericInterpolateImageFunction();
   ~GenericInterpolateImageFunction() override;
-  void PrintSelf(std::ostream& os, itk::Indent indent) const override;
 
   /** Call the superclass implementation and set the TablesHaveBeenGenerated
    * flag to false */

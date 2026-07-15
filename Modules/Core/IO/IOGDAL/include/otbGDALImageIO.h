@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  * Copyright (C) 2018-2020 CS Systemes d'Information (CS SI)
  *
  * This file is part of Orfeo Toolbox
@@ -10,7 +10,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,10 +23,7 @@
 #define otbGDALImageIO_h
 
 
-/* C++ Libraries */
-#include <string>
-
-/* ITK Libraries */
+/* OTB Libraries */
 #include "otbImageIOBase.h"
 #include "otbMetadataSupplierInterface.h"
 #include "otbMetadataStorageInterface.h"
@@ -34,12 +31,17 @@
 #include "OTBIOGDALExport.h"
 #include "otbSpatialReference.h"
 
+/* C++ Libraries */
+#include <string>
+#include <unordered_map>
+
+
 class GDALDataset;
 
 namespace otb
 {
 class GDALDatasetWrapper;
-class GDALDataTypeWrapper;
+struct GDALDataTypeWrapper;
 
 /** \class GDALImageIO
  *

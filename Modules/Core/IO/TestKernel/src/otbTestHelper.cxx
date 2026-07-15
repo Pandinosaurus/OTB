@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999-2011 Insight Software Consortium
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -10,7 +10,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -724,7 +724,6 @@ int TestHelper::RegressionTestDiffFile(const char* testAsciiFileName, const char
       validTestLines.push_back(curPosTest);
 
       // get number of equivalent separators and tokens to find the best match
-      int                       commonTokens      = 0;
       int                       firstCommonTokens = 0;
       int                       firstNumericToken = -1;
       unsigned int              commonSeparators  = 0;
@@ -847,7 +846,6 @@ int TestHelper::RegressionTestDiffFile(const char* testAsciiFileName, const char
         }
         if (areTokensEquivalent)
         {
-          commonTokens++;
           if (differencesPos.empty())
           {
             firstCommonTokens++;
@@ -1203,10 +1201,10 @@ int TestHelper::RegressionTestBinaryFile(const char* testBinaryFileName, const c
 
 int TestHelper::RegressionTestImage(int cpt, const char* testImageFilename, const char* baselineImageFilename, const double toleranceDiffPixelImage) const
 {
-  
+
   using ImageType = otb::VectorImage<double, 2>;
   using ReaderType = otb::ImageFileReader<ImageType>;
-  
+
   // Read the baseline image information
   auto baselineReader = ReaderType::New();
   baselineReader->SetFileName(baselineImageFilename);
@@ -1430,7 +1428,7 @@ namespace
   \return number of different elements.
 */
 template <class MapType, class BinaryPredicate >
-int CompareMetadataDict( const MapType & baselineMap, 
+int CompareMetadataDict( const MapType & baselineMap,
                          const MapType & testMap,
                           bool reportErrors,
                           std::vector< typename MapType::key_type> untestedKeys,
@@ -1462,7 +1460,7 @@ int CompareMetadataDict( const MapType & baselineMap,
         errorCount++;
         if (reportErrors)
         {
-          std::cerr << "Metadata key " << otb::MetaData::EnumToString(first1->first) 
+          std::cerr << "Metadata key " << otb::MetaData::EnumToString(first1->first)
                     << " does not match between test and baseline images:\n"
                     << "Baseline image: " << first2->second << "\n"
                     << "Test image: " << first1->second << "\n";
@@ -1474,13 +1472,13 @@ int CompareMetadataDict( const MapType & baselineMap,
       {
         errorCount++;
         if (reportErrors)
-          std::cerr << "Metadata " << otb::MetaData::EnumToString(first1->first) 
+          std::cerr << "Metadata " << otb::MetaData::EnumToString(first1->first)
                     << " does not match between test and baseline images:\n"
                     << "Baseline image: " << first2->second << "\n"
                     << "Test image: " << first1->second << "\n";
       }
     }
-    
+
     ++first1;
     ++first2;
   }
@@ -1491,13 +1489,13 @@ int CompareMetadataDict( const MapType & baselineMap,
 
 
 template <class MapType>
-int CompareMetadataDict( const MapType & baselineMap, 
+int CompareMetadataDict( const MapType & baselineMap,
                          const MapType & testMap,
                           bool reportErrors,
                           std::vector< typename MapType::key_type> untestedKeys)
 {
-  auto p = []( const typename MapType::mapped_type & rhs, 
-               const typename MapType::mapped_type & lhs) 
+  auto p = []( const typename MapType::mapped_type & rhs,
+               const typename MapType::mapped_type & lhs)
           {return rhs == lhs;};
   return CompareMetadataDict(baselineMap, testMap, reportErrors, untestedKeys, p);
 }
@@ -1671,7 +1669,7 @@ int TestHelper::RegressionTestMetaData(const char* testImageFilename, const char
       }
     }
   }
-  
+
   const auto & baselineImageMetadata = blImPtr->GetImageMetadata();
   const auto & testImageMetadata = testImPtr->GetImageMetadata();
 
@@ -1679,46 +1677,46 @@ int TestHelper::RegressionTestMetaData(const char* testImageFilename, const char
   // Don't test OTB_VERSION, as it changes with the version of OTB used
   std::vector<MDStr> untestedMDStr = {MDStr::OtbVersion};
   errcount += CompareMetadataDict(baselineImageMetadata.StringKeys,
-				  testImageMetadata.StringKeys,
-				  m_ReportErrors,
+          testImageMetadata.StringKeys,
+          m_ReportErrors,
           untestedMDStr);
 
   // Compare numeric keys
   auto compareDouble = [tolerance](double lhs, double rhs)
-        {return fabs(lhs - rhs) 
+        {return fabs(lhs - rhs)
                 <= ( (fabs(lhs) < fabs(rhs) ? fabs(rhs) : fabs(lhs)) * tolerance);};
 
   // Don't test TileHints and datatype, as these metadata are written by gdal drivers, not otb.
   std::vector<MDNum> untestedMDNum  = {MDNum::TileHintX, MDNum::TileHintY, MDNum::DataType};
   errcount += CompareMetadataDict(baselineImageMetadata.NumericKeys,
-				  testImageMetadata.NumericKeys,
-				  m_ReportErrors,
-				  untestedMDNum,
-				  compareDouble);
+          testImageMetadata.NumericKeys,
+          m_ReportErrors,
+          untestedMDNum,
+          compareDouble);
 
   // Compare time keys (strict equality)
-  errcount += CompareMetadataDict(baselineImageMetadata.TimeKeys, 
-				  testImageMetadata.TimeKeys,
-				  m_ReportErrors,
-				  {});
+  errcount += CompareMetadataDict(baselineImageMetadata.TimeKeys,
+          testImageMetadata.TimeKeys,
+          m_ReportErrors,
+          {});
 
 
   // Compare LUTs (strict equality)
-  errcount += CompareMetadataDict(baselineImageMetadata.LUT1DKeys, 
-				  testImageMetadata.LUT1DKeys,
-				  m_ReportErrors,
-				  {});
+  errcount += CompareMetadataDict(baselineImageMetadata.LUT1DKeys,
+          testImageMetadata.LUT1DKeys,
+          m_ReportErrors,
+          {});
 
-  errcount += CompareMetadataDict(baselineImageMetadata.LUT2DKeys, 
-				  testImageMetadata.LUT2DKeys,
-				  m_ReportErrors,
-				  {});
+  errcount += CompareMetadataDict(baselineImageMetadata.LUT2DKeys,
+          testImageMetadata.LUT2DKeys,
+          m_ReportErrors,
+          {});
 
 
   // Compare extra keys
-  errcount += CompareMetadataDict(baselineImageMetadata.ExtraKeys, 
-				  testImageMetadata.ExtraKeys,
-				  m_ReportErrors,
+  errcount += CompareMetadataDict(baselineImageMetadata.ExtraKeys,
+          testImageMetadata.ExtraKeys,
+          m_ReportErrors,
           {});
 
 
@@ -1733,9 +1731,9 @@ int TestHelper::RegressionTestMetaData(const char* testImageFilename, const char
       }
 
     }
-    //if (!(boost::any_cast<Projection::RPCParam>(baselineImageMetadata[MDGeom::RPC]) 
+    //if (!(boost::any_cast<Projection::RPCParam>(baselineImageMetadata[MDGeom::RPC])
     //      == boost::any_cast<Projection::RPCParam>(testImageMetadata[MDGeom::RPC])))
-    if (! ( boost::any_cast<Projection::RPCParam>(baselineImageMetadata[MDGeom::RPC]).Compare( 
+    if (! ( boost::any_cast<Projection::RPCParam>(baselineImageMetadata[MDGeom::RPC]).Compare(
           boost::any_cast<Projection::RPCParam>(testImageMetadata[MDGeom::RPC]), compareDouble)))
     {
       errcount++;
@@ -1745,7 +1743,7 @@ int TestHelper::RegressionTestMetaData(const char* testImageFilename, const char
       }
     }
   }
-  
+
   if (errcount > 0)
   {
     std::cout << "<DartMeasurement name=\"MetadataError\" type=\"numeric/int\">";
@@ -2154,7 +2152,7 @@ bool TestHelper::isAlphaNum(int i) const
 bool TestHelper::isNumeric(const std::string& str) const
 {
   int          nbOfPoints  = 0;
-  int          nbOfNumbers = 0;
+  // int          nbOfNumbers = 0;
   int          number;
   unsigned int i      = 0;
   bool         result = true;
@@ -2165,8 +2163,8 @@ bool TestHelper::isNumeric(const std::string& str) const
 
     if (isPoint(number))
       ++nbOfPoints;
-    if (isNumber(number))
-      ++nbOfNumbers;
+    // if (isNumber(number))
+    //   ++nbOfNumbers;
     if ((!isNumber(number) && !isPoint(number) && !isMinusSign(number)) || (isMinusSign(number) && (i != 0)))
       result = false;
 

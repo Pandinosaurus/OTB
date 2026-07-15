@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,6 +24,8 @@
 
 #include "otbImage.h"
 #include "itkMetaDataObject.h"
+#include <cassert>
+#include <stdexcept>
 
 namespace otb
 {
@@ -85,7 +87,7 @@ void Image<TPixel, VImageDimension>::CopyInformation(const itk::DataObject* data
   if (imc != nullptr)
   {
     const auto & imd = imc->GetImageMetadata();
-    
+
     if (imd.Bands.size() > 0 && imd.Bands.size() != this->GetNumberOfComponentsPerPixel())
     {
       SetImageMetadata(ImageMetadata(imd.GeometryKeys, imd.NumericKeys, imd.StringKeys, imd.LUT1DKeys,
@@ -98,11 +100,50 @@ void Image<TPixel, VImageDimension>::CopyInformation(const itk::DataObject* data
   }
 }
 
+namespace details
+{
+
+/** Everything here is meant to work around images of 1 dimension in C++ < 17.
+ * Indeed, `ROIdataConversion` defines `Image<PixelType, 1>`, but `otb::Image::GetGeoTransform`
+ * always accesses origin, spacing and direction at second index while these arrays will have a size
+ * of one.
+ * Incurs a very troubling warning.
+ *
+ * A simple, C++17, solution would have been:
+ * @code
+ * if constexpr(VImageDimension < 2)
+ *     throw std::logic_error("this cannot work");
+ * @endcode
+ *
+ * Unfortunatly OTB is still in C++14.
+ *
+ * As this workaround is very specific to this usage, it's kept in `otbImage.hxx`.
+ * Let's deprecate it in C++17.
+ */
+namespace emulate_cpp17
+{
+template <bool Cond>
+struct StaticAssume {
+  static constexpr void OrThrow() {}
+};
+
+template <>
+struct StaticAssume<false> {
+  static void OrThrow() {
+    assert(!"Unexpected situation: Image<TP, 1>::GetGeoTransform() cannot work");
+    throw std::logic_error("Unexpected situation: Image<TP, 1>::GetGeoTransform() cannot work");
+  }
+};
+} // emulate_cpp17 namespace
+
+} // details namespace
+
 template <class TPixel, unsigned int                VImageDimension>
 typename Image<TPixel, VImageDimension>::VectorType Image<TPixel, VImageDimension>::GetGeoTransform(void) const
 {
+  details::emulate_cpp17::StaticAssume<VImageDimension >=2>::OrThrow();
   Image<TPixel, VImageDimension>::VectorType geoTransform(6);
-  
+
   auto origin = this->GetOrigin();
   auto spacing = this->GetSpacing();
   auto direction = this->GetDirection();
@@ -114,12 +155,12 @@ typename Image<TPixel, VImageDimension>::VectorType Image<TPixel, VImageDimensio
   geoTransform[5] = spacing[1] * direction[1][1];
   geoTransform[2] = 0.;
   geoTransform[4] = 0.;
-  return (geoTransform);
+  return geoTransform;
 }
 
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetUpperLeftCorner(void) const
 {
   PointType physicalPoint;
@@ -130,7 +171,7 @@ Image<TPixel, VImageDimension>::GetUpperLeftCorner(void) const
 }
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetUpperRightCorner(void) const
 {
   PointType physicalPoint;
@@ -142,7 +183,7 @@ Image<TPixel, VImageDimension>::GetUpperRightCorner(void) const
 }
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetLowerLeftCorner(void) const
 {
   PointType physicalPoint;
@@ -154,7 +195,7 @@ Image<TPixel, VImageDimension>::GetLowerLeftCorner(void) const
 }
 
 template <class TPixel, unsigned int                VImageDimension>
-typename Image<TPixel, VImageDimension>::VectorType 
+typename Image<TPixel, VImageDimension>::VectorType
 Image<TPixel, VImageDimension>::GetLowerRightCorner(void) const
 {
   PointType physicalPoint;

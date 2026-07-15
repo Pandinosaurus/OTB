@@ -28,6 +28,7 @@ add_subdirectory(Common)
 # OTBCurlAdapters needs Common and OTBITK thirdparty
 add_subdirectory(Adapters/CurlAdapters)
 add_subdirectory(Adapters/GdalAdapters)
+add_subdirectory(Adapters/TinyXmlAdapters)
 
 # OTBObjectList depends of OTBCommon and OTBITK
 add_subdirectory(ObjectList)

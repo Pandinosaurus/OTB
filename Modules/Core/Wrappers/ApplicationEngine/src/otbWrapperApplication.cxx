@@ -359,10 +359,6 @@ Application::Application()
   m_Logger->SetName("Application.logger");
 }
 
-Application::~Application()
-{
-}
-
 otb::Logger* Application::GetLogger() const
 {
   return m_Logger;
@@ -883,14 +879,14 @@ void Application::WriteOutput()
       }
     }
   }
-  
+
   otb::MultiImageFileWriter::Pointer multiWriter;
   if (m_MultiWriting)
     {
     multiWriter = otb::MultiImageFileWriter::New();
     multiWriter->SetAutomaticStrippedStreaming(ram);
     }
-  
+
   for (auto const & key : paramList)
   {
     if (GetParameterType(key) == ParameterType_OutputImage && IsParameterEnabled(key) && HasValue(key))
@@ -912,7 +908,7 @@ void Application::WriteOutput()
 
         outputParam->InitializeWriters(multiWriter);
         std::ostringstream progressId;
-        
+
         if (!outputParam->IsMultiWritingEnabled())
         {
           progressId << "Writing " << outputParam->GetFileName() << "...";
@@ -935,7 +931,7 @@ void Application::WriteOutput()
       }
     }
   }
-  
+
   if (multiWriter && multiWriter->GetNumberOfInputs() > 0)
   {
     std::ostringstream progressId;
@@ -943,7 +939,7 @@ void Application::WriteOutput()
     AddProcess(multiWriter, progressId.str());
     multiWriter->Update();
   }
-  
+
   // Set the flag m_ExecuteDone since the pipeline has been successfully executed
   // This enables to access output parameters after WriteOutput()
   m_ExecuteDone = true;
@@ -1320,6 +1316,16 @@ int Application::GetParameterInt(std::string const& key) const
   return GetParameterByKey(key)->ToInt();
 }
 
+bool Application::IsParameterTrue(std::string const& parameter, bool def) const
+{
+    bool const is_set = IsParameterEnabled(parameter) && HasValue(parameter);
+    bool       res    = (is_set && GetParameterInt(parameter)) || (!is_set && def);
+    // otbLogMacro(Info, << "Enabled  : " << key << " --> " << IsParameterEnabled(key));
+    // otbLogMacro(Info, << "HasValue : " << key << " --> " << HasValue(key));
+    // otbLogMacro(Info, << key << " --> " << res);
+    return res;
+}
+
 float Application::GetParameterFloat(std::string const& key) const
 {
   return GetParameterByKey(key)->ToFloat();
@@ -1410,6 +1416,18 @@ unsigned int Application::GetNumberOfElementsInParameterInputImageList(std::stri
 {
   auto param = downcast_check<InputImageListParameter>(GetParameterByKey(key));
   return param->Size();
+}
+
+ImageIOBase::IOComponentType Application::GetPixelType(std::string const& key) const
+{
+  // TODO: clean extended filename options
+  std::string const filename = GetParameterString(key);
+  ImageIOBase::Pointer image_base = ImageIOFactory::CreateImageIO(filename.c_str(), ImageIOFactory::ReadMode);
+  if (! image_base) {
+    itkExceptionMacro("Cannot open input(type: '" << key << "')" << filename);
+  }
+  image_base->ReadImageInformation();
+  return image_base -> GetComponentType();
 }
 
 FloatVectorImageType* Application::GetParameterImage(std::string const& parameter)

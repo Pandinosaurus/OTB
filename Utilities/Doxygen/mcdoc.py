@@ -29,7 +29,7 @@ except ImportError:
 
 def usage():
   sys.stdout.write( """usage: mdoc.py set group file [files...]
-  Add the tag "\\ingroup group" to all the doxygen comment with a \\class
+  Add the tag "\\ingroup group" to all the doxygen comments with a \\class
   tag in it.
 
 usage: mdoc.py check group file [files...]
@@ -62,7 +62,7 @@ def setGroup( fname, group ):
     last = m.end(1)
     dcontent = m.group(1)
     # we don't care about doxygen fields not about a class
-    if r"\class" in dcontent and dcontent != " \class classname ":
+    if r"\class" in dcontent and dcontent != r" \class classname ":
       # do we have a line with the expected content?
       if re.search(r"\ingroup .*"+group+"( |$)", dcontent, re.MULTILINE):
         # yes - just keep the content unchanged
@@ -71,7 +71,7 @@ def setGroup( fname, group ):
         # add the expected group
         if "\n" in dcontent:
           # this is a multiline content. Find the indent
-          indent = re.search("( *)(\*|$)", dcontent).group(1)
+          indent = re.search(r"( *)(\*|$)", dcontent).group(1)
           lastLine = dcontent.splitlines()[-1]
           if re.match(r'^ *$', lastLine):
             out.write(dcontent+"* \\ingroup "+group+"\n"+indent)
@@ -98,7 +98,7 @@ def checkGroup( fname, group ):
   for m in re.finditer(r"/\*\*(.*?)\*/", fcontent, re.DOTALL):
     dcontent = m.group(1)
     # we don't care about doxygen fields not about a class
-    if r"\class" in dcontent and dcontent != " \class classname ":
+    if r"\class" in dcontent and dcontent != r" \class classname ":
       # do we have a line with the expected content?
       if not re.search(r"\\ingroup .*"+group+"( |$)", dcontent, re.MULTILINE):
         # get class name and the line for debug output

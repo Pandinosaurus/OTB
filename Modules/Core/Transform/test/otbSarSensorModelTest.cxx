@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -65,7 +65,6 @@ BOOST_AUTO_TEST_CASE(SARSensorModel_WorldToLineSample)
   inWorldPoint[1] = std::stod(framework::master_test_suite().argv[3]);
   inWorldPoint[2] = std::stod(framework::master_test_suite().argv[4]);
 
-  otb::SarSensorModel::Point2DType outLineSampleOssim;
 
   std::cout << "Direct test with otb" << std::endl;
   otb::SarSensorModel::Point2DType outLineSampleOtb;
@@ -131,7 +130,7 @@ BOOST_AUTO_TEST_CASE(SARSensorModel_auto_validate_forward_transform)
 
   if (reader->GetOutput()->GetGCPCount() <= 1)
   {
-    otbLogMacro(Info, << "Input product has not enough gcp, at least two are " 
+    otbLogMacro(Info, << "Input product has not enough gcp, at least two are "
                          "required for this test. Skipping gcp forward transform validation.");
     return;
   }

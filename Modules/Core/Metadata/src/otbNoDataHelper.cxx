@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,10 +19,13 @@
  */
 
 #include "otbNoDataHelper.h"
+#include "otbImageMetadata.h"
 
 #include "itkMetaDataDictionary.h"
 #include "itkMetaDataObject.h"
 #include "otbMetaDataKey.h"
+
+#include <algorithm>
 
 namespace otb
 {
@@ -49,7 +52,7 @@ bool ReadNoDataFlags(const ImageMetadata & imd, std::vector<bool>& flags, std::v
       values.push_back(0.);
     }
   }
-  
+
   if (ret)
   {
     return true;
@@ -95,6 +98,46 @@ void WriteNoDataFlags(const std::vector<bool>& flags, const std::vector<double>&
       itBands->Add(MDNum::NoData, *itValues);
     }
   }
+}
+
+double ExtractNoDataValue(ImageMetadata const& meta)
+{
+  std::vector<bool>   has_nodatas;
+  std::vector<double> nodatas;
+  if (!ReadNoDataFlags(meta, has_nodatas, nodatas))
+  {
+    otbLogMacro(Warning, << "Image has no 'nodata' metadata");
+    return std::nan("Image has no 'nodata' metadata");
+  }
+  auto const it_first_nodata = std::find(
+      has_nodatas.begin(), has_nodatas.end(),
+      true);
+  assert(it_first_nodata != has_nodatas.end());
+  auto const idx_first_nodata = std::distance(has_nodatas.begin(), it_first_nodata);
+
+  return nodatas[idx_first_nodata];
+}
+
+BandInformation::BandInformation(ImageMetadata& meta, Bands previous_bands)
+: m_meta(meta)
+{
+  if (previous_bands == BandInformation::clear)
+  {
+    m_meta.Bands.clear();
+  }
+}
+
+ImageMetadataBase & BandInformation::add_new(std::string name, double nodata)
+{
+  ImageMetadataBase bmd;
+  if (!name.empty())
+  {
+    bmd.SetDescription(name);
+    bmd.Add(MDStr::BandName, std::move(name));
+  }
+  bmd.Add(MDNum::NoData, nodata);  // seems required only on the first band...
+  m_meta.Bands.push_back(std::move(bmd));
+  return m_meta.Bands.back();
 }
 
 } // End namespace otb

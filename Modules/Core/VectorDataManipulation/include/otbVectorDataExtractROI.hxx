@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -374,8 +374,10 @@ int VectorDataExtractROI<TVectorData>::CounterClockWise(PointType firstPoint, Po
 template <class TVectorData>
 void VectorDataExtractROI<TVectorData>::CompareInputAndRegionProjection()
 {
+  auto const input                  = this->GetInput();
   std::string regionProjection      = m_ROI.GetRegionProjection();
-  std::string inputVectorProjection = this->GetInput()->GetProjectionRef();
+  assert(input);
+  std::string inputVectorProjection = input->GetProjectionRef();
 
   // FIXME: the string comparison is not sufficient to say that two
   // projections are different
@@ -391,6 +393,9 @@ void VectorDataExtractROI<TVectorData>::CompareInputAndRegionProjection()
 template <class TVectorData>
 void VectorDataExtractROI<TVectorData>::ProjectRegionToInputVectorProjection()
 {
+  auto const input = this->GetInput();
+  assert(input);
+
   /* Use the RS Generic projection */
   typedef otb::GenericRSTransform<>        GenericRSTransformType;
   typename GenericRSTransformType::Pointer genericTransform = GenericRSTransformType::New();
@@ -398,11 +403,11 @@ void VectorDataExtractROI<TVectorData>::ProjectRegionToInputVectorProjection()
   /** Set up the projection */
   genericTransform->SetInputProjectionRef(m_ROI.GetRegionProjection());
   genericTransform->SetInputImageMetadata(&(m_ROI.GetImageMetadata()));
-  genericTransform->SetOutputProjectionRef(this->GetInput()->GetProjectionRef());
-  //TODO: const itk::MetaDataDictionary& inputDict = this->GetInput()->GetMetaDataDictionary();
-  //TODO: genericTransform->SetOutputImageMetadata(this->GetInput()->GetImageMetadata());
-  genericTransform->SetOutputOrigin(this->GetInput()->GetOrigin());
-  genericTransform->SetOutputSpacing(this->GetInput()->GetSpacing());
+  genericTransform->SetOutputProjectionRef(input->GetProjectionRef());
+  //TODO: const itk::MetaDataDictionary& inputDict = input->GetMetaDataDictionary();
+  //TODO: genericTransform->SetOutputImageMetadata(input->GetImageMetadata());
+  genericTransform->SetOutputOrigin(input->GetOrigin());
+  genericTransform->SetOutputSpacing(input->GetSpacing());
   genericTransform->InstantiateTransform();
 
   otbMsgDevMacro(<< genericTransform);
@@ -431,7 +436,7 @@ void VectorDataExtractROI<TVectorData>::ProjectRegionToInputVectorProjection()
 
   /** Due to The projection : the Projected ROI can be rotated */
   m_GeoROI = this->ComputeVertexListBoundingRegion(regionCorners.GetPointer());
-  m_GeoROI.SetRegionProjection(this->GetInput()->GetProjectionRef());
+  m_GeoROI.SetRegionProjection(input->GetProjectionRef());
 }
 /**
  * itk::Point to ContinuousIndex

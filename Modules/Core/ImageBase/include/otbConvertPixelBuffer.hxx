@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999-2011 Insight Software Consortium
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -10,7 +10,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -87,7 +87,7 @@ void ConvertPixelBuffer<InputPixelType, OutputPixelType, OutputConvertTraits>::C
                                                                                                     int              itkNotUsed(inputNumberOfComponents),
                                                                                                     OutputPixelType* outputData, size_t size)
 {
-  OutputPixelType               dummy;
+  OutputPixelType               dummy{};
   std::complex<InputPixelType>* endInput = inputData + size;
   while (inputData != endInput)
   {
@@ -125,7 +125,7 @@ void ConvertPixelBuffer<InputPixelType, OutputPixelType, OutputConvertTraits>::C
     std::complex<InputPixelType>* inputData, int inputNumberOfComponents, OutputPixelType* outputData, size_t size)
 {
   size_t          length = size * (size_t)inputNumberOfComponents;
-  OutputPixelType dummy;
+  OutputPixelType dummy{};
   for (size_t i = 0; i < length; i++)
   {
     OutputConvertTraits::SetNthComponent(0, *outputData, ComplexCast(*inputData, dummy));

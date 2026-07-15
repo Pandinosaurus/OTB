@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -327,7 +327,7 @@ VectorDataKeywordlist::FieldType VectorDataKeywordlist::GetNthField(unsigned int
 
 unsigned int VectorDataKeywordlist::GetNumberOfFields() const
 {
-  return m_FieldList.size();
+  return static_cast<unsigned int>(m_FieldList.size());
 }
 
 std::vector<std::string> VectorDataKeywordlist::GetFieldList() const

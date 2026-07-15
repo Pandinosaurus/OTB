@@ -55,7 +55,7 @@ DocExampleStructure::ParametersVectorOfVectorType DocExampleStructure::GetParame
 
 unsigned int DocExampleStructure::GetNumberOfParameters(unsigned int exId)
 {
-  return m_ParameterList.at(exId).size();
+  return static_cast<unsigned int>(m_ParameterList.at(exId).size());
 }
 
 /** Get a specific parameter couple.*/
@@ -106,7 +106,7 @@ unsigned int DocExampleStructure::AddExample(const std::string& comm)
 
   m_ParameterList.push_back(ParametersVectorType());
 
-  return m_ExampleCommentList.size() - 1;
+  return static_cast<unsigned int>(m_ExampleCommentList.size() - 1);
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,10 +49,10 @@ class ITK_EXPORT BSplineInterpolateImageFunction : public itk::InterpolateImageF
 {
 public:
   /** Standard class typedefs. */
-  typedef BSplineInterpolateImageFunction Self;
-  typedef itk::InterpolateImageFunction<TImageType, TCoordRep> Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
+  using Self         = BSplineInterpolateImageFunction;
+  using Superclass   = itk::InterpolateImageFunction<TImageType, TCoordRep>;
+  using Pointer      = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(BSplineInterpolateImageFunction, InterpolateImageFunction);
@@ -61,38 +61,38 @@ public:
   itkNewMacro(Self);
 
   /** OutputType typedef support. */
-  typedef typename Superclass::OutputType OutputType;
+  using OutputType = typename Superclass::OutputType;
 
   /** InputImageType typedef support. */
-  typedef typename Superclass::InputImageType InputImageType;
+  using InputImageType = typename Superclass::InputImageType;
 
   /** Dimension underlying input image. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Index typedef support. */
-  typedef typename Superclass::IndexType IndexType;
+  using IndexType = typename Superclass::IndexType;
 
   /** Region typedef support */
-  typedef typename InputImageType::RegionType RegionType;
+  using RegionType = typename InputImageType::RegionType;
 
   /** ContinuousIndex typedef support. */
-  typedef typename Superclass::ContinuousIndexType ContinuousIndexType;
+  using ContinuousIndexType = typename Superclass::ContinuousIndexType;
 
   /** PointType typedef support */
-  typedef typename Superclass::PointType PointType;
+  using PointType = typename Superclass::PointType;
 
-  typedef typename Superclass::SizeType SizeType;
+  using SizeType = typename Superclass::SizeType;
 
   /** Iterator typedef support */
-  typedef itk::ImageLinearIteratorWithIndex<TImageType> Iterator;
+  using Iterator = itk::ImageLinearIteratorWithIndex<TImageType>;
 
   /** Internal Coefficient typedef support */
-  typedef TCoefficientType CoefficientDataType;
-  typedef itk::Image<CoefficientDataType, itkGetStaticConstMacro(ImageDimension)> CoefficientImageType;
+  using CoefficientDataType      = TCoefficientType;
+  using CoefficientImageType     = itk::Image<CoefficientDataType, itkGetStaticConstMacro(ImageDimension)>;
 
   /** Define filter for calculating the BSpline coefficients */
-  typedef otb::BSplineDecompositionImageFilter<TImageType, CoefficientImageType> CoefficientFilter;
-  typedef typename CoefficientFilter::Pointer CoefficientFilterPointer;
+  using CoefficientFilter        = otb::BSplineDecompositionImageFilter<TImageType, CoefficientImageType>;
+  using CoefficientFilterPointer = typename CoefficientFilter::Pointer;
 
   /** Evaluate the function at a ContinuousIndex position.
    *
@@ -105,7 +105,7 @@ public:
   OutputType EvaluateAtContinuousIndex(const ContinuousIndexType& index) const override;
 
   /** Derivative typedef support */
-  typedef itk::CovariantVector<OutputType, itkGetStaticConstMacro(ImageDimension)> CovariantVectorType;
+  using CovariantVectorType = itk::CovariantVector<OutputType, itkGetStaticConstMacro(ImageDimension)>;
 
   CovariantVectorType EvaluateDerivative(const PointType& point) const
   {
@@ -128,7 +128,7 @@ public:
    region of the input image. */
   virtual void UpdateCoefficientsFilter(void);
 
-  virtual SizeType GetRadius() const
+  SizeType GetRadius() const override
   {
     typename itk::InterpolateImageFunction<TImageType, TCoordRep>::SizeType radius({2,2});
     return radius;

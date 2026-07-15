@@ -123,7 +123,7 @@ std::string Logger::BuildFormattedEntry(itk::LoggerBaseEnums::PriorityLevel leve
 {
   static const std::string levelString[] = {"(MUSTFLUSH)", "(FATAL)", "(CRITICAL)", "(WARNING)", "(INFO)", "(DEBUG)", "(NOTSET)"};
 
-  assert(int(level) <= std::extent<decltype(levelString)>::value);
+  assert(unsigned(level) <= std::extent<decltype(levelString)>::value);
 
   if (strcmp(this->GetName(), "") == 0)
   {

@@ -69,9 +69,9 @@ void LeastSquareBilinearTransformEstimator<TPoint>::Compute()
 {
   vnl_matrix_fixed<double, 4, 1> soln;
   // vnl_matrix_inverse<double> inv;
-  vnl_matrix<double> inv; 
+  vnl_matrix<double> inv;
   vnl_matrix_fixed<double, 4, 4> inv2;
-  vnl_matrix_fixed<double, 4, 4> id;
+  // vnl_matrix_fixed<double, 4, 4> id;
 
   // vnl_inverse
   inv = vnl_matrix_inverse<double>(Ata);
@@ -82,7 +82,7 @@ void LeastSquareBilinearTransformEstimator<TPoint>::Compute()
   bl_c = soln(2,0);
   bl_d = soln(3,0);
 
-  id = Ata * inv;
+  // id = Ata * inv;
 
 }
 

@@ -32,6 +32,18 @@ namespace otb
 namespace Wrapper
 {
 
+template <ParameterType type>
+void Application::AddParameter(
+    std::string const& paramKey,
+    std::string const& paramName,
+    std::string const& paramDescription
+)
+{
+  this->AddParameter(type, paramKey, paramName);
+  if (!paramDescription.empty())
+    SetParameterDescription(paramKey, paramDescription);
+}
+
 
 template <class TImageType>
 TImageType* Application::GetParameterImage(std::string const& parameter)

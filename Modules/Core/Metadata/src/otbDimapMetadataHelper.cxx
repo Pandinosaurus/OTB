@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,14 +27,14 @@ namespace otb
 
 void DimapMetadataHelper::ParseGeom(const MetadataSupplierInterface & mds)
 {
-  // Read a vector value from 
-  auto readVector = [&mds](const std::string & path) 
+  // Read a vector value from
+  auto readVector = [&mds](const std::string & path)
   {
     auto strMetadata = mds.GetAs<std::string>(path);
     strMetadata.erase(std::remove(strMetadata.begin(), strMetadata.end(), '\"'), strMetadata.end());
-    
+
     std::istringstream is( strMetadata );
-    return std::vector<double>(( std::istream_iterator<double>( is ) ), 
+    return std::vector<double>(( std::istream_iterator<double>( is ) ),
                                 ( std::istream_iterator<double>() ) );
   };
 
@@ -47,7 +47,7 @@ void DimapMetadataHelper::ParseGeom(const MetadataSupplierInterface & mds)
   {
     m_Data.missionIndex = parts[1];
   }
-  
+
   m_Data.ImageID = mds.GetAs<std::string>("support_data.image_id");
   m_Data.ProcessingLevel = mds.GetAs<std::string>("", "support_data.processing_level");
 
@@ -61,7 +61,7 @@ void DimapMetadataHelper::ParseGeom(const MetadataSupplierInterface & mds)
   }
 
   m_Data.ProductionDate = mds.GetAs<std::string>("support_data.production_date");
-  
+
   // Convert YYYY-MM-DD HH:mm:ss to YYYY-MM-DDTHH:mm:ss
   auto pos = m_Data.ProductionDate.find(" ",10);
   if (pos != std::string::npos)
@@ -70,19 +70,19 @@ void DimapMetadataHelper::ParseGeom(const MetadataSupplierInterface & mds)
   }
 
   m_Data.AcquisitionDate = mds.GetAs<std::string>("support_data.image_date");
-  
+
   pos = m_Data.AcquisitionDate.find(" ",10);
   if (pos != std::string::npos)
   {
     m_Data.AcquisitionDate.replace(pos,1,"T");
   }
-  
+
   m_Data.Instrument = mds.GetAs<std::string>("support_data.instrument");
   m_Data.InstrumentIndex = mds.GetAs<std::string>("support_data.instrument_index");
-  
+
   m_Data.SunAzimuth = readVector("support_data.azimuth_angle");
   m_Data.SunElevation = readVector("support_data.elevation_angle");
-  
+
   m_Data.IncidenceAngle = readVector("support_data.incident_angle");
   m_Data.SceneOrientation = readVector("support_data.scene_orientation");
 
@@ -102,7 +102,7 @@ void DimapMetadataHelper::ParseGeom(const MetadataSupplierInterface & mds)
   {
     m_Data.AcrossTrackViewingAngle.push_back(std::stod("acrossTrackViewingAngle"));
   }
-  
+
   if (!alongTrackViewingAngle.empty())
   {
     m_Data.AlongTrackViewingAngle.push_back(std::stod("alongTrackViewingAngle"));
@@ -165,7 +165,7 @@ void DimapMetadataHelper::ParseDimapV1(const MetadataSupplierInterface & mds, co
 
   ParseVector(mds, prefix + "Dataset_Sources.Source_Information",
                      "Scene_Source.VIEWING_ANGLE_ALONG_TRACK", m_Data.AlongTrackViewingAngle, defaultValue);
-  
+
   ParseVector(mds, prefix + "Dataset_Sources.Source_Information",
                      "Scene_Source.VIEWING_ANGLE_ACROSS_TRACK", m_Data.AcrossTrackViewingAngle, defaultValue);
 
@@ -182,7 +182,7 @@ void DimapMetadataHelper::ParseDimapV1(const MetadataSupplierInterface & mds, co
 
   ParseVector(mds, prefix + "Data_Strip.Sensor_Calibration.Calibration.Band_Parameters",
                      "Gain_Section_List.Gain_Section.PHYSICAL_GAIN", m_Data.PhysicalGain, defaultValue);
-  
+
   // Try Image_Interpretation.Spectral_Band_Info_i.PHYSICAL_GAIN instead
   if (m_Data.PhysicalGain.empty())
   {
@@ -202,11 +202,11 @@ void DimapMetadataHelper::ParseDimapV1(const MetadataSupplierInterface & mds, co
 
   std::string path = prefix + "Production.JOB_ID";
   m_Data.ImageID =mds.GetAs<std::string>(path);
-  
+
   path = prefix + "Production.DATASET_PRODUCTION_DATE";
 
   m_Data.ProductionDate = mds.GetAs<std::string>(path);
-  
+
   // Convert YYYY-MM-DD HH:mm:ss to YYYY-MM-DDTHH:mm:ss
   auto pos = m_Data.ProductionDate.find(" ",10);
   if (pos != std::string::npos)
@@ -222,7 +222,7 @@ void DimapMetadataHelper::ParseDimapV1(const MetadataSupplierInterface & mds, co
   if (m_Data.AcquisitionDate.empty())
   {
     m_Data.AcquisitionDate = mds.GetAs<std::string>("", prefix + "Data_Strip.Time_Stamp.REFERENCE_TIME");
-    
+
     pos = m_Data.AcquisitionDate.find(" ",10);
     if (pos != std::string::npos)
     {
@@ -248,7 +248,7 @@ void DimapMetadataHelper::ParseDimapV1(const MetadataSupplierInterface & mds, co
   {
     m_Data.softwareVersion = mds.GetAs<std::string>
           (prefix + "Production.Production_Facility.SOFTWARE_VERSION");
-  
+
     m_Data.SatAzimuth = mds.GetAs<double>
           (prefix + "Dataset_Sources.Source_Information.Scene_Source.SATELLITE_AZIMUTH_ANGLE");
   }
@@ -282,7 +282,7 @@ void DimapMetadataHelper::ParseDimapV2(const MetadataSupplierInterface & mds, co
 
   ParseVector(mds, prefix + "Geometric_Data.Use_Area.Located_Geometric_Values",
                      "Acquisition_Angles.INCIDENCE_ANGLE_ALONG_TRACK", m_Data.AlongTrackIncidenceAngle);
-  
+
   ParseVector(mds, prefix + "Geometric_Data.Use_Area.Located_Geometric_Values",
                      "Acquisition_Angles.INCIDENCE_ANGLE_ACROSS_TRACK", m_Data.AcrossTrackIncidenceAngle);
 
@@ -298,7 +298,7 @@ void DimapMetadataHelper::ParseDimapV2(const MetadataSupplierInterface & mds, co
 
   ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Instrument_Calibration.Band_Measurement_List.Band_Radiance",
                      "GAIN", m_Data.PhysicalGain,gainbiasUnavail);
-  
+
   ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Instrument_Calibration.Band_Measurement_List.Band_Solar_Irradiance",
                      "VALUE" , m_Data.SolarIrradiance);
 
@@ -307,7 +307,7 @@ void DimapMetadataHelper::ParseDimapV2(const MetadataSupplierInterface & mds, co
 
   std::string path = prefix + "Product_Information.Delivery_Identification.JOB_ID";
   m_Data.ImageID =mds.GetAs<std::string>(path);
-  
+
   path = prefix + "Product_Information.Delivery_Identification.PRODUCTION_DATE";
 
   m_Data.ProductionDate = mds.GetAs<std::string>(path);
@@ -338,7 +338,7 @@ void DimapMetadataHelper::ParseDimapV2(const MetadataSupplierInterface & mds, co
 void DimapMetadataHelper::ParseSpot5Model(const MetadataSupplierInterface & mds, Spot5Param& spot5Param, const std::string & prefix){
 
   using Point3DType = itk::Point<double, 3>;
-  
+
   std::vector<double> yaw_vector;
   std::vector<double> pitch_vector;
   std::vector<double> roll_vector;
@@ -365,7 +365,7 @@ void DimapMetadataHelper::ParseSpot5Model(const MetadataSupplierInterface & mds,
   else {
     spot5Param.SubImageOffset[0] = 0.0;
   }
-  resRoi = mds.GetMetadataValue(prefix + "Data_Processing.Regions_Of_Interest.Region_Of_Interest.ROW_MIN", hasValue);  
+  resRoi = mds.GetMetadataValue(prefix + "Data_Processing.Regions_Of_Interest.Region_Of_Interest.ROW_MIN", hasValue);
   if (hasValue) {
     spot5Param.SubImageOffset[1] = std::stod(resRoi) - 1.0;
   }
@@ -386,8 +386,8 @@ void DimapMetadataHelper::ParseSpot5Model(const MetadataSupplierInterface & mds,
     ParseVector(mds, expr_attitude,"YAW", yaw_vector);
   }
   ParseVector(mds, expr_attitude,"PITCH", pitch_vector);
-  ParseVector(mds, expr_attitude,"ROLL", roll_vector);     
-  ParseVector(mds, expr_attitude,"TIME", time_vector);  
+  ParseVector(mds, expr_attitude,"ROLL", roll_vector);
+  ParseVector(mds, expr_attitude,"TIME", time_vector);
 
   for (size_t i=0; i < yaw_vector.size(); i++){
     Point3DType point3d;
@@ -419,14 +419,14 @@ void DimapMetadataHelper::ParseSpot5Model(const MetadataSupplierInterface & mds,
       expr = prefix + "Data_Strip.Sensor_Configuration.Instrument_Look_Angles_List.Instrument_Look_Angles_"+std::to_string(i)+".BAND_INDEX";
       mds.GetMetadataValue(expr, hasValue) == "2" ? bandFound=true : i++;
     }
-    expr = "Dimap_Document.Data_Strip.Sensor_Configuration.Instrument_Look_Angles_List.Instrument_Look_Angles_"+std::to_string(i)+".Look_Angles_List.Look_Angles";           
+    expr = "Dimap_Document.Data_Strip.Sensor_Configuration.Instrument_Look_Angles_List.Instrument_Look_Angles_"+std::to_string(i)+".Look_Angles_List.Look_Angles";
   }
   else{
-    expr = "Dimap_Document.Data_Strip.Sensor_Configuration.Instrument_Look_Angles_List.Instrument_Look_Angles.Look_Angles_List.Look_Angles";           
+    expr = "Dimap_Document.Data_Strip.Sensor_Configuration.Instrument_Look_Angles_List.Instrument_Look_Angles.Look_Angles_List.Look_Angles";
   }
-  
-  ParseVector(mds, expr, "PSI_X", spot5Param.PixelLookAngleX);  
-  ParseVector(mds, expr, "PSI_Y", spot5Param.PixelLookAngleY); 
+
+  ParseVector(mds, expr, "PSI_X", spot5Param.PixelLookAngleX);
+  ParseVector(mds, expr, "PSI_Y", spot5Param.PixelLookAngleY);
 
   std::vector<double> pos_x, pos_y, pos_z, vel_x, vel_y, vel_z;
 
@@ -434,9 +434,9 @@ void DimapMetadataHelper::ParseSpot5Model(const MetadataSupplierInterface & mds,
 
   ParseVector(mds, expr,"Location.X", pos_x);
   ParseVector(mds, expr,"Location.Y", pos_y);
-  ParseVector(mds, expr,"Location.Z", pos_z);   
+  ParseVector(mds, expr,"Location.Z", pos_z);
   ParseVector(mds, expr,"Velocity.X", vel_x);
-  ParseVector(mds, expr,"Velocity.Y", vel_y);                     
+  ParseVector(mds, expr,"Velocity.Y", vel_y);
   ParseVector(mds, expr,"Velocity.Z", vel_z);
   ParseVector(mds, expr,"TIME", time_vector);
 
@@ -475,7 +475,7 @@ void DimapMetadataHelper::ParseDimapV3(const MetadataSupplierInterface & mds, co
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Band_Radiance",
                     "BAND_ID", m_Data.BandIDs);
   }
-  catch(const std::exception& e)
+  catch(const std::exception&)
   {
     // try other tag path (PNEO pan-sharpened)
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Instrument_Calibration.Band_Measurement_List.Band_Radiance",
@@ -508,7 +508,7 @@ void DimapMetadataHelper::ParseDimapV3(const MetadataSupplierInterface & mds, co
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Band_Radiance",
                      "BIAS", m_Data.PhysicalBias);
   }
-  catch(const std::exception& e)
+  catch(const std::exception&)
   {
     // try other tag path (PNEO pan-sharpened)
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Instrument_Calibration.Band_Measurement_List.Band_Radiance",
@@ -520,19 +520,19 @@ void DimapMetadataHelper::ParseDimapV3(const MetadataSupplierInterface & mds, co
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Band_Radiance",
                      "GAIN", m_Data.PhysicalGain);
   }
-  catch(const std::exception& e)
+  catch(const std::exception&)
   {
     // try other tag path (PNEO pan-sharpened)
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Instrument_Calibration.Band_Measurement_List.Band_Radiance",
                      "GAIN", m_Data.PhysicalGain);
   }
-  
+
   try
   {
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Band_Solar_Irradiance",
                      "VALUE" , m_Data.SolarIrradiance);
   }
-  catch(const std::exception& e)
+  catch(const std::exception&)
   {
     // try other tag path (PNEO pan-sharpened)
     ParseVector(mds, prefix + "Radiometric_Data.Radiometric_Calibration.Instrument_Calibration.Band_Measurement_List.Band_Solar_Irradiance",
@@ -671,7 +671,7 @@ void DimapMetadataHelper::createDefaultLUTs()
     {
       vectLut[x] = x * double(m_Data.RangeMax[i]- m_Data.RangeMin[i]) / 255.0 + m_Data.RangeMin[i];
     }
-    m_Data.LUTs.emplace(m_Data.BandIDs[i], move(vectLut));
+    m_Data.LUTs.emplace(m_Data.BandIDs[i], std::move(vectLut));
   }
 }
 

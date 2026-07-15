@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -319,7 +319,7 @@ unsigned int XMLMetadataSupplier::GetNumberOf(std::string const & path) const
     else if(after.size() > 0 && after.compare(0, 1, ".") == 0)
       idx.insert(0);
   }
-  return idx.size();
+  return static_cast<unsigned int>(idx.size());
 }
 unsigned int XMLMetadataSupplier::GetAttributeId(std::string const& path, std::string const& value) const
 {

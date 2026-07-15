@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1999-2011 Insight Software Consortium
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -10,7 +10,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -528,7 +528,6 @@ void ShapeAttributesLabelObjectFunctor<TLabelObject, TLabelImage>::operator()(La
   if (m_ComputeFeretDiameter)
   {
     // init the vars
-    unsigned long                                                    ssize = 0;
     typedef typename std::deque<typename LabelObjectType::IndexType> IndexListType;
     IndexListType                                                    idxList;
 
@@ -565,7 +564,6 @@ void ShapeAttributesLabelObjectFunctor<TLabelObject, TLabelImage>::operator()(La
           if (it.GetPixel(i) != label)
           {
             idxList.push_back(idx);
-            ssize++;
             break;
           }
         }

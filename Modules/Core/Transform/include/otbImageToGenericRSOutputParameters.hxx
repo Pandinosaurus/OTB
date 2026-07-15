@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -90,16 +90,12 @@ void ImageToGenericRSOutputParameters<TImage>::EstimateOutputImageExtent()
   GenericRSTransformPointerType invTransform = GenericRSTransformType::New();
   m_Transform->GetInverse(invTransform);
 
-  // Compute the 4 corners in the cartographic coordinate system
-  std::vector<itk::ContinuousIndex<double, 2>> vindex;
-  std::vector<PointType> voutput;
-
-  itk::ContinuousIndex<double, 2> index1(m_Input->GetLargestPossibleRegion().GetIndex());
+  itk::ContinuousIndex<double, 2u> index1(m_Input->GetLargestPossibleRegion().GetIndex());
   index1[0] += -0.5;
   index1[1] += -0.5;
-  itk::ContinuousIndex<double, 2> index2(index1);
-  itk::ContinuousIndex<double, 2> index3(index1);
-  itk::ContinuousIndex<double, 2> index4(index1);
+  itk::ContinuousIndex<double, 2u> index2(index1);
+  itk::ContinuousIndex<double, 2u> index3(index1);
+  itk::ContinuousIndex<double, 2u> index4(index1);
 
   // Image size
   SizeType size = m_Input->GetLargestPossibleRegion().GetSize();
@@ -110,16 +106,21 @@ void ImageToGenericRSOutputParameters<TImage>::EstimateOutputImageExtent()
   index3[1] += size[1];
   index4[1] += size[1];
 
-  vindex.push_back(index1);
-  vindex.push_back(index2);
-  vindex.push_back(index3);
-  vindex.push_back(index4);
+  // Compute the 4 corners in the cartographic coordinate system
+  std::array<itk::ContinuousIndex<double, 2u>, 4> vindex
+  {
+    index1,
+    index2,
+    index3,
+    index4
+  };
 
+  std::array<PointType, 4> voutput;
   for (unsigned int i = 0; i < vindex.size(); ++i)
   {
     PointType physicalPoint;
     m_Input->TransformContinuousIndexToPhysicalPoint(vindex[i], physicalPoint);
-    voutput.push_back(invTransform->TransformPoint(physicalPoint));
+    voutput[i] = invTransform->TransformPoint(physicalPoint);
   }
 
   // Compute the boundaries

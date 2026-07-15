@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -159,7 +159,7 @@ void StringToIntArray(const std::string & input, otb::Span<int> output)
     }
   }
 }
-} // anonymous namespace 
+} // anonymous namespace
 
 namespace otb
 {
@@ -200,7 +200,7 @@ void SARParam::ToKeywordlist(MetaData::Keywordlist & kwl, const std::string & pr
 void SARParam::FromKeywordlist(const MetaData::Keywordlist & kwl, const std::string & prefix)
 {
 #if 1
-  azimuthTimeInterval = value_or_throw<MetaData::Duration>(kwl, prefix + "AzimuthTimeInterval", "(FromKeywordlist)");
+  azimuthTimeInterval = ::value_or_throw<MetaData::Duration>(kwl, prefix + "AzimuthTimeInterval", "(FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "AzimuthTimeInterval"));
 
@@ -213,17 +213,17 @@ void SARParam::FromKeywordlist(const MetaData::Keywordlist & kwl, const std::str
 
 
   // TODO: use to<>
-  nearRangeTime           = value_or_throw<double>(kwl, prefix + "NearRangeTime",       "(FromKeywordlist)");
-  rangeSamplingRate       = value_or_throw<double>(kwl, prefix + "RangeSamplingRate",   "(FromKeywordlist)");
-  rangeResolution         = value_or_throw<double>(kwl, prefix + "RangeResolution",     "(FromKeywordlist)");
-  rightLookingFlag        = value_or_throw<int>   (kwl, prefix + "RightLookingFlag",    "(FromKeywordlist)");
+  nearRangeTime           = ::value_or_throw<double>(kwl, prefix + "NearRangeTime",       "(FromKeywordlist)");
+  rangeSamplingRate       = ::value_or_throw<double>(kwl, prefix + "RangeSamplingRate",   "(FromKeywordlist)");
+  rangeResolution         = ::value_or_throw<double>(kwl, prefix + "RangeResolution",     "(FromKeywordlist)");
+  rightLookingFlag        = ::value_or_throw<int>   (kwl, prefix + "RightLookingFlag",    "(FromKeywordlist)");
 
-  azimuthBandwidth        = value_or_throw<double>(kwl, prefix + "AzimuthBandwidth",    "(FromKeywordlist)");
-  rangeBandwidth          = value_or_throw<double>(kwl, prefix + "RangeBandwidth",      "(FromKeywordlist)");
-  azimuthSteeringRate     = value_or_throw<double>(kwl, prefix + "AzimuthSteeringRate", "(FromKeywordlist)");
+  azimuthBandwidth        = ::value_or_throw<double>(kwl, prefix + "AzimuthBandwidth",    "(FromKeywordlist)");
+  rangeBandwidth          = ::value_or_throw<double>(kwl, prefix + "RangeBandwidth",      "(FromKeywordlist)");
+  azimuthSteeringRate     = ::value_or_throw<double>(kwl, prefix + "AzimuthSteeringRate", "(FromKeywordlist)");
 
-  numberOfLinesPerBurst   = value_or_throw<unsigned long>(kwl, prefix + "NumberOfLinesPerBurst", "(FromKeywordlist)");
-  numberOfSamplesPerBurst = value_or_throw<unsigned long>(kwl, prefix + "NumberOfSamplesPerBurst", "(FromKeywordlist)");
+  numberOfLinesPerBurst   = ::value_or_throw<unsigned long>(kwl, prefix + "NumberOfLinesPerBurst", "(FromKeywordlist)");
+  numberOfSamplesPerBurst = ::value_or_throw<unsigned long>(kwl, prefix + "NumberOfSamplesPerBurst", "(FromKeywordlist)");
 
   centerSceneCoord.FromKeywordlist(kwl, prefix + "CenterSceneCoord");
   ulSceneCoord.FromKeywordlist(kwl, prefix + "ulSceneCoord");
@@ -272,7 +272,7 @@ AzimuthFmRate AzimuthFmRate::FromKeywordlist(const MetaData::Keywordlist & kwl, 
 {
   AzimuthFmRate output;
 #if 1
-  output.azimuthTime = value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(AzimuthFmRate::FromKeywordlist)");
+  output.azimuthTime = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(AzimuthFmRate::FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "AzimuthTime"));
 
@@ -302,7 +302,7 @@ DopplerCentroid DopplerCentroid::FromKeywordlist(const MetaData::Keywordlist & k
 {
   DopplerCentroid output;
 #if 1
-  output.azimuthTime = value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(DopplerCentroid::FromKeywordlist)");
+  output.azimuthTime = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(DopplerCentroid::FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "AzimuthTime"));
 
@@ -313,7 +313,7 @@ DopplerCentroid DopplerCentroid::FromKeywordlist(const MetaData::Keywordlist & k
   }
 #endif
 
-  output.t0 = value_or_throw<double>(kwl, prefix + "t0", "(DopplerCentroid::FromKeywordlist)");
+  output.t0 = ::value_or_throw<double>(kwl, prefix + "t0", "(DopplerCentroid::FromKeywordlist)");
 
   auto dopCoefIt = kwl.find(prefix + "DopCoef");
   if (dopCoefIt != kwl.end())
@@ -351,10 +351,10 @@ Orbit Orbit::FromKeywordlist(const MetaData::Keywordlist & kwl, const std::strin
   Orbit output;
 
 #if 1
-  output.time = value_or_throw<MetaData::TimePoint>(kwl, prefix + "Time", "(Orbit::FromKeywordlist)");
+  output.time = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "Time", "(Orbit::FromKeywordlist)");
 
-  output.position = value_or_throw<Orbit::PointType>(kwl, prefix + "Position", "(Orbit::FromKeywordlist)");
-  output.velocity = value_or_throw<Orbit::PointType>(kwl, prefix + "Velocity", "(Orbit::FromKeywordlist)");
+  output.position = ::value_or_throw<Orbit::PointType>(kwl, prefix + "Position", "(Orbit::FromKeywordlist)");
+  output.velocity = ::value_or_throw<Orbit::PointType>(kwl, prefix + "Velocity", "(Orbit::FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "Time"));
 
@@ -402,8 +402,8 @@ BurstRecord BurstRecord::FromKeywordlist(const MetaData::Keywordlist & kwl, cons
   BurstRecord output;
 
 #if 1
-  output.azimuthStartTime = value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthStartTime", "(BurstRecord::FromKeywordlist)");
-  output.azimuthStopTime  = value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthStopTime" , "(BurstRecord::FromKeywordlist)");
+  output.azimuthStartTime = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthStartTime", "(BurstRecord::FromKeywordlist)");
+  output.azimuthStopTime  = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthStopTime" , "(BurstRecord::FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "AzimuthStartTime"));
   if (!(iss >> output.azimuthStartTime))
@@ -420,11 +420,11 @@ BurstRecord BurstRecord::FromKeywordlist(const MetaData::Keywordlist & kwl, cons
   }
 #endif
 
-  output.startLine      = value_or_throw<int>   (kwl, prefix + "StartLine",      "(BurstRecord::FromKeywordlist)");
-  output.endLine        = value_or_throw<int>   (kwl, prefix + "EndLine",        "(BurstRecord::FromKeywordlist)");
-  output.startSample    = value_or_throw<int>   (kwl, prefix + "StartSample",    "(BurstRecord::FromKeywordlist)");
-  output.endSample      = value_or_throw<int>   (kwl, prefix + "EndSample",      "(BurstRecord::FromKeywordlist)");
-  output.azimuthAnxTime = value_or_throw<double>(kwl, prefix + "AzimuthAnxTime", "(BurstRecord::FromKeywordlist)");
+  output.startLine      = ::value_or_throw<int>   (kwl, prefix + "StartLine",      "(BurstRecord::FromKeywordlist)");
+  output.endLine        = ::value_or_throw<int>   (kwl, prefix + "EndLine",        "(BurstRecord::FromKeywordlist)");
+  output.startSample    = ::value_or_throw<int>   (kwl, prefix + "StartSample",    "(BurstRecord::FromKeywordlist)");
+  output.endSample      = ::value_or_throw<int>   (kwl, prefix + "EndSample",      "(BurstRecord::FromKeywordlist)");
+  output.azimuthAnxTime = ::value_or_throw<double>(kwl, prefix + "AzimuthAnxTime", "(BurstRecord::FromKeywordlist)");
 
   return output;
 }
@@ -450,7 +450,7 @@ CoordinateConversionRecord CoordinateConversionRecord::FromKeywordlist(const Met
   CoordinateConversionRecord output;
 
 #if 1
-  output.azimuthTime = value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(CoordinateConversionRecord::FromKeywordlist)");
+  output.azimuthTime = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(CoordinateConversionRecord::FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "AzimuthTime"));
   if (!(iss >> output.azimuthTime))
@@ -460,7 +460,7 @@ CoordinateConversionRecord CoordinateConversionRecord::FromKeywordlist(const Met
   }
 #endif
 
-  output.rg0 = value_or_throw<double>(kwl, prefix + "rg0", "(CoordinateConversionRecord::FromKeywordlist)");
+  output.rg0 = ::value_or_throw<double>(kwl, prefix + "rg0", "(CoordinateConversionRecord::FromKeywordlist)");
   output.coeffs = StringToDoubleVector(Get(kwl, prefix + "coeffs"));
 
   return output;
@@ -484,7 +484,7 @@ InfoSceneCoord InfoSceneCoord::FromKeywordlist(const MetaData::Keywordlist &kwl,
   InfoSceneCoord output;
 
 #if 1
-  output.azimuthTime = value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(InfoSceneCoord::FromKeywordlist)");
+  output.azimuthTime = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "AzimuthTime", "(InfoSceneCoord::FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "AzimuthTime"));
   if (!(iss >> output.azimuthTime))
@@ -494,12 +494,12 @@ InfoSceneCoord InfoSceneCoord::FromKeywordlist(const MetaData::Keywordlist &kwl,
   }
 #endif
 
-  output.referenceRow    = value_or_throw<unsigned long>(kwl, prefix + "referenceRow", "(InfoSceneCoord::FromKeywordlist)");
-  output.referenceColumn = value_or_throw<unsigned long>(kwl, prefix + "referenceColumn", "(InfoSceneCoord::FromKeywordlist)");
-  output.latitude        = value_or_throw<double>(kwl, prefix + "latitude", "(InfoSceneCoord::FromKeywordlist)");
-  output.longitude       = value_or_throw<double>(kwl, prefix + "longitude", "(InfoSceneCoord::FromKeywordlist)");
-  output.rangeTime       = value_or_throw<double>(kwl, prefix + "rangeTime", "(InfoSceneCoord::FromKeywordlist)");
-  output.incidenceAngle  = value_or_throw<double>(kwl, prefix + "incidenceAngle", "(InfoSceneCoord::FromKeywordlist)");
+  output.referenceRow    = ::value_or_throw<unsigned long>(kwl, prefix + "referenceRow", "(InfoSceneCoord::FromKeywordlist)");
+  output.referenceColumn = ::value_or_throw<unsigned long>(kwl, prefix + "referenceColumn", "(InfoSceneCoord::FromKeywordlist)");
+  output.latitude        = ::value_or_throw<double>(kwl, prefix + "latitude", "(InfoSceneCoord::FromKeywordlist)");
+  output.longitude       = ::value_or_throw<double>(kwl, prefix + "longitude", "(InfoSceneCoord::FromKeywordlist)");
+  output.rangeTime       = ::value_or_throw<double>(kwl, prefix + "rangeTime", "(InfoSceneCoord::FromKeywordlist)");
+  output.incidenceAngle  = ::value_or_throw<double>(kwl, prefix + "incidenceAngle", "(InfoSceneCoord::FromKeywordlist)");
 
   return output;
 }
@@ -541,9 +541,10 @@ void SARCalib::ToKeywordlist(MetaData::Keywordlist & kwl, const std::string & pr
     oss << std::setprecision(STRING_PRECISION);
     for(unsigned int i = 0 ; i < input->GetNumberOfPoints() ; ++i)
     {
-      input->GetPoint(i, &point);
-      input->GetPointData(i, &pointValue);
-      oss << point << " " << pointValue << ";";
+      if (input->GetPoint(i, &point) && input->GetPointData(i, &pointValue))
+      {
+        oss << point << " " << pointValue << ";";
+      }
     }
     return oss.str();
   };
@@ -572,12 +573,12 @@ void SARCalib::FromKeywordlist(const MetaData::Keywordlist & kwl, const std::str
   calibrationLookupFlag = boost::lexical_cast<bool>(Get(kwl, prefix + "CalibrationLookupFlag"));
 
   // Double
-  rescalingFactor = value_or_throw<double>(kwl, prefix + "RescalingFactor", "(SARCalib::FromKeywordlist)");
+  rescalingFactor = ::value_or_throw<double>(kwl, prefix + "RescalingFactor", "(SARCalib::FromKeywordlist)");
 
   // MetaData::TimePoint
 #if 1
-  calibrationStartTime = value_or_throw<MetaData::TimePoint>(kwl, prefix + "CalibrationStartTime", "(SARCalib::FromKeywordlist)");
-  calibrationStopTime  = value_or_throw<MetaData::TimePoint>(kwl, prefix + "CalibrationStopTime",  "(SARCalib::FromKeywordlist)");
+  calibrationStartTime = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "CalibrationStartTime", "(SARCalib::FromKeywordlist)");
+  calibrationStopTime  = ::value_or_throw<MetaData::TimePoint>(kwl, prefix + "CalibrationStopTime",  "(SARCalib::FromKeywordlist)");
 #else
   std::istringstream iss(Get(kwl, prefix + "CalibrationStartTime"));
   if (!(iss >> calibrationStartTime))

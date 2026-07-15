@@ -1,6 +1,6 @@
 syntax: glob
 *~
-.*.swp
+.*.sw*
 *.orig
 *.pyc
 .\#*
@@ -10,6 +10,7 @@ tags
 *.template
 archives*
 .vscode*
+.cache
 CMakeLists.txt.user
 .directory*
 build_packages*
@@ -28,3 +29,4 @@ Modules/SAR
 Modules/Segmentation
 Modules/Hyperspectral
 Modules/StereoProcessing
+compile_commands.json

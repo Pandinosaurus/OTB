@@ -99,6 +99,11 @@ stages:
       - build/Testing/Temporary/*.txt #DEBUG
       - Docker/Dockerfile_CI
       - Docker/system-dependencies.txt
+      # Save build artefacts
+      - build/Testing/*/Update.xml
+      - build/Testing/*/Configure.xml
+      - build/Testing/*/Build.xml
+      - build/Testing/*/Done.xml
     reports:
       junit:
         - build/ctest_report.xml
@@ -130,6 +135,11 @@ stages:
       - build/coverage_report.xml
       - build/Testing/Temporary/*.txt #DEBUG
       - Docker/Dockerfile_CI
+      # Save build artefacts
+      - build/Testing/*/Update.xml
+      - build/Testing/*/Configure.xml
+      - build/Testing/*/Build.xml
+      - build/Testing/*/Done.xml
 
 .common-prepare:
   extends: .common

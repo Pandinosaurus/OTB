@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -9,7 +9,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,51 +59,51 @@ class ITK_EXPORT BCOInterpolateImageFunctionBase : public itk::InterpolateImageF
 {
 public:
   /** Standard class typedefs. */
-  typedef BCOInterpolateImageFunctionBase                       Self;
-  typedef itk::InterpolateImageFunction<TInputImage, TCoordRep> Superclass;
+  using Self                     = BCOInterpolateImageFunctionBase;
+  using Superclass               = itk::InterpolateImageFunction<TInputImage, TCoordRep>;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(BCOInterpolateImageFunctionBase, InterpolateImageFunction);
 
   /** OutputType typedef support. */
-  typedef typename Superclass::OutputType OutputType;
+  using OutputType               = typename Superclass::OutputType;
 
   /** InputImageType typedef support. */
-  typedef typename Superclass::InputImageType InputImageType;
+  using InputImageType           = typename Superclass::InputImageType;
 
   /** InputPixelType typedef support. */
-  typedef typename Superclass::InputPixelType InputPixelType;
+  using InputPixelType           = typename Superclass::InputPixelType;
 
   /** RealType typedef support. */
-  typedef typename Superclass::RealType RealType;
+  using RealType                 = typename Superclass::RealType;
 
   /** Dimension underlying input image. */
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
   /** Index typedef support. */
-  typedef typename Superclass::IndexType      IndexType;
-  typedef typename Superclass::IndexValueType IndexValueType;
-  typedef typename Superclass::SizeType       SizeType;
+  using IndexType                = typename Superclass::IndexType;
+  using IndexValueType           = typename Superclass::IndexValueType;
+  using SizeType                 = typename Superclass::SizeType;
 
   /** Point typedef support. */
-  typedef typename Superclass::PointType PointType;
+  using PointType                = typename Superclass::PointType;
 
   /** ContinuousIndex typedef support. */
-  typedef typename Superclass::ContinuousIndexType ContinuousIndexType;
-  typedef TCoordRep                                ContinuousIndexValueType;
+  using ContinuousIndexType      = typename Superclass::ContinuousIndexType;
+  using ContinuousIndexValueType = TCoordRep;
 
   /** Coefficients container type. */
-  typedef boost::container::small_vector<double, 7> CoefContainerType;
+  using CoefContainerType        = boost::container::small_vector<double, 7>;
 
   /** Set/Get the window radius */
   virtual void  SetRadius(unsigned int radius);
-  virtual SizeType GetRadius() const;
+  SizeType GetRadius() const override;
 
   /** Set/Get the optimisation coefficient (Common values are -0.5, -0.75 or -1.0) */
   virtual void   SetAlpha(double alpha);
   virtual double GetAlpha() const;
 
-  /** Evaluate the function at a ContinuousIndex position
+  /** Evaluate the function at a ContinuousIndex position.
    *
    * Returns the linearly interpolated image intensity at a
    * specified point position. No bounds checking is done.
@@ -115,7 +115,7 @@ public:
 
 protected:
   BCOInterpolateImageFunctionBase() : m_Radius(2), m_WinSize(5), m_Alpha(-0.5){};
-  ~BCOInterpolateImageFunctionBase() override{};
+  ~BCOInterpolateImageFunctionBase() override = default;
   void PrintSelf(std::ostream& os, itk::Indent indent) const override;
   /** Compute the BCO coefficients. */
   CoefContainerType EvaluateCoef(const ContinuousIndexValueType& indexValue) const;
@@ -138,30 +138,30 @@ class ITK_EXPORT BCOInterpolateImageFunction : public otb::BCOInterpolateImageFu
 {
 public:
   /** Standard class typedefs. */
-  typedef BCOInterpolateImageFunction                             Self;
-  typedef BCOInterpolateImageFunctionBase<TInputImage, TCoordRep> Superclass;
-  typedef itk::SmartPointer<Self>                                 Pointer;
-  typedef itk::SmartPointer<const Self>                           ConstPointer;
+  using Self         = BCOInterpolateImageFunction;
+  using Superclass   = BCOInterpolateImageFunctionBase<TInputImage, TCoordRep>;
+  using Pointer      = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   itkTypeMacro(BCOInterpolateImageFunction, BCOInterpolateImageFunctionBase);
   itkNewMacro(Self);
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
-  typedef typename Superclass::OutputType          OutputType;
-  typedef typename Superclass::InputImageType      InputImageType;
-  typedef typename Superclass::InputPixelType      InputPixelType;
-  typedef typename Superclass::RealType            RealType;
-  typedef typename Superclass::IndexType           IndexType;
-  typedef typename Superclass::IndexValueType      IndexValueType;
-  typedef typename Superclass::PointType           PointType;
-  typedef typename Superclass::ContinuousIndexType ContinuousIndexType;
-  typedef typename Superclass::CoefContainerType   CoefContainerType;
+  using OutputType          = typename Superclass::OutputType;
+  using InputImageType      = typename Superclass::InputImageType;
+  using InputPixelType      = typename Superclass::InputPixelType;
+  using RealType            = typename Superclass::RealType;
+  using IndexType           = typename Superclass::IndexType;
+  using IndexValueType      = typename Superclass::IndexValueType;
+  using PointType           = typename Superclass::PointType;
+  using ContinuousIndexType = typename Superclass::ContinuousIndexType;
+  using CoefContainerType   = typename Superclass::CoefContainerType;
 
   OutputType EvaluateAtContinuousIndex(const ContinuousIndexType& index) const override;
 
 protected:
-  BCOInterpolateImageFunction(){};
-  ~BCOInterpolateImageFunction() override{};
+  BCOInterpolateImageFunction() = default;
+  ~BCOInterpolateImageFunction() override = default;
   void PrintSelf(std::ostream& os, itk::Indent indent) const override;
 
 private:
@@ -176,30 +176,30 @@ class ITK_EXPORT BCOInterpolateImageFunction<otb::VectorImage<TPixel, VImageDime
 {
 public:
   /** Standard class typedefs.*/
-  typedef BCOInterpolateImageFunction                                                           Self;
-  typedef BCOInterpolateImageFunctionBase<otb::VectorImage<TPixel, VImageDimension>, TCoordRep> Superclass;
-  typedef itk::SmartPointer<Self>                                                               Pointer;
-  typedef itk::SmartPointer<const Self>                                                         ConstPointer;
+  using Self         = BCOInterpolateImageFunction;
+  using Superclass   = BCOInterpolateImageFunctionBase<otb::VectorImage<TPixel, VImageDimension>, TCoordRep>;
+  using Pointer      = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   itkTypeMacro(BCOInterpolateImageFunction, BCOInterpolateImageFunctionBase);
   itkNewMacro(Self);
   itkStaticConstMacro(ImageDimension, unsigned int, Superclass::ImageDimension);
 
-  typedef typename Superclass::OutputType          OutputType;
-  typedef typename Superclass::InputImageType      InputImageType;
-  typedef typename Superclass::InputPixelType      InputPixelType;
-  typedef typename Superclass::RealType            RealType;
-  typedef typename Superclass::IndexType           IndexType;
-  typedef typename Superclass::IndexValueType      IndexValueType;
-  typedef typename Superclass::PointType           PointType;
-  typedef typename Superclass::ContinuousIndexType ContinuousIndexType;
-  typedef typename Superclass::CoefContainerType   CoefContainerType;
+  using OutputType          = typename Superclass::OutputType;
+  using InputImageType      = typename Superclass::InputImageType;
+  using InputPixelType      = typename Superclass::InputPixelType;
+  using RealType            = typename Superclass::RealType;
+  using IndexType           = typename Superclass::IndexType;
+  using IndexValueType      = typename Superclass::IndexValueType;
+  using PointType           = typename Superclass::PointType;
+  using ContinuousIndexType = typename Superclass::ContinuousIndexType;
+  using CoefContainerType   = typename Superclass::CoefContainerType;
 
   OutputType EvaluateAtContinuousIndex(const ContinuousIndexType& index) const override;
 
 protected:
-  BCOInterpolateImageFunction(){};
-  ~BCOInterpolateImageFunction() override{};
+  BCOInterpolateImageFunction() = default;
+  ~BCOInterpolateImageFunction() override = default;
   void PrintSelf(std::ostream& os, itk::Indent indent) const override;
 
 private:

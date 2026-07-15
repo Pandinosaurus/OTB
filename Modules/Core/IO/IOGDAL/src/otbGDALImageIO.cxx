@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  * Copyright (C) 2018-2020 CS Systemes d'Information (CS SI)
  *
  * This file is part of Orfeo Toolbox
@@ -10,7 +10,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,16 +19,12 @@
  * limitations under the License.
  */
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-
 #include "otbGDALImageIO.h"
 #include "otbMacro.h"
 #include "otbSystem.h"
 #include "otbStopwatch.h"
 #include "itksys/SystemTools.hxx"
-#include "otbImage.h"
+// #include "otbImage.h"
 #include "otb_tinyxml.h"
 
 #include "itkMetaDataObject.h"
@@ -52,6 +48,8 @@
 #include "otbCoreConfigure.h"
 
 #include "stdint.h" //needed for uintptr_t
+#include <sstream>
+#include <vector>
 
 inline unsigned int uint_ceildivpow2(unsigned int a, unsigned int b)
 {
@@ -66,25 +64,9 @@ constexpr std::size_t getsize_tabs(const T(&)[N], T(&)[N]) { return N; }
 namespace otb
 {
 
-class GDALDataTypeWrapper
+struct GDALDataTypeWrapper
 {
-public:
-  GDALDataTypeWrapper() : pixType(GDT_Byte)
-  {
-  }
-  ~GDALDataTypeWrapper()
-  {
-  }
-  GDALDataTypeWrapper(const GDALDataTypeWrapper& w)
-    :
-    pixType(w.pixType)
-  {}
-  GDALDataTypeWrapper& operator=(GDALDataTypeWrapper w)
-  {
-    pixType = w.pixType;
-    return *this;
-  }
-  GDALDataType pixType;
+  GDALDataType pixType = GDT_Byte;
 }; // end of GDALDataTypeWrapper
 
 
@@ -130,6 +112,7 @@ GDALImageIO::GDALImageIO()
 
 GDALImageIO::~GDALImageIO()
 {
+  // TODO: don't manage memory manually!
   delete m_PxType;
 }
 
@@ -1164,6 +1147,7 @@ bool GDALImageIO::CanStreamWrite()
   std::string gdalDriverShortName = FilenameToGdalDriverShortName(m_FileName);
   GDALDriver* driver              = GDALDriverManagerWrapper::GetInstance().GetDriverByName(gdalDriverShortName);
 
+  // TODO: the first test will be ignored: this function implementation is fishy
   if (driver == nullptr)
   {
     m_CanStreamWrite = false;
@@ -1613,7 +1597,7 @@ void GDALImageIO::InternalWriteImageInformation(const void* buffer)
   ExportMetadata();
 
   /* -------------------------------------------------------------------- */
-  /*      No Data.                                                        */
+  /*      No Data and Description.                                        */
   /* -------------------------------------------------------------------- */
 
   // Write no-data flags from ImageMetadata
@@ -1623,6 +1607,10 @@ void GDALImageIO::InternalWriteImageInformation(const void* buffer)
     if (bandMD.Has(MDNum::NoData))
     {
       dataset->GetRasterBand(iBand + 1)->SetNoDataValue(bandMD[MDNum::NoData]);
+    }
+    if (! bandMD.GetDescription().empty())
+    {
+      dataset->GetRasterBand(iBand + 1)->SetDescription(bandMD.GetDescription().c_str());
     }
     ++iBand;
   }
