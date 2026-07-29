@@ -208,14 +208,12 @@ public:
   Self& operator++()
   {
     assert(m_component < mpl::GetNumberOfComponents(*m_pixel));
-#if defined(__cpp_if_constexpr)
     // Optimization for array<scalar> cases
     if constexpr(std::is_arithmetic<InternalPixelType>::value)
     {
       ++m_component;
       return *this;
     }
-#endif
     ++m_subiter;
     if (m_subiter.is_at_end())
     {
@@ -239,27 +237,28 @@ public:
     // TODO: proxy
     // - read: subiter->get_current_pixel()
     // - write: set_current_pixel(subiter->set_current_pixel(value))
-#if defined(__cpp_if_constexpr)
     if constexpr (is_scalar_array)
     {
       return get_current_pixel();
     }
-#endif
-    return *m_subiter;
+    else
+    {
+      return *m_subiter;
+    }
   }
   decltype(auto) operator*() const
   {
     // TODO: proxy
     // - read: subiter->get_current_pixel()
     // - write: set_current_pixel(subiter->set_current_pixel(value))
-#if defined(__cpp_if_constexpr)
     if constexpr (is_scalar_array)
     {
       return get_current_pixel();
     }
-#endif
-
-    return *m_subiter;
+    else
+    {
+      return *m_subiter;
+    }
   }
   //@}
 
