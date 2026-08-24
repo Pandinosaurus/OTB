@@ -32,6 +32,10 @@ if(UNIX)
 else()
   set(BOOST_BOOTSTRAP_FILE "bootstrap.bat")
   set(BOOST_B2_EXE "b2.exe")
+  # Windows build system is so fucked up that, even if it is written in env
+  # variables, we still need to tell him which version of Visual Tools to use
+  set(BOOST_BOOTSTRAP_OPTIONS "${BOOST_BOOTSTRAP_OPTIONS}" vc143)
+  set(BOOST_SB_CONFIG toolset=vc143)
 endif()
 
 set(BOOST_CONFIGURE_COMMAND ${CMAKE_COMMAND}
