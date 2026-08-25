@@ -97,7 +97,7 @@ endmacro()
 
 @OTB_CONFIG_CODE@
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #RK: TODO: add sse2, see4, see4.1, openmp flags
