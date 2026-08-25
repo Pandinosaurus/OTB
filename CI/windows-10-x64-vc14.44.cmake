@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-# Configuration options for windows-10-x64-vc14.51.cmake
+# Configuration options for windows-10-x64-vc14.44.cmake
 # this build tool can compile C++20 project
 
 set(site_option
