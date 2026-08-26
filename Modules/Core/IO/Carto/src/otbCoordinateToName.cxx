@@ -28,8 +28,6 @@
 #include "otb_tinyxml.h"
 #include "otbCurlHelper.h"
 
-#include "itkMersenneTwisterRandomVariateGenerator.h"
-
 namespace otb
 {
 

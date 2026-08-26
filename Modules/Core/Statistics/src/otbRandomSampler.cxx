@@ -23,6 +23,7 @@
 #include "itkMersenneTwisterRandomVariateGenerator.h"
 #include "otbMath.h"
 #include <algorithm>
+#include <random>
 
 namespace otb
 {
@@ -38,8 +39,7 @@ void RandomSampler::Reset(void)
 
   // Generate list of positions
   m_Positions.clear();
-  unsigned int seed = itk::Statistics::MersenneTwisterRandomVariateGenerator::GetInstance()->GetSeed();
-  std::srand(seed);
+  std::srand(m_seed());
   unsigned long     currentOffset = 0UL;
   unsigned long     bufferSize, needed;
   std::vector<bool> buffer;
@@ -67,7 +67,7 @@ void RandomSampler::Reset(void)
       buffer[k] = 1;
     }
     // shuffle boolean buffer
-    std::random_shuffle(buffer.begin(), buffer.end());
+    std::shuffle(buffer.begin(), buffer.end(), std::mt19937(m_seed()));
     // compute positions
     for (unsigned long k = 0UL; k < bufferSize; k++)
     {

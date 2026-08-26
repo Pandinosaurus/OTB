@@ -23,6 +23,7 @@
 #include "otbMath.h"
 #include "otbMacro.h"
 #include <algorithm>
+#include <random>
 
 namespace otb
 {
@@ -32,7 +33,7 @@ bool PatternSampler::ParameterType::operator!=(const PatternSampler::ParameterTy
   return bool((MaxPatternSize != param.MaxPatternSize) || (Pattern1 != param.Pattern1) || (Pattern2 != param.Pattern2) || (Seed != param.Seed));
 }
 
-PatternSampler::PatternSampler() : m_Index1(0UL), m_Index2(0UL)
+PatternSampler::PatternSampler() : m_Index1(0UL), m_Index2(0UL), m_random_engine(std::random_device{}())
 {
   this->m_Parameters.MaxPatternSize = 1000;
   this->m_Parameters.Pattern1.clear();
@@ -228,7 +229,7 @@ std::vector<bool> PatternSampler::RandArray(unsigned long N, unsigned long T)
   for (unsigned long i = 0; i < N; i++)
     res[i]             = 1;
 
-  std::random_shuffle(res.begin(), res.end());
+  std::shuffle(res.begin(), res.end(), m_random_engine);
 
   return res;
 }

@@ -23,6 +23,7 @@
 
 #include "otbSamplerBase.h"
 #include "OTBStatisticsExport.h"
+#include <random>
 #include <string>
 
 namespace otb
@@ -140,6 +141,7 @@ private:
   /** Index tracking the position in the second internal pattern */
   unsigned long m_Index2;
 
+  std::mt19937 m_random_engine;
   /** Helper function to decode boolean sequence
    *  Characters converted into true : '1' 'X' 'y' 'Y' '|' '+'
    *  Characters converted into false : '0' '_' 'n' 'N' '.' '-'
