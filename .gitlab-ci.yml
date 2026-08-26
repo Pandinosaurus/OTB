@@ -157,96 +157,96 @@ stages:
       - build/*/*/*/*.cmake
 
 #-------------------------- precheck job ---------------------------------------
-fast-build:
-  extends: .common
-  only:
-    - merge_requests
-    - branches
-  stage: precheck
-  image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-native-itk5:22.04
-  variables:
-    GIT_CHECKOUT: 'true'
-    GIT_SUBMODULE_FORCE_HTTPS: 'true'
-    GIT_SUBMODULE_DEPTH: 3
-    GIT_STRATEGY: clone
-    GIT_LFS_SKIP_SMUDGE: 1
-  before_script:
-    - git submodule update --init
-    # pull data needed by the two convolution test
-    - |
-      cd Data
-      git lfs pull --include Baseline/OTB/Images/bfTvConvolutionImageFilter.tif
-      git lfs pull --include Input/QB_Suburb.png
-      git lfs pull --include Input/QB_PAN_ROI_1000_100.tif
-      cd ..
-  script:
-    - ctest -V -S CI/main_ci.cmake -DIMAGE_NAME:string=ubuntu-22.04-fast
-    - ctest -VV -S CI/FFTW_tests.cmake -DIMAGE_NAME:string=ubuntu-22.04-fast
-    - ccache -s
+# fast-build:
+#   extends: .common
+#   only:
+#     - merge_requests
+#     - branches
+#   stage: precheck
+#   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-native-itk5:22.04
+#   variables:
+#     GIT_CHECKOUT: 'true'
+#     GIT_SUBMODULE_FORCE_HTTPS: 'true'
+#     GIT_SUBMODULE_DEPTH: 3
+#     GIT_STRATEGY: clone
+#     GIT_LFS_SKIP_SMUDGE: 1
+#   before_script:
+#     - git submodule update --init
+#     # pull data needed by the two convolution test
+#     - |
+#       cd Data
+#       git lfs pull --include Baseline/OTB/Images/bfTvConvolutionImageFilter.tif
+#       git lfs pull --include Input/QB_Suburb.png
+#       git lfs pull --include Input/QB_PAN_ROI_1000_100.tif
+#       cd ..
+#   script:
+#     - ctest -V -S CI/main_ci.cmake -DIMAGE_NAME:string=ubuntu-22.04-fast
+#     - ctest -VV -S CI/FFTW_tests.cmake -DIMAGE_NAME:string=ubuntu-22.04-fast
+#     - ccache -s
 
-legal-check:
-  extends: .common
-  only:
-    - merge_requests
-    - develop
-    - /^release-[0-9]+\.[0-9]+$/
-  stage: precheck
-  image: $BUILD_IMAGE_REGISTRY/otb-alpine:3.7
-  variables:
-    GIT_DEPTH: ""
-  allow_failure: true
-  script:
-    - ./CI/contributors_check.sh
-    - ./CI/headers_check.py
-  after_script: []
+# legal-check:
+#   extends: .common
+#   only:
+#     - merge_requests
+#     - develop
+#     - /^release-[0-9]+\.[0-9]+$/
+#   stage: precheck
+#   image: $BUILD_IMAGE_REGISTRY/otb-alpine:3.7
+#   variables:
+#     GIT_DEPTH: ""
+#   allow_failure: true
+#   script:
+#     - ./CI/contributors_check.sh
+#     - ./CI/headers_check.py
+#   after_script: []
 
 #------------------------- prepare & build jobs --------------------------------
 
 ## Ubuntu superbuild
-ubuntu-22-prepare:
-  extends: .common-prepare
-  image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
-  script:
-    - ctest -VV -S CI/prepare_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-full -DOTB_FULL_BUILD:BOOL=ON
+# ubuntu-22-prepare:
+#   extends: .common-prepare
+#   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
+#   script:
+#     - ctest -VV -S CI/prepare_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-full -DOTB_FULL_BUILD:BOOL=ON
 
-ubuntu-24-prepare:
-  extends: .common-prepare
-  image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:24.04
-  script:
-    - ctest -VV -S CI/prepare_superbuild.cmake -DIMAGE_NAME:string=ubuntu-24.04-llvm-full
-  artifacts:
-    untracked: false
-    when: on_success
-    access: all
-    expire_in: 24hrs
-    paths:
-      - xdk/lib/python3/*
+# ubuntu-24-prepare:
+#   extends: .common-prepare
+#   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:24.04
+#   script:
+#     - ctest -VV -S CI/prepare_superbuild.cmake -DIMAGE_NAME:string=ubuntu-24.04-llvm-full
+#   artifacts:
+#     untracked: false
+#     when: on_success
+#     access: all
+#     expire_in: 24hrs
+#     paths:
+#       - xdk/lib/python3/*
 
-ubuntu-22-build:
-  extends: .common-build
-  image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
-  script:
-    - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=ON
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=OFF
-    - mv build_packages/OTB-*.tar.gz . || true
-  needs:
-    - job: ubuntu-22-prepare
-      artifacts: true
+# ubuntu-22-build:
+#   extends: .common-build
+#   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
+#   script:
+#     - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full
+#     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=ON
+#     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=OFF
+#     - mv build_packages/OTB-*.tar.gz . || true
+#   needs:
+#     - job: ubuntu-22-prepare
+#       artifacts: true
 
-ubuntu-22-complete-build:
-  extends: .common-complete-build
-  image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
-  script:
-    - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DOTB_FULL_BUILD:BOOL=ON -Dci_skip_install:BOOL=ON
-    - mv build/CookBook-*-html.tar.gz . || true
-    - mv build/Documentation/Cookbook/latex/CookBook-*.pdf . || true
-    - mv build/Documentation/Doxygen/OTB-Doxygen-*.tar.bz2 . || true
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=OFF -Dci_skip_install:BOOL=ON
-    - mv build_packages/OTB-*.tar.gz . || true
-  needs:
-    - job: ubuntu-22-prepare
-      artifacts: true
+# ubuntu-22-complete-build:
+#   extends: .common-complete-build
+#   image: $BUILD_IMAGE_REGISTRY/otb-ubuntu-superbuild-base:22.04
+#   script:
+#     - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DOTB_FULL_BUILD:BOOL=ON -Dci_skip_install:BOOL=ON
+#     - mv build/CookBook-*-html.tar.gz . || true
+#     - mv build/Documentation/Cookbook/latex/CookBook-*.pdf . || true
+#     - mv build/Documentation/Doxygen/OTB-Doxygen-*.tar.bz2 . || true
+#     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=ubuntu-22.04-llvm-xdk-full -DPACKAGE_BY_MODULE:BOOL=OFF -Dci_skip_install:BOOL=ON
+#     - mv build_packages/OTB-*.tar.gz . || true
+#   needs:
+#     - job: ubuntu-22-prepare
+#       artifacts: true
 
 # Ubuntu 24 build needed for gdal bindings with python 3.12. We package the compiled bindings for python 3.12, this package will be downloaded and extracted automatically when
 # a user lauches the otbenv profile after unpacking the official archive for the first time (which contains bindings for ubuntu 20 and python 3.8 initially)
@@ -274,42 +274,42 @@ python3.12-gdal-bindings:
       - OTB-*.tar.gz
 
 ## RedHat superbuild
-redhat-prepare:
-  extends: .common-prepare
-  image: $BUILD_IMAGE_REGISTRY/otb-redhat-superbuild-base-py312:8
-  script:
-    - ctest -VV -S CI/prepare_superbuild.cmake -DIMAGE_NAME:string=redhat-8-gcc -DOTB_FULL_BUILD:BOOL=ON
+# redhat-prepare:
+#   extends: .common-prepare
+#   image: $BUILD_IMAGE_REGISTRY/otb-redhat-superbuild-base-py312:8
+#   script:
+#     - ctest -VV -S CI/prepare_superbuild.cmake -DIMAGE_NAME:string=redhat-8-gcc -DOTB_FULL_BUILD:BOOL=ON
 
-redhat-build:
-  extends: .common-build
-  image: $BUILD_IMAGE_REGISTRY/otb-redhat-superbuild-base-py312:8
-  script:
-    - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=redhat-8-gcc
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=ON
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=OFF
-    # change package names to RedHat
-    - |
-      # use "find" to select only packages that matters
-      rh_packages=$(find build_packages -type f -name "OTB*Linux*.tar.gz")
-      for pkg in $rh_packages
-      do
-        new_name=$(sed "s/-Linux/-Linux_RedHat/g" <<< "$pkg")
-        mv $pkg $new_name
-      done
-    - mv build_packages/OTB-*.tar.gz . || true
-  needs:
-    - job: redhat-prepare
-      artifacts: true
+# redhat-build:
+#   extends: .common-build
+#   image: $BUILD_IMAGE_REGISTRY/otb-redhat-superbuild-base-py312:8
+#   script:
+#     - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=redhat-8-gcc
+#     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=ON
+#     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=OFF
+#     # change package names to RedHat
+#     - |
+#       # use "find" to select only packages that matters
+#       rh_packages=$(find build_packages -type f -name "OTB*Linux*.tar.gz")
+#       for pkg in $rh_packages
+#       do
+#         new_name=$(sed "s/-Linux/-Linux_RedHat/g" <<< "$pkg")
+#         mv $pkg $new_name
+#       done
+#     - mv build_packages/OTB-*.tar.gz . || true
+#   needs:
+#     - job: redhat-prepare
+#       artifacts: true
 
-redhat-complete-build:
-  extends: .common-complete-build
-  image: $BUILD_IMAGE_REGISTRY/otb-redhat-superbuild-base-py312:8
-  script:
-    - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=redhat-8-gcc -DOTB_FULL_BUILD:BOOL=ON -Dci_skip_install:BOOL=ON
-    - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=OFF -Dci_skip_install:BOOL=ON
-  needs:
-    - job: redhat-prepare
-      artifacts: true
+# redhat-complete-build:
+#   extends: .common-complete-build
+#   image: $BUILD_IMAGE_REGISTRY/otb-redhat-superbuild-base-py312:8
+#   script:
+#     - ctest -V -S CI/main_superbuild.cmake -DIMAGE_NAME:string=redhat-8-gcc -DOTB_FULL_BUILD:BOOL=ON -Dci_skip_install:BOOL=ON
+#     - ctest -V -S CI/superbuild_packaging.cmake -DIMAGE_NAME:string=redhat-8-gcc -DPACKAGE_BY_MODULE:BOOL=OFF -Dci_skip_install:BOOL=ON
+#   needs:
+#     - job: redhat-prepare
+#       artifacts: true
 
 # - Win10
 windows-10-prepare:

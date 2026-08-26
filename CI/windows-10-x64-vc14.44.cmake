@@ -21,9 +21,15 @@
 # Configuration options for windows-10-x64-vc14.44.cmake
 # this build tool can compile C++20 project
 
+
+
+# As Microsoft compiler does not respect cpp standard, we need
+# to force option of compiler
+# https://developercommunity.visualstudio.com/t/-cplusplus-version-macro/86521
 set(site_option
-    "CMAKE_CXX_FLAGS:STRING=/DTHROW_QCRITICAL=0 /DWIN32 /D_WINDOWS /W3 /GR /EHsc /D_ENABLE_EXTENDED_ALIGNED_STORAGE"
+    "CMAKE_CXX_FLAGS:STRING=/DTHROW_QCRITICAL=0 /DWIN32 /D_WINDOWS /W3 /GR /EHsc /D_ENABLE_EXTENDED_ALIGNED_STORAGE /std:c++20 /Zc:__cplusplus"
     "OTB_USE_OPENMP:BOOL=ON"
+    "CMAKE_VERBOSE_MAKEFILE=ON"
 )
 
 if (OTB_FULL_BUILD)
