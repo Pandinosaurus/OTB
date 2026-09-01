@@ -1,0 +1,24 @@
+diff --color -bur a/Modules/Core/Common/include/itkShapedNeighborhoodIterator.h b/Modules/Core/Common/include/itkShapedNeighborhoodIterator.h
+--- a/Modules/Core/Common/include/itkShapedNeighborhoodIterator.h	2022-11-24 14:15:41.000000000 +0100
++++ b/Modules/Core/Common/include/itkShapedNeighborhoodIterator.h	2026-09-01 10:13:32.666914859 +0200
+@@ -179,7 +179,7 @@
+   using typename Superclass::IndexValueType;
+ 
+   /** An  iterator for the ShapedNeighborhood classes. */
+-  struct Iterator : public ConstIterator
++  struct Iterator : public Superclass::ConstIterator
+   {
+     Iterator() = default;
+     Iterator(Self * s)
+diff --color -bur a/Modules/Segmentation/LevelSets/include/itkShapePriorSegmentationLevelSetFunction.h b/Modules/Segmentation/LevelSets/include/itkShapePriorSegmentationLevelSetFunction.h
+--- a/Modules/Segmentation/LevelSets/include/itkShapePriorSegmentationLevelSetFunction.h	2022-11-24 14:15:41.000000000 +0100
++++ b/Modules/Segmentation/LevelSets/include/itkShapePriorSegmentationLevelSetFunction.h	2026-09-01 10:14:58.779367758 +0200
+@@ -129,7 +129,7 @@
+   /** A global data type used to store values needed to compute the time step.
+    */
+   using typename Superclass::GlobalDataStruct;
+-  struct ShapePriorGlobalDataStruct : public GlobalDataStruct
++  struct ShapePriorGlobalDataStruct : public Superclass::GlobalDataStruct
+   {
+     ScalarValueType m_MaxShapePriorChange;
+   };
