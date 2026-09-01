@@ -23,6 +23,7 @@
 
 #include "otbSamplerBase.h"
 #include "OTBStatisticsExport.h"
+#include <random>
 
 namespace otb
 {
@@ -111,6 +112,8 @@ private:
 
   /** Internal current position */
   std::vector<unsigned long>::iterator m_CurrentPosition;
+
+  std::random_device m_seed;
 };
 
 } // namespace otb

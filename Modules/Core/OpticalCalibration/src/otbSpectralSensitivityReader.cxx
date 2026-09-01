@@ -131,7 +131,10 @@ void SpectralSensitivityReader::GenerateData()
     }
 
     // Replace multiple spaces by a unique space
-    std::unique(line.begin(), line.end(), SpectralSensitivityReader::BothAre(' '));
+    line.erase(
+            std::unique(line.begin(), line.end(), SpectralSensitivityReader::BothAre(' ')),
+            line.end()
+    );
 
     // if the first character is a space, erase it
     boost::trim(line);

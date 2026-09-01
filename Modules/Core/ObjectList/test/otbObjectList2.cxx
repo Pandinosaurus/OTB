@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2024 Centre National d'Etudes Spatiales (CNES)
+ * Copyright (C) 2005-2026 Centre National d'Etudes Spatiales (CNES)
  *
  * This file is part of Orfeo Toolbox
  *
@@ -37,7 +37,7 @@ int otbObjectList2(int itkNotUsed(argc), char* itkNotUsed(argv)[])
   otbTestingCheckValidCommand(listPolygon->Clear());
   otbTestingCheckNotValidCommand(listPolygon->SetNthElement(0, polygon));
   otbTestingCheckNotValidCommand(listPolygon->SetNthElement(2, polygon));
-  otbTestingCheckNotValidCommand(listPolygon->GetNthElement(2));
+  otbTestingCheckNotValidCommand((void)listPolygon->GetNthElement(2));
 
   std::vector<int> tab;
   tab.reserve(3);

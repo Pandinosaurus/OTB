@@ -36,7 +36,7 @@ MaxEmptyLinesToKeep: 2
 NamespaceIndentation: None
 PointerAlignment: Left
 SortIncludes: Never
-Standard:        c++14
+Standard:        c++20
 TabWidth:        2
 UseTab:          Never
 ...
