@@ -50,6 +50,9 @@ macro( set_dash_build_name )
 
   endif()
 
+  if (OTB_FULL_BUILD)
+    set (CTEST_BUILD_NAME "Complete-build ${CTEST_BUILD_NAME}")
+  endif()
 endmacro()
 
 # Download and extract an XDK (needs OTB_SOURCE_DIR, and the file sb_branch.txt in it)
