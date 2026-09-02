@@ -62,9 +62,13 @@ if(XDK_INSTALL_PATH)
   endforeach()
 endif()
 
-if((CTEST_SITE) AND EXISTS "${CMAKE_CURRENT_LIST_DIR}/${CTEST_SITE}.cmake")
-  # will set its output in 'site_option'
-  include("${CMAKE_CURRENT_LIST_DIR}/${CTEST_SITE}.cmake")
+if((CTEST_SITE))
+  if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${CTEST_SITE}.cmake"))
+    # will set its output in 'site_option'
+    include("${CMAKE_CURRENT_LIST_DIR}/${CTEST_SITE}.cmake")
+  else()
+    message(FATAL_ERROR "You provided CTEST_SITE or IMAGE_NAME in you command but you don't have a conf file for this image")
+  endif()
 endif()
 
 set(concat_options
