@@ -63,7 +63,7 @@ if(XDK_INSTALL_PATH)
 endif()
 
 if((CTEST_SITE))
-  if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${CTEST_SITE}.cmake"))
+  if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${CTEST_SITE}.cmake")
     # will set its output in 'site_option'
     include("${CMAKE_CURRENT_LIST_DIR}/${CTEST_SITE}.cmake")
   else()
